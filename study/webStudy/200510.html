@@ -1,0 +1,94 @@
+<!-- <!DOCTYPE html>
+<html>
+    <head></head>
+    <body>
+        <script>
+            function clickHandler(event) {
+                var eType = event.type;
+                /* 다음은 호환성을 위한 것이다. */
+                /* Moz는 이벤트 객체의 target 프로퍼티로 채운다. */
+                /* IE는 srcElement 프로퍼티로 채운다.*/
+                var eTarget = event.target || event.srcElement;
+
+                alert( "Captured Event (type=" + eType + ", target=" + eTarget );
+            }
+        </script>
+        <span onclick="clickHandler(event);">Click Here</span>
+    </body>
+</html>
+
+clickHandler를 호출함으로서 이벤트 발생
+moz와 ie에 대한 예외처리를 해줌 -->
+
+<!------------------------------------------------------------------------------------------->
+
+
+<!-- <!DOCTYPE html>
+<html>
+    <head></head>
+    <body>
+        <script>
+            function mouseeventHandler(event){
+                /* 다음은 호환성을 위한 것이다. */
+                /* IE는 기본적으로 이벤트 객체를 전달하지 않는다. */
+                if (!event) event = window.event;
+
+                /* 미리 이벤트 타입과 타켓 얻기 */
+                var eType = event.type;
+                /* Moz는 이벤트 객체의 target 프로퍼티로 채운다. */
+                /* IE는 srcElement 프로퍼티로 채운다.*/
+                var eTarget = event.target || event.srcElement;
+                alert( "Captured Event (type=" + eType + ", target=" + eTarget );
+            }
+            function onloadHandler() {
+                /*  페이지의 body 엘리먼트를 참조하여 얻기 */
+                var body = document.body;
+                /* 클릭되기 위한 span 엘리먼트 생성하기 */
+                var span = document.createElement('span');
+                span.id = "ExampleSpan";
+                span.appendChild(document.createTextNode('Click Here!'));
+
+                /* 특정 마우스 이벤트를 받기 위해 span 객체 등록하기
+                - 이벤트들의 소문자에 유의하라 
+                그러나 당신이 그것을 치환하기 위한 이름의 선택은 자유다*/
+
+                span.onmousedown = mouseeventHandler;
+                span.onmouseup = mouseeventHandler;
+                span.onmouseover = mouseeventHandler;
+                span.onmouseout = mouseeventHandler;
+
+                /*페이지에 span 보여주기 */
+                body.appendChild(span);
+            }
+            //우리가 핸들러를 치환한 이후에는 함수 이름 뒤에 ()을 붙여서는 안된다.
+            window.onload = onloadHandler;
+
+        </script>
+    </body>
+</html>
+HTML안에 이벤트를 수신 등록 이외에 당신은 당신의 자바스크립트에 의해 생성된 
+어떠한 HTML엘리먼트 객체의 똑같은 이름으로 애트리뷰트들을 마찬가지로 설정할 수 있다. 
+span 객체를 인스터트화하고 페이지의 body에  추가하고 
+mouse-over, mouse-out, mouse-down, mouse-up 이벤트들을 수신하기위해 span 객체를 등록한다.  -->
+
+<!DOCTYPE html>
+<html>
+    <head></head>
+    <body>
+        <script>
+            function keypressHendler(event) {
+                if(!event) event = window.event;
+                var eType = event.type;
+                
+                /*  여기에 우리는 which 나 다른 keyCode로 반환되는 모질라 기반으로 된 브라우저를 
+                크로스 브라우저 방법으로 사용할 필요가 있다. 
+                조건 연산자 또는 삼항식이 좋은 방법이다.*/
+                var keyCode = event.which? event.which:event.keyCode;
+                var eCode = 'keyCode is' + keyCode;
+                var eChar = 'charCode is' + event.charCode;
+                alert("Captrued Event (type=" + eType + ", key Unicode value="+eCode+", ASCII value="+eChar+")");
+            }
+        </script>
+        <input onkeypress="keypressHendler(event);"/>
+    </body>
+</html>
