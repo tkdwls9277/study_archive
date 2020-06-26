@@ -1,0 +1,91 @@
+<!-- 2. js에 있는 변수를 이용해 테이블로 표현해 보시오 - 변수 문제
+
+
+mail_id	stevelee@steveleejava.com
+pw	1q2w3ezZ!!
+use_yn	y
+phone_num	01077778888
+type	admin
+addr	서울시강남구논현동
+sn7	9209301 -->
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<script>
+
+    mail_id = "stevelee@steveleejava.com";
+    pw="1q2w3ezZ!!";
+    use_yn="y";
+    phone_num="01077778888";
+    type="admin";
+    addr="서울시강남구논현동";
+    sn7="9209301";
+
+
+</script>  
+
+<body>
+  
+
+<table id='tableid' border="1">
+    <tr>
+        <td>mail_id</td>
+        <td id="td1"></td>
+    </tr>
+    이런식으로 7개를 그리는 방법 1
+
+
+</table>
+    
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+  
+<table id='tableid' border="1">
+    <tr>
+        <td>mail_id</td>
+        <td id="td1"></td>
+    </tr>
+
+</table>
+    
+</body>
+
+<script>
+
+    mail_id = "stevelee@steveleejava.com";
+    pw="1q2w3ezZ!!";
+    use_yn="y";
+    phone_num="01077778888";
+    type="admin";
+    addr="서울시강남구논현동";
+    sn7="9209301";
+
+    var tr2=document.createElement('tr');
+    var td21=document.createElement('td');
+    var td22=document.createElement('td');
+    td21.innerText='addr';
+    td22.innerText=addr;
+    tr2.appendChild(td21);
+    tr2.appendChild(td22);
+
+    var tabletag = document.getElementById('tableid');
+    tabletag.appendChild(tr2);
+
+</script>  
+
+</html>

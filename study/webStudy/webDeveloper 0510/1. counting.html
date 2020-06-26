@@ -1,0 +1,17 @@
+<!-- 1. 브라우저에 적당한 네모칸을 만들고 마우스가 네모 안에서 움직일 때 count숫자가
+계속 올라가도록 개발하고 실행해 보시오 -->
+
+<!DOCTYPE html>
+<html>
+    <body>
+        <script>
+            var cnt=1;
+            function countview(){
+                console.log('count : '+cnt);
+                cnt++;
+            }
+        </script>
+        <span>count:</span>
+        <div style="width:300px;height:400px;background-color:brown;", onmousemove="countview()"/>
+    </body>
+</html>
