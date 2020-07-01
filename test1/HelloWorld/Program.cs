@@ -1,4 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using static System.Console; // 입출력하는 코드를 간소화하기위함
+//Console.WriteLine() => WriteLine()
 
 namespace HelloWorld
 {
@@ -6,12 +12,21 @@ namespace HelloWorld
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("\nWhat is your name? ");
-            var name = Console.ReadLine();
-            var date = DateTime.Now;
-            Console.WriteLine($"\nHello, {name}, on {date:d} at {date:t}!");
-            Console.Write("\nPress any key to exit...");
-            Console.ReadKey(true);
+            MyClass cls = new MyClass();
+
+            //인덱서 set 사용
+            cls[0] = 0;
+            cls[1] = 1;
+            cls[2] = 2;
+            cls[3] = 3;
+
+            //인덱서 get 사용
+            for(int i=0;i<=3;i++){
+                WriteLine(cls[i]);
+            }
+
+            WriteLine(cls);
+            ReadKey(true);
         }
     }
 }
