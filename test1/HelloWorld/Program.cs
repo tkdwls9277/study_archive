@@ -23,6 +23,34 @@ namespace HelloWorld
         }
     }
 
+    class MyClass
+    {
+        int a, b, c;
+
+        public MyClass()
+        {
+            this.a = 5425;
+            WriteLine("MyClass()");
+        }
+
+        public MyClass(int b):this()
+        {
+            this.b = b;
+            WriteLine($"MyClass({b})");
+        }
+
+        public MyClass(int b, int c) : this(b)
+        {
+            this.c = c;
+            WriteLine($"MyClass({b},{c})");
+        }
+
+        public void PrintFields()
+        {
+            WriteLine($"a:{a}, b:{b}, c:{c}");
+        }
+    }
+
     
     class Program
     {
@@ -89,10 +117,22 @@ namespace HelloWorld
             //WriteLine($"a:{a}, b:{b}, a/b:{c}, a%b:{d}");
             //------------------------------------------------
 
-            double mean = 0;
-            Mean(1, 2, 3, 4, 5, out mean);
+            //double mean = 0;
+            //Mean(1, 2, 3, 4, 5, out mean);
 
-            WriteLine("평균:{0}",mean);
+            //WriteLine("평균:{0}",mean);
+
+            MyClass a = new MyClass();
+            a.PrintFields();
+            WriteLine();
+
+            MyClass b = new MyClass(1);
+            b.PrintFields();
+            WriteLine();
+
+            MyClass c = new MyClass(10, 20);
+            c.PrintFields();
+            WriteLine();
         }
     }
 
