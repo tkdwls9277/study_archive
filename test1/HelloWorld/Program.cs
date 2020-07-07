@@ -30,7 +30,7 @@ namespace HelloWorld
 
 
 }
-    void Divided(int a, int b, out int quotient, out int remainder){
-        quotient = a/b;
-        remainder = a%b;
-    }
+    //void Divided(int a, int b, out int quotient, out int remainder){
+    //    quotient = a/b;
+    //    remainder = a%b;
+    //}
