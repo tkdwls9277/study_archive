@@ -341,7 +341,7 @@ namespace ConsoleApp1
         // 공통적으로 사용할 변수
         ErpSlipKey commonSlip;
 
-        // 고통부분을 뽑아내지 않으면, 변수와 함수들이 메뉴마다 계속 추가가 된다 ㅠㅠ
+        // 공통부분을 뽑아내지 않으면, 변수와 함수들이 메뉴마다 계속 추가가 된다 ㅠㅠ
         private SaleSlip saleSlipInfo;
         private OrderSlip orderSlipInfo;
 
