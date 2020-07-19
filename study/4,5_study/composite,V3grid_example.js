@@ -13,7 +13,6 @@ sangjin.page.factory("sangjin.page.common", "ESA605M", {
 		} else {
             return true;
 		}
-
     },
 
     initProperties: function () {

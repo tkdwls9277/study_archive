@@ -122,17 +122,23 @@ namespace HelloWorld
 
             //WriteLine("평균:{0}",mean);
 
-            MyClass a = new MyClass();
-            a.PrintFields();
-            WriteLine();
+            //-------------------------------------------------
 
-            MyClass b = new MyClass(1);
-            b.PrintFields();
-            WriteLine();
+            // MyClass a = new MyClass();
+            // a.PrintFields();
+            // WriteLine();
 
-            MyClass c = new MyClass(10, 20);
-            c.PrintFields();
-            WriteLine();
+            // MyClass b = new MyClass(1);
+            // b.PrintFields();
+            // WriteLine();
+
+            // MyClass c = new MyClass(10, 20);
+            // c.PrintFields();
+            // WriteLine();
+
+            //-------------------------------------------------
+
+            
         }
     }
 
