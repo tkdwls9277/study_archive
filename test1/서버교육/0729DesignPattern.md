@@ -5,7 +5,7 @@
 solution
 * DevExample의 관련기술및 용어 확인
 
-
+<br>
 09.커맨드 패턴
 ===
 
@@ -68,7 +68,7 @@ solution
 > 내부적으로는 **주방장(Receiver)**에게 **음식을 요리(ConcreateCommand)**하는 과정을 담고 있는 것이다.
 
  
-
+<br>
 사용목적 및 용도, 장점
 ---
 
@@ -81,9 +81,7 @@ solution
 > Transaction 단위로 묶기 때문에 오류 발생시 해당 묶여있는 Transaction에 대해 Rollback이 가능.
 
 
-
-
-
+<br>
 소스코드 예시
 ---
 
@@ -111,4 +109,111 @@ manager.Cancel();
 // 실행하는 입장에서는 해당 절차들을 전부 알 필요가 없다.
 
 ```
+<br>
 
+---------------------------
+<br><br>
+10. 파이프라인 패턴
+===
+
+파이프라인 패턴이란
+---
+
+웹로그와 같은 텍스트 기반의 데이터 또는 프로그램 소스 코드 등과 같은 데이터 스트림을 처리하는데 적합하다.
+
+- 각각의 프로세스는 필터 컴포넌트 내에서 처리되며, 데이터는 파이프를 통해 전달되어 처리되어진다.
+
+  이러한 파이프는 버퍼링을 하거나 동기화 하는 목적으로 사용된다.
+
+
+<br>
+사용목적 및 용도, 장점
+---
+
+필터 추가가 쉬움
+
+- 시스템 확장성이 좋음
+- 필터 재사용 가능
+- 주어진 필터들을 재구성하여 또 다른 파이프라인을 구축할 수 있음
+
+
+<br>
+소스코드 예시
+---
+
+```C#
+<Before>
+List<Dough> doughs = new List<Dough>();
+foreach (var dough in doughs) {
+    Console.WriteLine($"{ dough.Name } Preparing...");
+    Console.WriteLine($"{ dough.Name } Bake for 25 minutes");
+    Console.WriteLine($"{ dough.Name } Topping.....");
+    dough.Name = "Cheese " + dough.Name;
+    Console.WriteLine($"{ dough.Name } Cutting the pizza into diagnol slices");
+    Console.WriteLine($"{ dough.Name } Placing pizza in official PizzaStore box......");
+}
+
+<After>
+//----------------------------------------
+// 피자만들기
+//----------------------------------------
+PizzaCookingPipeLine cooking = new PizzaCookingPipeLine();
+
+cooking.Register(new PrepareFilter());
+cooking.Register(new BakeFilter());
+cooking.Register(new CheeseToppingFilter());
+cooking.Register(new CutFilter());
+cooking.Register(new BoxFilter());
+
+List<Dough> pizzas = new List<Dough>();
+pizzas.Add(new Dough() { Name = "Pizza 1" });
+pizzas.Add(new Dough() { Name = "Pizza 2" });
+pizzas.Add(new Dough() { Name = "Pizza 3" });
+cooking.Execute(pizzas);
+// 실행이 되는 시점에 도우를 3(개) 넣어 준다.
+
+//----------------------------------------
+// 공통 조리과정 만들기
+// 조리과정을 하나의 파이프라인으로 등록해놓음. 전, 후 과정
+// 중간에 피자종류가 다른 경우에만 변동성이 있기 때문에 그외의 공통적인 기능은 기능별로 통합시켜준다.
+//----------------------------------------
+PizzaCookingPipeLine preCooking = new PizzaCookingPipeLine();
+preCooking.Register(new PrepareFilter());
+preCooking.Register(new BakeFilter());
+
+PizzaCookingPipeLine postCooking = new PizzaCookingPipeLine();
+postCooking.Register(new CutFilter());
+postCooking.Register(new BoxFilter());
+
+//----------------------------------------
+// 치즈피자만들기
+//----------------------------------------
+List<Dough> cheesePizzas = new List<Dough>();
+cheesePizzas.Add(new Dough() { Name = "Pizza 1" });
+cheesePizzas.Add(new Dough() { Name = "Pizza 2" });
+cheesePizzas.Add(new Dough() { Name = "Pizza 3" });
+
+// 공정을 공통적으로 만들어 놓고 재활용한다.
+PizzaCookingPipeLine cheesePizzaCooking = new PizzaCookingPipeLine();
+cheesePizzaCooking.Register(preCooking);
+cheesePizzaCooking.Register(new CheeseToppingFilter());
+cheesePizzaCooking.Register(postCooking);
+cheesePizzaCooking.Execute(cheesePizzas);
+
+//----------------------------------------
+// 페페로니피자만들기
+//----------------------------------------
+List<Dough> pepperoniPizzas = new List<Dough>();
+pepperoniPizzas.Add(new Dough() { Name = "Pizza 1" });
+pepperoniPizzas.Add(new Dough() { Name = "Pizza 2" });
+pepperoniPizzas.Add(new Dough() { Name = "Pizza 3" });
+
+PizzaCookingPipeLine pepperoniPizzaCooking = new PizzaCookingPipeLine();
+pepperoniPizzaCooking.Register(preCooking);
+pepperoniPizzaCooking.Register(new PepperoniToppingFilter());
+pepperoniPizzaCooking.Register(postCooking);
+pepperoniPizzaCooking.Execute(pepperoniPizzas);    
+
+// CheeseToppingFilter, PepperoniToppingFilter 라인만 다르고 나머지 기능은 동일하다.
+// 재사용성이 높아짐. 파이프라인 자체도 필터이다. 데코레이터와 상속구조가 비슷할 수 있다. 계속해서 담아놓고 진행을 하는 구조.
+```
