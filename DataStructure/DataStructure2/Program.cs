@@ -6,7 +6,8 @@ namespace DataStructure2
     {
         static void Main(string[] args)
         {
-            MyArrayList.Test();
+            //MyArrayList.Test();
+            MyList<string>.Test();
         }
     }
 }

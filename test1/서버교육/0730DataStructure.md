@@ -520,3 +520,223 @@ public static void Main()
 | int LastIndexOf(object item, int index, int count) | 지정된 개체를 검색하며, 지정된 수의 요소를 포함하고 지정된 인덱스에서 끝나는 MyArrayList의 요소 범위에서 마지막으로 검색한 개체의 인덱스(0부터 시작)를 반환합니다. |
 | bool Remove(object item)                           | MyArrayList에서 맨 처음 발견되는 특정 개체를 제거합니다.     |
 | bool Contains( object item)                        | MyArrayList에 요소가 있는지 여부를 확인합니다.               |
+<br>
+
+---------------------------------------
+<br>
+제네릭 동적배열(List<T>)
+===
+
+제네릭(Generic) 동적 배열
+---
+
+- C#은 Object가 모든 데이터를 다룰 수 있도록 하기 위해 모든 데이터 형식이 자동으로 Object 형식을 상속 받는다.
+
+  즉, Object는 모든 데이터 형식의 base class가 된다.
+
+- ArrayList의 경우 배열에 저장되는 원소가 Object 이므로 사용시엔 해당 원소의 실제 타입으로 캐스팅을 해야하는 번거로움이 발생한다.
+
+  또한, 배열에 저장되는 원소가 참조형(Reference)이 아닌 밸류형(값 형식 - int, decimal, char 등...)인 경우 읽고 쓰는 과정에서 Boxing과 Unboxing이 일어난다.
+
+- 일반적으로 <T> 라고 명시하는데, 기존에 C++에서는 Template라고 불려서 맨앞글자를 따서 T라고 명시하게 됨(다른문자가 들어가도 상관X)
+
+  
+
+타입 캐스팅과 Boxing, UnBoxing의 이해
+---
+
+- 박싱(Boxing)
+
+  - Value형 객체가 Objet로 캐스팅되는 과정
+  - 값 형식을 참조형식으로 변환
+  - 박싱 과정 
+    1. 값 타입을 힙에 생성하기 위해 메모리를 힙 영역에 생성
+    2. 값을 힙 영역에 할당된 메모리로 복사 
+    3. 참조할 변수에 할당된 메모리 주소를 할당 
+
+- 언박싱(Unboxing)
+
+  - Object 객체가 실제 Value형 객체로 캐스팅되는 과정 (명시적 캐스팅) 
+  - 참조형식을 값형식으로 변환  
+  - 언박싱 과정
+    1. 박싱값인지 확인
+    2. 박싱된 값이라면 값 타입 변수에 복사
+    3. 박싱한 메모리와 언박싱한 메모리 2개 존재 ( 가비지 발생 )  
+
+```
+MyArrayList myAL = new MyArrayList();
+
+myAL.Add(100);    // int -> object로 형변환되는 과정에서 자동으로 boxing이 일어남
+int x = (int)myAL[0];    // unboxing됨
+```
+
+- 박싱/언박싱은 성능 저하의 원인이 된다.
+
+  - 박싱에서는 단순 참조 할당보다 20배의 속도가 더 소요된다.
+  - 언박싱에서는 단순 참조 할당보다 4배에 달하는 시간이 소요된다.
+  - 배열에 밸류형 원소를 루프(for, while)를 돌면서 반복적으로 쓰거나 읽는 경우 자동으로 박싱과 언박싱이 일어나게되고 캐스팅되는 과정에서 임시로 만들어진 쓰레기 Object 객체들이 쌓이게 되고 이에 의해 의도치 않는 GC가 일어날 확률이 높아진다. 
+
+- 로직을 구현하는 과정에서 자료구조에 동일한 형식의 요소가 저장되는 경우라면 타입 캐스팅이 필요없어 형식 안정성이 보장되고 성능이 높은 제넥릭 클래스를 사용해야 한다. 
+
+  
+
+제네릭 열거자(IEnumerable, IEnumerator) 
+---
+
+- IEnumerable, IEnumerator 와 동일한 기능을 수행하는 제네릭 버전의 인터페이스이다. 
+
+```
+public interface IEnumerable<T> : IEnumerable
+{
+   IEnumerator<T> GetEnumerator();
+}
+
+public interface IEnumerator<T> : IEnumerator, IDisposable
+{
+   T Current { get; }     //현재 위치의 요소를 가져오기
+}
+```
+
+- C#의 foreach 구문을 이용할 경우 컴파일러는 아래와 같이 변경한다.
+
+```
+var list = new List<string>();
+
+foreach (string item in list) {
+    Console.WriteLine(item);
+}
+
+// 컴파일시 아래와 같이 코드가 변경된다.
+IEnumerable<string> x = list as IEnumerable<string>;
+IEnumerator<string> iterator = x.GetEnumerator();
+
+while (iterator.MoveNext()) {
+    string item = iterator.Current;
+    Console.WriteLine(item);
+}
+```
+
+- 그러므로. foreach 구문에 사용되는 원본 컬렉션 객체는 반드시 IEnumerable 인터페이스를 상속하고 있거나 GetEnumerator() 메소드가 구현되어 있어야 한다. 
+
+```
+public class MyList<T> : IEnumerable<T>
+{
+    public IEnumerator<T> GetEnumerator()
+    {
+        return new MyListEnumerator(this);
+    }
+
+    // IEnumerable<T> 인터페이스는 IEnumerable에서 상속되었으므로 IEnumerable 인터페이스에 대한 구현도 해줘야 한다.
+    // 파라메터가 동일한 중복된 이름의 GetEnumerator() 메소드가 2개 있을 수 없으므로 IEnumerable 인터페이스의 메소드임을 명시해준다.
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return this.GetEnumerator();
+    }
+
+    // 내부에서만 사용가능하게 private 중첩 객체로 구현함.
+    // 호출하는 쪽은 IEnumerator<T> 인터페이스를 사용하기 때문에 MyListEnumerator<T>를 밖으로 노출 할 이유가 없다.
+    private class MyListEnumerator : IEnumerator<T>
+    {
+        private MyList<T> _list;
+        private T _current;
+        private int _index;
+
+        public MyListEnumerator(MyList<T> list)
+        {
+            this._list = list;
+            this._index = 0;   
+            this._current = default(T);
+        }
+
+        // TODO... IEnumerator, IDisposable 에서 상속되므로 해당 인터페이스에 정의된 내용을 모두 구현 해줘야 한다.
+
+    }
+}
+```
+
+- Quiz
+  - IDisposable 을 상속받아 Dispose()를 구현하는 이유는 무엇인가요?
+
+  using을 사용하려면 반드시 disposable이 구현되어있어야한다.
+  파일을 가져오고 닫아줘야하는데 그러지 못한 경우,
+  using을 사용하면 error가 나도 자원을 해제시켜주기 위한 함수.
+
+  결국 dispose는 자원을 해제하기 위한 함수이다.
+
+과제(1시간 30분)
+---
+
+- C# 제네릭 클래스 형태의 [List](https://docs.microsoft.com/ko-kr/dotnet/api/system.collections.generic.list-1?view=netframework-4.7.2)와 동일한 MyList<T>를 구현하시오. 
+  - 제네릭 클래스 구현을 통해 제네릭 문법에 대한 이해와 사용법을 학습한다. 
+  - 타입 캐스팅의 불편함과 성능문제, 제네릭 클래스의 필요성에 대해 이해한다. 
+  - 열거자(IEnumerable, IEnumerator 인터페이스)에 대한 이해와 구현을 통해 용도와 사용법을 학습한다.  
+
+- C#에서는 Object가 아닌 실제 요소의(제네릭 - Generic) 형식을 지정 할 수 있는 동적 배열을 표준 라이브러리에서 List<T>로 제공한다.
+
+  더 자세한 사항은 [공식문서](https://docs.microsoft.com/ko-kr/dotnet/api/system.collections.generic.list-1?view=netframework-4.7.2)를 참조.
+
+```
+public static void Main()  
+{
+    // Creates and initializes a new MyArrayList.
+    MyList<string> myAL = new MyList<string>();
+
+
+    myAL.Add("Hello");
+    myAL.Add("C#");
+    myAL.Add("World");
+    myAL.Add("!\r\n");
+
+    Console.WriteLine(myAL.IndexOf("WORLD"));
+    Console.WriteLine(myAL.IndexOf("World"));
+
+    myAL.Remove("C#");
+
+    foreach (var item in myAL) {
+        Console.WriteLine(item);
+    }
+
+    Console.Read(); // 키를 입력할때 까지 화면이 멈쳐있도록
+}
+```
+
+
+
+생성자
+
+| Creator                 | Explain                                                      |
+| ----------------------- | ------------------------------------------------------------ |
+| MyList<T>()             | 비어 있는 상태에서 기본 초기 용량(4)을 가지는 MyList<T> 클래스의 새 인스턴스를 초기화합니다. |
+| MyList<T>(int Capacity) | 비어 있는 상태에서 지정한 초기 용량을 가지는 [MyList](https://docs.microsoft.com/ko-kr/dotnet/api/system.collections.generic.list-1?view=netframework-4.7.2) 클래스의 새 인스턴스를 초기화합니다. |
+
+속성
+
+| Properties         | Explain                                                      |
+| ------------------ | ------------------------------------------------------------ |
+| int Count          | MyList<T>에 포함된 요소 수를 가져옵니다.                     |
+| T Item[ int index] | 지정한 인덱스에 있는 요소 T를 가져오거나 설정합니다.         |
+| int Capacity       | 크기를 조정하지 않고 내부 데이터 구조가 보유할 수 있는 전체 요소 수를 가져오거나 설정합니다. |
+
+메서드
+
+| Method                                                  | Explain                                                      |
+| ------------------------------------------------------- | ------------------------------------------------------------ |
+| void AddRange(IEnumerable<T> collection)                | 지정된 컬렉션의 요소를 MyList<T>의 끝에 추가합니다.          |
+| void Clear()                                            | MyList<T>에서 모든 요소를 제거합니다.                        |
+| bool Contains(T item)                                   | MyList<T>에 요소가 있는지 여부를 확인합니다.                 |
+| void CopyTo(T[] array)                                  | 대상 배열의 처음부터 시작하여 전체 MyList<T>을 호환되는 1차원 배열에 복사합니다. |
+| void CopyTo(T[] array, int arrayIndex)                  | 대상 배열의 지정된 인덱스에서 시작하여 전체 MyList<T>을 호환되는 1차원 배열에 복사합니다. |
+| int IndexOf(T item)                                     | 지정된 개체를 검색하고, 전체 MyList<T>에서 처음으로 검색한 개체의 인덱스(0부터 시작)를 반환합니다. |
+| int IndexOf(T item, int index)                          | 지정된 개체를 검색하고, 지정된 인덱스에서 마지막 요소로 확장하는 MyList<T>의 요소 범위에서 처음으로 검색한 개체의 인덱스(0부터 시작)를 반환합니다. |
+| int IndexOf(T item, int index, int count)               | 지정된 개체를 검색하고, 지정된 인덱스에서 시작하여 지정된 수의 요소를 포함하는 MyList<T>의 요소 범위에서 처음으로 검색한 개체의 인덱스(0부터 시작)를 반환합니다. |
+| void Insert( int index, T item)                         | MyList<T>의 지정된 인덱스에 요소를 삽입합니다.               |
+| void InsertRange( int index, IEnumerable<T> collection) | MyList<T>의 지정된 인덱스에 컬렉션의 요소를 삽입합니다.      |
+| int LastIndexOf(T item)                                 | 지정된 개체를 검색하고 전체 MyList<T>에서 마지막으로 검색한 개체의 인덱스(0부터 시작)를 반환합니다. |
+| int LastIndexOf(T item,int index)                       | 지정된 개체를 검색하고, 첫 번째 요소에서 지정된 인덱스로 확장하는 MyList<T>의 요소 범위에서 마지막으로 검색한 개체의 인덱스(0부터 시작)를 반환합니다. |
+| int LastIndexOf(T item, int index, int count)           | 지정된 개체를 검색하며, 지정된 수의 요소를 포함하고 지정된 인덱스에서 끝나는 [MyList](https://docs.microsoft.com/ko-kr/dotnet/api/system.collections.generic.list-1?view=netframework-4.7.2)의 요소 범위에서 마지막으로 검색한 개체의 인덱스(0부터 시작)를 반환합니다. |
+| bool Remove(T item)                                     | MyList<T>에서 맨 처음 발견되는 특정 개체를 제거합니다.       |
+| void RemoveAt(int index)                                | MyList<T>의 지정된 인덱스에 있는 요소를 제거합니다.          |
+| void RemoveRange( int index, int count                  | MyList<T>에서 요소의 범위를 제거합니다.                      |
+| T[] ToArray()                                           | MyList<T>의 요소를 새 배열에 복사합니다.                     |
+| IEnumerator<T> GetEnumerator()                          | MyList<T>를 반복하는 열거자를 반환합니다.                    |
+| void Add(T item)                                        | 개체를 MyList<T>의 끝 부분에 추가합니다.                     |
