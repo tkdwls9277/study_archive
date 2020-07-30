@@ -1,4 +1,6 @@
 ﻿using PipeFilterPatternTest.Pizzas;
+using System;
+using System.Collections.Generic;
 
 namespace PipeFilterPatternTest
 {
@@ -6,10 +8,11 @@ namespace PipeFilterPatternTest
     {
         public Pizza preCooking(string name)
         {
-            Pizza pizza = Createorder(name);
-            pizza.Register(new PrepareFilter());
-            pizza.Register(new BakeFilter());
-            return pizza;
+            List<Dough> pizzas = Createorder(name);
+            pizzas.Add(new Dough() { Name = "Pizza 1" });
+            pizzas.Add(new Dough() { Name = "Pizza 2" });
+            pizzas.Add(new Dough() { Name = "Pizza 3" });
+            return pizzas;
         }
 
         protected abstract Pizza Createorder(string type);

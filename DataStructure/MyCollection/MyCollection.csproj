@@ -4,17 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{BD483357-03C8-4A24-88F9-0A81DE1EEB09}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>PipeFilterPatternTest</RootNamespace>
-    <AssemblyName>PipeFilterPatternTest</AssemblyName>
+    <ProjectGuid>{1DA0FFC5-F85C-41A8-838C-4D06B3F99E60}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MyCollection</RootNamespace>
+    <AssemblyName>MyCollection</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -24,7 +23,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -43,26 +41,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DoughMager.cs" />
-    <Compile Include="Filters\PepperoniToppingFilter.cs" />
-    <Compile Include="Filters\CutFilter.cs" />
-    <Compile Include="Filters\Filter.cs" />
-    <Compile Include="Filters\BakeFilter.cs" />
-    <Compile Include="Filters\BoxFilter.cs" />
-    <Compile Include="Filters\CheeseTopingFilter.cs" />
-    <Compile Include="Filters\PrepareFilter.cs" />
-    <Compile Include="Interfaces\IFilter.cs" />
-    <Compile Include="Interfaces\IPipeLine.cs" />
-    <Compile Include="Pipe\PipeLine.cs" />
-    <Compile Include="Pipe\PizzaCookingPipeLine.cs" />
-    <Compile Include="PizzaStore.cs" />
-    <Compile Include="Pizzas\Dough.cs" />
-    <Compile Include="Pizzas\Pizza.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="Class1.cs" />
+    <Compile Include="MyArrayList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
