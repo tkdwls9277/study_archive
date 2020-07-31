@@ -11,17 +11,27 @@ namespace MyCollection
     {
         private T[] _array;   // 할당된 배열을 가리키는 참조변수
         private int _size;         // 현재 저장된 원소 개수
+        private IEqualityComparer<T> _equalityComparer;
 
-        // 생성자
-        public MyList() : this(4)
+        public MyList(IEqualityComparer<T> equalityComparer = null)
+                : this(4, equalityComparer)
         {
         }
+
 
         public MyList(int capacity)
         {
             this._size = 0;
             this._array = new T[capacity];
         }
+
+        public MyList(int capacity, IEqualityComparer<T> equalityComparer = null)
+        {
+            this._size = 0;
+            this._array = new T[capacity];
+            this._equalityComparer = equalityComparer ?? EqualityComparer<T>.Default;
+        }
+
 
         //MyList에 실제로 포함된 요소의 수를 가져옵니다.
         public int Count
@@ -184,10 +194,21 @@ namespace MyCollection
 
         //-------------------------------------------------------------------
         //MyList에 요소가 있는지 여부를 확인합니다.
+        //public bool Contains(T item)
+        //{
+        //    return IndexOf(item, 0, _size) < 0;
+        //}
+
+        // IEqualityComparer를 이용한 Contains 구현 예
         public bool Contains(T item)
         {
-            return IndexOf(item, 0, _size) < 0;
+            for (int index = 0; index < _size; index++) {
+                if (_equalityComparer.Equals(_array[index], item))
+                    return true;
+            }
+            return false;
         }
+
 
         //지정한 T를 검색하고, 전체 MyList 내에서 처음 나오는 0부터 시작하는 인덱스를 반환합니다.
         public int IndexOf(T item)
@@ -288,7 +309,6 @@ namespace MyCollection
 
             public bool MoveNext()
             {
-                //_index++;
                 if(_index< _list._size) {
                     _current = _list[_index++];
                     return true;
@@ -301,6 +321,34 @@ namespace MyCollection
             }
         }
 
+        //---------------------------------------------------------------------
+
+        public int BinarySearch(T item)
+        {
+            return BinarySearch(item, Comparer<T>.Default);
+        }
+
+        public int BinarySearch(T item, IComparer<T> comparer)
+        {
+            return Array.BinarySearch<T>(_array, 0, _size, item, comparer);
+        }
+
+        public void Sort()
+        {
+            Sort(Comparer<T>.Default);
+        }
+
+        public void Sort(IComparer<T> comparer)
+        {
+            Array.Sort<T>(_array, 0, _size, comparer);
+        }
+
+        //------------------------------------------------------------------------
+
+
+
+
+        //------------------------------------------------------------------------
 
         //test를 위한 예제 코드
         public static void Test()
@@ -334,9 +382,9 @@ namespace MyCollection
             //Console.WriteLine(myAL.LastIndexOf("WORLD"));
             //Console.WriteLine(myAL.LastIndexOf("World"));
 
-            foreach (var item in myAL) {
-                Console.WriteLine(item);
-            }
+            //foreach (var item in myAL) {
+            //    Console.WriteLine(item);
+            //}
 
             Console.Read(); // 키를 입력할때 까지 화면이 멈쳐있도록
 

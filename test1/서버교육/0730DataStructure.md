@@ -740,3 +740,7 @@ public static void Main()
 | T[] ToArray()                                           | MyList<T>의 요소를 새 배열에 복사합니다.                     |
 | IEnumerator<T> GetEnumerator()                          | MyList<T>를 반복하는 열거자를 반환합니다.                    |
 | void Add(T item)                                        | 개체를 MyList<T>의 끝 부분에 추가합니다.                     |
+
+
+<br><br>
+주석들은 푸시하기전에 지워주기.
