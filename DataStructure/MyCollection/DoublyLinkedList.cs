@@ -7,35 +7,37 @@ using System.Threading.Tasks;
 
 namespace MyCollection
 {
-    class LinkedListTest
+    class DoublyLinkedList
     {
 
     }
-    public class SLinkedNode<T>
+    public class LinkedNode<T>
     {
         public T Data;
-        public SLinkedNode<T> Next;
+        public LinkedNode<T> Prev;
+        public LinkedNode<T> Next;
 
-        public SLinkedNode(T data)
+        public LinkedNode(T data)
         {
             this.Data = data;
         }
 
-        public SLinkedNode(T data, SLinkedNode<T> next)
+        public LinkedNode(T data, LinkedNode<T> prev, LinkedNode<T> next)
         {
             this.Data = data;
+            this.Prev = prev;
             this.Next = next;
         }
     }
 
-    public class MySLinkedList<T> : IEnumerable<T>
+    public class MyLinkedList<T> : IEnumerable<T>
     {
-        private SLinkedNode<T> _head;
-        private SLinkedNode<T> _tail;
+        private LinkedNode<T> _head;
+        private LinkedNode<T> _tail;
         private IEqualityComparer<T> _equalityComparer;
         private int _size; // 현재 저장된 원소 개수
 
-        public MySLinkedList(IEqualityComparer<T> equalityComparer = null)
+        public MyLinkedList(IEqualityComparer<T> equalityComparer = null)
         {
             this._equalityComparer = equalityComparer ?? EqualityComparer<T>.Default;
         }
@@ -49,42 +51,30 @@ namespace MyCollection
             get { return _size; }
         }
 
-        public SLinkedNode<T> First
+        public LinkedNode<T> First
         {
             get { return _head; }
         }
 
-        public SLinkedNode<T> Last
+        public LinkedNode<T> Last
         {
             get { return _tail; }
         }
 
-
-        // INTERNAL METHODS
-        //_________________________________________________________________________________________
-
-        // 현재 노드의 앞에 있는 노드를 리턴하는 함수
-        private SLinkedNode<T> GetPrevNode(SLinkedNode<T> node)
-        {
-            for (var prevNode = _head; prevNode != null; prevNode = prevNode.Next) {
-                if (prevNode.Next == node) {
-                    return prevNode;
-                }
-            }
-            return null;
-        }
-
-
         // METHODS
         //_________________________________________________________________________________________
 
-        public SLinkedNode<T> AddAfter(SLinkedNode<T> node, T data)
+        public LinkedNode<T> AddAfter(LinkedNode<T> node, T data)
         {
-            SLinkedNode<T> newNode = new SLinkedNode<T>(data, node.Next);
+            LinkedNode<T> newNode = new LinkedNode<T>(data, node, node.Next);
 
-            if (newNode.Next == null) {
+            if (node.Next != null) {
+                node.Next.Prev = newNode;
+            }
+            else {
                 _tail = newNode;
             }
+
 
             node.Next = newNode;
             _size++;
@@ -92,19 +82,26 @@ namespace MyCollection
             return newNode;
         }
 
-        public SLinkedNode<T> AddBefore(SLinkedNode<T> node, T data)
+        public LinkedNode<T> AddBefore(LinkedNode<T> node, T data)
         {
-            if (GetPrevNode(node) == null) {
-                AddFirst(data);
-                return _head;
+            LinkedNode<T> newNode = new LinkedNode<T>(data, node.Prev, node);
+            if (node.Prev != null) {
+                node.Prev.Next = newNode;
+            }
+            else {
+                _head = newNode;
             }
 
-            return AddAfter(GetPrevNode(node), data);
+            node.Prev = newNode;
+            _size++;
+
+            return newNode;
+
         }
 
         public IEnumerator<T> GetEnumerator()
         {
-            return new MySLinkedListEnumerator(this);
+            return new MyLinkedListEnumerator(this);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -114,21 +111,26 @@ namespace MyCollection
 
         public void AddFirst(T data)
         {
-            SLinkedNode<T> newNode = new SLinkedNode<T>(data, _head);
-
-            if (_tail == null) {
+            LinkedNode<T> newNode = new LinkedNode<T>(data);
+            if (_head != null) {
+                _head.Prev = newNode;
+                newNode.Next = _head;
+            }
+            else {
                 _tail = newNode;
             }
 
             _head = newNode;
             _size++;
+
         }
 
         public void AddLast(T data)
         {
-            SLinkedNode<T> newNode = new SLinkedNode<T>(data);
+            LinkedNode<T> newNode = new LinkedNode<T>(data);
             if (_tail != null) {
                 _tail.Next = newNode;
+                newNode.Prev = _tail;
             }
             else {
                 _head = newNode;
@@ -136,14 +138,15 @@ namespace MyCollection
 
             _tail = newNode;
             _size++;
+
         }
 
         public bool Contains(T data)
         {
-            return Find(data) != null;  
+            return Find(data) != null;
         }
 
-        public SLinkedNode<T> Find(T data)
+        public LinkedNode<T> Find(T data)
         {
             for (var currNode = _head; currNode != null; currNode = currNode.Next) {
                 if (_equalityComparer.Equals(currNode.Data, data)) {
@@ -153,28 +156,24 @@ namespace MyCollection
             return null;
         }
 
-        public void Remove(SLinkedNode<T> node)
+        public void Remove(LinkedNode<T> node)
         {
             if (node == _head) {
-                _head = _head.Next;
-                if (_head == null) {
-                    _tail = null;
-                }
+                _head = node.Next;
             }
             else {
-                // 현재 노드의 이전 노드를 찾는다. 
-                var prevNode = GetPrevNode(node);
-                if (prevNode != null) {
-                    prevNode.Next = node.Next;
-                }
-
-                if (node == _tail) {
-                    _tail = prevNode;
-                    prevNode.Next = null;
-                }
+                node.Prev.Next = node.Next;
             }
 
-            _size--;
+            if (node == _tail) {
+                _tail = node.Prev;
+            }
+            else {
+                node.Next.Prev = node.Prev;
+            }
+
+            this._size--;
+
         }
 
         public T RemoveFirst()
@@ -206,7 +205,6 @@ namespace MyCollection
             T[] objArray = new T[_size];
             int i = 0;
 
-            //TODO: 연결리스트를 순회하며 배열에 값을 복사
             for (var currNode = _head; currNode != null; currNode = currNode.Next) {
                 objArray[i] = currNode.Data;
             }
@@ -214,13 +212,13 @@ namespace MyCollection
             return objArray;
         }
 
-        private class MySLinkedListEnumerator : IEnumerator<T>
+        private class MyLinkedListEnumerator : IEnumerator<T>
         {
-            private MySLinkedList<T> _list;
-            private SLinkedNode<T> _node;
+            private MyLinkedList<T> _list;
+            private LinkedNode<T> _node;
             private T _current;
 
-            public MySLinkedListEnumerator(MySLinkedList<T> list)
+            public MyLinkedListEnumerator(MyLinkedList<T> list)
             {
                 this._list = list;
                 this._node = list.First;
@@ -232,7 +230,7 @@ namespace MyCollection
 
             public void Dispose()
             {
-                
+
             }
 
             public bool MoveNext()
