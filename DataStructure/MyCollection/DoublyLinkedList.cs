@@ -146,12 +146,26 @@ namespace MyCollection
             return Find(data) != null;
         }
 
+        public bool Contains(Predicate<LinkedNode<T>> match)
+        {
+            return Find(match) != null;
+        }
+
         public LinkedNode<T> Find(T data)
         {
             for (var currNode = _head; currNode != null; currNode = currNode.Next) {
                 if (_equalityComparer.Equals(currNode.Data, data)) {
                     return currNode;
                 }
+            }
+            return null;
+        }
+
+        public LinkedNode<T> Find(Predicate<LinkedNode<T>> match)
+        {
+            for (LinkedNode<T> currNode = _head; currNode != null; currNode = currNode.Next) {
+                if (match(currNode))
+                    return currNode;
             }
             return null;
         }
@@ -174,6 +188,17 @@ namespace MyCollection
 
             this._size--;
 
+        }
+
+        public bool Remove(T data)
+        {
+            LinkedNode<T> node = Find(data);
+            if (node != null) {
+                Remove(node);
+                return true;
+            }
+
+            return false;
         }
 
         public T RemoveFirst()

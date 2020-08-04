@@ -143,12 +143,26 @@ namespace MyCollection
             return Find(data) != null;  
         }
 
+        public bool Contains(Predicate<SLinkedNode<T>> match)
+        {
+            return Find(match) != null;
+        }
+
         public SLinkedNode<T> Find(T data)
         {
             for (var currNode = _head; currNode != null; currNode = currNode.Next) {
                 if (_equalityComparer.Equals(currNode.Data, data)) {
                     return currNode;
                 }
+            }
+            return null;
+        }
+
+        public SLinkedNode<T> Find(Predicate<SLinkedNode<T>> match)
+        {
+            for (SLinkedNode<T> currNode = _head; currNode != null; currNode = currNode.Next) {
+                if (match(currNode))
+                    return currNode;
             }
             return null;
         }
