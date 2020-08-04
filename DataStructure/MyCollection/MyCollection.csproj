@@ -46,6 +46,7 @@
     <Compile Include="EqualityComparerTest.cs" />
     <Compile Include="ExtentionTest.cs" />
     <Compile Include="LinkedListTest.cs" />
+    <Compile Include="MyDictionary.cs" />
     <Compile Include="MyHashSet.cs" />
     <Compile Include="MyList.cs" />
     <Compile Include="MyArrayList.cs" />
