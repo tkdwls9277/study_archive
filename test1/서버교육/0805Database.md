@@ -51,7 +51,7 @@
 ```
 
 1000000개의 데이터를 넣는 sql문
-```
+```sql
 DECLARE @SEQ INT = 577
 
 WHILE(@SEQ < 1000000)
@@ -65,3 +65,103 @@ END
 
 mssql 테이블 복사하는 방법
 >>https://dongpal.tistory.com/10
+
+SQL문에 대한 이해
+===
+
+DDL
+---
+- create - database, table 생성 가능
+
+- 제약사항
+    * primary key
+    * foreign key
+    * unique key
+    * not null
+    * check
+
+
+실습
+---
+
+```sql
+CREATE TABLE Customer(
+EMPNO char(5) primary key,
+NAME  nvarchar(4) not null,
+Tel varchar(11) 
+)
+
+CREATE TABLE OrderSheet(
+MENUNO char(8) primary key,
+MenuName nvarchar(20) not null,
+MenuType nchar(2) not null,
+Check (MenuType in ('한식','일식','양식','중식','분식'))
+)
+
+create table [Order](
+EMPNO char(5) ,
+MENUNO char(8) ,
+OrderTime datetime null,
+Foreign key(EMPNO) references Customer (EMPNO),
+Foreign key(MENUNO) references OrderSheet (MENUNO)
+)
+
+drop table [order]
+drop table [ordersheet]
+drop table [customer]
+
+alter database sangjin set single_user with rollback immediate;
+alter database sangjin collate Korean_Wansung_CI_AS 
+alter database sangjin set multi_user;
+
+insert into OrderSheet values(12345632, '우와', '일식')
+
+select * from ordersheet
+
+---------------------
+alter table ordersheet
+drop column menutype;
+--구문은 실행되지 않는게 맞음. 참조 무결성.
+```
+
+SELECT
+---
+
+① 비교연산자 : 값을 비교하고자 할 때, 사용하는 연산자 입니다.
+
+	=          :  같음을 비교 합니다.
+	!=, <>     :  같지 않음을 비교 합니다.
+	>          :  대상컬럼 값이 조건값보다 큰지를 비교합니다.
+	>=         :  대상컬럼 값이 조건값보다 크거나 같은지를 비교합니다.
+	<          :  대상컬럼 값이 조건값보다 작은지를 비교합니다.
+	<=         :  대상컬럼 값이 조건값보다 작거나 같은지를 비교합니다.
+
+
+② 논리연산자 : 여러개의 조건을 연결할 때 사용하는 연산자 입니다.
+
+	AND      :  연결 된 조건이 모두 만족해야 성립합니다.
+	OR       :  연결 된 조건 중 하나만 만족해도 성립합니다.
+
+
+
+③ LIKE 연산자 : 문자열의 일부를 비교할 때 사용하는 연산자 입니다.
+
+
+④ BETWEEN 연산자 : 특정 범위를 값들을 지정하기 위해 사용하는 연산자 입니다.
+
+
+⑤ 범위 연산자 : 특정 값들을 명시적으로 나열하여 범위를 지정하기 위해 사용하는 연산자 입니다.
+
+	IN      :  명시한 특정 값들에 해당되는 값들을 포함합니다.
+	NOT IN  :  명시한 특정 값들에 해당되지 않는 값들을 포함합니다.
+	
+	
+⑥ NULL 연산자 : NULL에 대한 값을 비교하기 위한 연산자 입니다.
+
+	※ NULL이란?
+	     빈 값이 아닙니다. 값이 없음도 아닙니다. 값을 알 수 없는 상태입니다.
+	     ex) 가나다 순으로 직원들의 핸드폰 번호를 조사중인 상황입니다,
+	           현재 순서상 '이' 씨의 성을 가진 직원들을 조사하고 있습니다.
+	           이 때, '홍길동'의 핸드폰 번호는 빈 값이 아닙니다. 값이 없음도 아닙니다.
+	           아직 조사하지 않았으니, 핸드폰 번호가 있는지 없는지, 어떤건지 알 수 없는 상태입니다.
+	           홍길동의 핸드폰 번호는 NULL인 상황입니다.
