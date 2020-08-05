@@ -113,36 +113,111 @@ namespace DataStructure2
 
             //Console.Read();
 
-            var x = new MyDictionary<string, string>(3);    // 초기 크기를 3으로 시작해서 중간에 Resizing이 되도록 테스트 한다.
-            x.Add("10", "101010");
-            x.Add("2", "222222");
-            x.Add("30", "303030");
-            x.Add("4", "444444");
-            x.Add("50", "505050");
-            //x.Add("30", "808080");    //=> 예외발생. 이미 중복된 값이므로 오류가 발생한다.
-            x["30"] = "808080";       //=> 추가가 아닌 해당 키에 대한 값을 설정하는 것이므로 오류없이 값을 변경한다.
+            //var x = new MyDictionary<string, string>(3);    // 초기 크기를 3으로 시작해서 중간에 Resizing이 되도록 테스트 한다.
+            //x.Add("10", "101010");
+            //x.Add("2", "222222");
+            //x.Add("30", "303030");
+            //x.Add("4", "444444");
+            //x.Add("50", "505050");
+            ////x.Add("30", "808080");    //=> 예외발생. 이미 중복된 값이므로 오류가 발생한다.
+            //x["30"] = "808080";       //=> 추가가 아닌 해당 키에 대한 값을 설정하는 것이므로 오류없이 값을 변경한다.
 
-            //Console.WriteLine(x["80"]);    //=> 예외발생. 추가되지 않은 키로 검색했으로 오류가 발생한다.
+            ////Console.WriteLine(x["80"]);    //=> 예외발생. 추가되지 않은 키로 검색했으로 오류가 발생한다.
 
-            string result = null;
-            if (x.TryGetValue("80", out result)) {    //=> 추가되지 않은 키로 검색해도 오류가 발생하지 않는다.
-                Console.WriteLine(result);
+            //string result = null;
+            //if (x.TryGetValue("80", out result)) {    //=> 추가되지 않은 키로 검색해도 오류가 발생하지 않는다.
+            //    Console.WriteLine(result);
+            //}
+
+            //foreach (var item in x.Keys) { // 키만 출력
+            //    Console.WriteLine(item);
+            //}
+
+            //foreach (var item in x.Values) { // 값만 출력
+            //    Console.WriteLine(item);
+            //}
+
+            //foreach (var item in x) { // 키와 값 쌍을 출력
+            //    Console.WriteLine(string.Format("{0} = {1}", item.Key, item.Value));
+            //}
+
+            //Console.Read();
+
+            //var x = new MyHashMap<string>(3);    // 초기 크기를 3으로 시작해서 중간에 Resizing이 되도록 테스트 한다.
+            //x.Add("10", "101010");
+            //x.Add("2", "222222");
+            //x.Add("30", "303030");
+            //x.Add("4", "444444");
+            //x.Add("50", "505050");
+            //x.Add("30", "808080");         //=> 예외발생없음. 이미 중복된 키가 있더라도 그룹핑되어 추가된다.
+
+            //Console.WriteLine(x[3]);       //=> 3번째 인덱스, 즉 "4"의 값인 "444444"가 출력된다.
+
+            //Console.WriteLine(x["80"]);    //=> 해당 키가 추가되어 있지 않더라도 예외발생하지 않는다.
+            //Console.WriteLine(x["30"]);
+            //Console.WriteLine(string.Join(", ", x.GetValues("30")));
+
+            //foreach (var item in x.Keys)
+            //{
+            //    Console.WriteLine(item);
+            //}
+
+            //foreach (var item in x.GetAllValues())
+            //{
+            //    Console.WriteLine(item);
+            //}
+
+            //Console.Read();
+
+            var x = new PriorityQueue<int>();
+
+            x.Enqueue(1);
+            x.Enqueue(2);
+            x.Enqueue(9);
+            x.Enqueue(4);
+            x.Enqueue(7);
+            x.Enqueue(6);
+            x.Enqueue(7); // 중복값
+            x.Enqueue(3);
+
+
+            while (x.Count > 0)
+            {
+                Console.WriteLine(x.Dequeue());
             }
 
-            foreach (var item in x.Keys) { // 키만 출력
-                Console.WriteLine(item);
-            }
 
-            foreach (var item in x.Values) { // 값만 출력
-                Console.WriteLine(item);
-            }
+            //var y = new PriorityQueue<Car>();
+            //y.Enqueue(new Car(1992, "Ford"));
+            //y.Enqueue(new Car(1999, "Buick"));
+            //y.Enqueue(new Car(1997, "Honda"));
+            //y.Enqueue(new Car(2016, "BMW"));
+            //y.Enqueue(new Car(2016, "Toyota"));
 
-            foreach (var item in x) { // 키와 값 쌍을 출력
-                Console.WriteLine(string.Format("{0} = {1}", item.Key, item.Value));
+            //while (x.Count > 0)
+            //{
+            //    Console.WriteLine(y.Peek());
+            //    Console.WriteLine(y.Dequeue());
+            //}
+
+            var y = new PriorityQueue<string>();
+
+            y.Enqueue("qas");
+            y.Enqueue("apple");
+            y.Enqueue("glory");
+            y.Enqueue("gun");
+            y.Enqueue("sunshine");
+            y.Enqueue("sadending");
+            y.Enqueue("banana"); // 중복값
+            y.Enqueue("fish");
+
+
+            while (y.Count > 0)
+            {
+                Console.WriteLine(y.Dequeue());
             }
 
             Console.Read();
-
 
         }
     }

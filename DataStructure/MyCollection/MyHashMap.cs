@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MyCollection;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,6 @@ namespace MyCollection
         private MyDictionary<string, MyList<TValue>> _dict;
         private MyList<string> _keyList;
 
-
         public MyHashMap(IEqualityComparer<string> equalityComparer = null)
             : this(17, equalityComparer)
         {
@@ -20,10 +20,15 @@ namespace MyCollection
 
         public MyHashMap(int capacity, IEqualityComparer<string> equalityComparer = null)
         {
-            var comparer = equalityComparer ?? StringComparer.OrdinalIgnoreCase;    // 대소문자 구분없이 비교하는 비교자를 기본으로 사용한다.
+            var comparer = equalityComparer ?? StringComparer.OrdinalIgnoreCase;
             this._dict = new MyDictionary<string, MyList<TValue>>(capacity, comparer);
-            this._keyList = new MyList<string>(capacity, comparer);    // 추가되는 키를 순서대로 저장 할 용도의 리스트 객체
+            this._keyList = new MyList<string>(capacity, comparer);
         }
+
+
+
+        // PROPERTIES
+        //_________________________________________________________________________________________
 
         public int Count
         {
@@ -33,7 +38,7 @@ namespace MyCollection
         public TValue this[int index]
         {
             get { return GetValue(_keyList[index]); }
-            set { SetValue(_keyList[index], GetValue(_keyList[index])); }
+            set { SetValue(_keyList[index], value); }
         }
 
         public TValue this[string key]
@@ -44,53 +49,93 @@ namespace MyCollection
 
         public IEnumerable<string> Keys
         {
-            get { return new MyMapKeyCollection(); }
+            get { return new MyMapKeyCollection(this); }
         }
 
-        public TValue[] GetAllValues()
+
+        // METHODS
+        //_________________________________________________________________________________________
+
+        public virtual TValue[] GetAllValues()
         {
             MyList<TValue> values = new MyList<TValue>();
 
-            foreach (string key in this._keyList) {
-                // TODO          
-                values.Add();
+            foreach (string key in this._keyList)
+            {
+                MyList<TValue> arrList = this._dict[key];
+                if (arrList != null)
+                {
+                    values.AddRange(arrList.ToArray());
+                }
             }
             return values.ToArray();
         }
 
         public TValue[] GetValues(string key)
         {
-            var list = _dict.FindBucketList(key);// TODO
-            if (list == null) {
+            var arrList = _dict.GetValue(key, false);
+            if (arrList == null)
+            {
                 return Array.Empty<TValue>();
             }
-            return list.ToArray();
+            return arrList.ToArray();
         }
 
         protected TValue GetValue(string key)
         {
-            var list = GetValues(key);
-
-            return list[0]; // 첫번째 요소를 리턴한다.
+            var arrList = _dict.GetValue(key, false);
+            if (arrList == null)
+            {
+                return default(TValue);
+            }
+            return arrList[0]; // 첫번째 요소를 리턴한다.
         }
 
         protected void SetValue(string key, TValue value)
         {
-            var list = // TODO
-            if (list == null) {
-                // 리스트 새로 생성
-                // 딕셔너리의 해당 key에 새로 생성한 리스트 설정
-                // 키 목록 리스트에 key 추가
+            var arrList = _dict.GetValue(key, false);
+            if (arrList == null)
+            {
+                arrList = new MyList<TValue>();
+                _dict.SetValue(key, arrList, false);
+                _keyList.Add(key);
             }
 
-            // 리스트에 값 추가
+            arrList.Add(value);
+        }
+
+        public void Add(string key, TValue value)
+        {
+            SetValue(key, value);
+        }
+
+        public void Clear()
+        {
+            _dict.Clear();
+            _keyList.Clear();
+        }
+
+        public bool Contains(string key)
+        {
+            return _dict.Contains(key);
         }
 
         public bool Remove(string key)
         {
-            // 딕셔너리에서 삭제가 성공하면 키 목록 리스트에서도 삭제 후 true 리턴
+            if (_dict.Remove(key))
+            {
+                _keyList.Remove(key);
+                return true;
+            }
 
             return false;
+        }
+
+
+        // IEnumerable 인터페이스 구현
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
         }
 
         public IEnumerator<KeyValuePair<string, MyList<TValue>>> GetEnumerator()
@@ -98,10 +143,8 @@ namespace MyCollection
             return new MyMapEnumerator(this);
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            throw new NotImplementedException();
-        }
+        // NESTED Helper Class
+        //_________________________________________________________________________________________
 
         private abstract class MyMapEnumeratorBase<TCurrent> : IEnumerator<TCurrent>
         {
@@ -118,47 +161,65 @@ namespace MyCollection
 
             protected IEnumerator<KeyValuePair<string, MyList<TValue>>> FindNextEnumerator()
             {
-                // 현재 인덱스가 해쉬맵의 크기보다 작을때까지 반복한다.
-                // 해쉬맵의 키 목록에서 현재 인덱스에 설정된 키값을 얻는 후 현재 인덱스를 하나 증가시킨다.
-                // 얻어진 키값으로 해쉬맵의 딕셔너리에 할당된 연결리스트를 가져온다.
-                // 연결리스트가 존재하고 리스트에 추가되어 있는 항목의 갯수가 0보다 크다면
-                // 연결리스트의 GetEnumerator() 결과를 리턴한다.
+                while (_index < _hmap.Count)
+                {
+                    var list = _hmap._dict.FindBucketList(_hmap._keyList[_index++]);
+                    if (list != null && list.Count > 0)
+                    {
+                        return list.GetEnumerator();
+                    }
+                }
+                return null;
             }
 
+            // IDispose
+            //_________________________________________________________________________________________
             public void Dispose()
             {
             }
 
+            // IEnumerator
+            //_________________________________________________________________________________________
+            object IEnumerator.Current
+            {
+                get { return this.Current; }
+            }
+
+            // IEnumerator<T>
+            //_________________________________________________________________________________________
+            public abstract TCurrent Current { get; }
+
             public bool MoveNext()
             {
-                return false;
+                while (_iterator != null && !_iterator.MoveNext())
+                {
+                    _iterator = FindNextEnumerator();
+                }
+
+                return _iterator != null;
             }
 
             public void Reset()
             {
+                _index = 0;
+                _iterator = FindNextEnumerator();
             }
-
-            public abstract TCurrent Current { get; }
-
-            object IEnumerator.Current => throw new NotImplementedException();
-
-            // TODO...
         }
 
-        private class MyMapEnumerator : MyMapEnumeratorBase<TValue>
+        private class MyMapEnumerator : MyMapEnumeratorBase<KeyValuePair<string, MyList<TValue>>>
         {
             public MyMapEnumerator(MyHashMap<TValue> hmap)
                 : base(hmap)
             {
             }
 
-            public override "리턴되는 CURRENT TYPE" Current
+            public override KeyValuePair<string, MyList<TValue>> Current
             {
-            get { return _iterator.Current; }
+                get { return _iterator.Current; }
             }
         }
 
-        public class MyMapKeyCollection : IEnumerable<string>
+        private class MyMapKeyCollection : IEnumerable<string>
         {
             protected IEnumerator<string> _iterator;
 
@@ -167,16 +228,27 @@ namespace MyCollection
                 this._iterator = new MyMapKeyEnumerator(hmap);
             }
 
-            // TODO: GetEnumerator
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return this.GetEnumerator();
+            }
 
-            private class MyMapKeyEnumerator : //MyMapEnumeratorBase<TODO..>
-                {
+            public IEnumerator<string> GetEnumerator()
+            {
+                return _iterator;
+            }
+
+            private class MyMapKeyEnumerator : MyMapEnumeratorBase<string>
+            {
                 public MyMapKeyEnumerator(MyHashMap<TValue> hmap)
                     : base(hmap)
                 {
                 }
 
-                // TODO: Current
+                public override string Current
+                {
+                    get { return _iterator.Current.Key; }
+                }
             }
         }
     }

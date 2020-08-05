@@ -259,6 +259,20 @@ namespace MyCollection
             return -1;
         }
 
+
+        public void AddRange(ICollection collection)
+        {
+            InsertRange(_size, collection);
+        }
+
+        public void InsertRange(int index, ICollection collection)
+        {
+            foreach (T obj in collection)
+            {
+                Insert(index++, obj);
+            }
+        }
+
         //MyList에서 맨 처음 발견되는 특정 개체를 제거합니다.
         public bool Remove(T item)
         {

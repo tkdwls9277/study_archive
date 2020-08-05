@@ -171,6 +171,12 @@ namespace MyCollection
             return false;
         }
 
+        public void Clear()
+        {
+            Array.Clear(_bucket, 0, _count);
+            _count = 0;
+        }
+
         public bool TryGetValue(TKey key, out TValue value)
         {
             var node = FindEntry(key);// TODO: 찾고자 하는 키가 저장된 LinkedNode를 찾는다
@@ -181,6 +187,11 @@ namespace MyCollection
 
             value = default(TValue);
             return false;
+        }
+
+        public bool Contains(TKey key)
+        {
+            return FindEntry(key) != null;
         }
 
 
