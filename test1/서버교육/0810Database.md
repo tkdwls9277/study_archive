@@ -211,3 +211,28 @@ SET @PARAMETER = '@EMPNO char(5), @IsShowOrder Char(1)';
 select @QUERY;
 EXEC SP_EXECUTESQL @QUERY, @PARAMETER, @EMPNO, @IsShowOrder;
 ```
+-----------------------------------
+
+페이징
+---
+
+```SQL
+-- paging
+declare @current smallint;
+
+declare @startindex smallint;
+
+declare @endindex smallint;
+
+set @startindex =  ((@current - 1) * 10) + 1; --1; -- 11... 
+set @endindex = @current * 10; -- 10; -- 20...
+
+
+select *
+from(
+,select ROW_NUMBER() over(order by id asc) as rownum, uname
+,from password
+,where com_code = '307632'
+) result
+where rownum between @startindex and @endindex
+```
