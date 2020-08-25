@@ -97,13 +97,11 @@ EXECUTE = 수정, 삭제
 ```json
 {
     Request: {
-        Data: [{
-            CODE: "00",
-            CODE_NAME: "qqq",
-            BUSINESS_NO: "100",
-            QTY: "12121111",
-            USE_YN: "N"
-        }]
+        CODE: "00",
+        CODE_NAME: "qqq",
+        BUSINESS_NO: "100",
+        QTY: "12121111",
+        USE_YN: "N"
     }
 }
 ```
