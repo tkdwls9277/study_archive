@@ -1,9 +1,3 @@
-### nodejs
-
-https://nodejs.org/ko/download
-
-<br/>
-
 ### road map
 
 https://roadmap.sh/
