@@ -1,6 +1,7 @@
 # CSS, SASS, SCSS 차이점, 사용방법
 
 [참고링크](https://cocoon1787.tistory.com/843)
+[sass 참고링크](https://sass-lang.com/guide)
 
 ## 1. 각각의 특징
 
@@ -157,3 +158,166 @@ body {
 ---
 
 <br/>
+
+## 믹스인(Mixns)
+
+```css
+/* CSS */
+.info {
+    background: DarkGray;
+    box-shadow: 0 0 1px rgba(169, 169, 169, 0.25);
+    color: #fff;
+}
+
+.alert {
+    background: DarkRed;
+    box-shadow: 0 0 1px rgba(139, 0, 0, 0.25);
+    color: #fff;
+}
+
+.success {
+    background: DarkGreen;
+    box-shadow: 0 0 1px rgba(0, 100, 0, 0.25);
+    color: #fff;
+}
+```
+
+```css
+/* SCSS */
+/* 함수처럼 default parameter를 지정할 수 있고 parameter를 받아서 속성을 부여할 수 있음. (재사용성) */
+@mixin theme($theme: DarkGray) {
+    background: $theme;
+    box-shadow: 0 0 1px rgba($theme, 0.25);
+    color: #fff;
+}
+
+.info {
+    @include theme;
+}
+.alert {
+    @include theme($theme: DarkRed);
+}
+.success {
+    @include theme($theme: DarkGreen);
+}
+```
+
+<br/>
+
+---
+
+<br/>
+
+## 확장&상속(Extend/Inheritance)
+
+```css
+/* CSS */
+/* This CSS will print because %message-shared is extended. */
+.message,
+.success,
+.error,
+.warning {
+    border: 1px solid #ccc;
+    padding: 10px;
+    color: #333;
+}
+
+.success {
+    border-color: green;
+}
+
+.error {
+    border-color: red;
+}
+
+.warning {
+    border-color: yellow;
+}
+```
+
+```css
+/* SCSS */
+/* This CSS will print because %message-shared is extended. */
+%message-shared {
+    border: 1px solid #ccc;
+    padding: 10px;
+    color: #333;
+}
+
+/* This CSS won't print because %equal-heights is never extended. */
+%equal-heights {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+/* extend 사용 시 css 속성 집합 상속 가능*/
+.message {
+    @extend %message-shared;
+}
+
+.success {
+    @extend %message-shared;
+    border-color: green;
+}
+
+.error {
+    @extend %message-shared;
+    border-color: red;
+}
+
+.warning {
+    @extend %message-shared;
+    border-color: yellow;
+}
+```
+
+<br/>
+
+---
+
+<br/>
+
+## 연산자(Operators)
+
+```css
+/* CSS */
+.container {
+    display: flex;
+}
+
+article[role="main"] {
+    width: 62.5%;
+}
+
+aside[role="complementary"] {
+    width: 31.25%;
+    margin-left: auto;
+}
+```
+
+```css
+/* SCSS */
+/* math.div(나누기)외에도 sin, cos, tan, random, max, min 등등 사용가능 */
+@use "sass:math";
+
+.container {
+    display: flex;
+}
+
+article[role="main"] {
+    width: math.div(600px, 960px) * 100%;
+}
+
+aside[role="complementary"] {
+    width: math.div(300px, 960px) * 100%;
+    margin-left: auto;
+}
+```
+
+<br/>
+
+---
+
+<br/>
+
+##
