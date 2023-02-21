@@ -6,7 +6,7 @@
 
 <br/>
 
-1. git 설치
+## 1. git 설치
 
 - [설치](https://git-scm.com/downloads)
 
@@ -25,7 +25,8 @@ sudo apt install git # Debian
 
 <br/>
 
-2. committer 설정
+## 2. committer 설정
+
 ```bash
 git config --global user.name [아이디]
 git config --global user.email [이메일@주소]
@@ -39,7 +40,7 @@ git config --global user.email [이메일@주소]
 
 <br/>
 
-3. vs code 설치 및 플러그인 설정
+## 3. vs code 설치 및 플러그인 설정
 
 - [설치](https://code.visualstudio.com/)
 
@@ -52,7 +53,7 @@ git config --global user.email [이메일@주소]
 
 <br/>
 
-4. github와 연결
+## 4. github와 연결
 
 - https://github.com 에 계정 생성
 
@@ -72,7 +73,8 @@ git config --global user.email [이메일@주소]
 
 <br/>
 
-5. git 브랜치 개념 익히기
+## 5. git 브랜치 개념 익히기
+
 - [git 학습용 페이지](https://learngitbranching.js.org/?locale=ko)
 
 <br/>
@@ -81,7 +83,7 @@ git config --global user.email [이메일@주소]
 
 <br/>
 
-6. git 명령어
+## 6. git 명령어
 
 <br/>
 
@@ -118,6 +120,7 @@ git config --global user.email [이메일@주소]
 - git merge : 한 브랜치의 변경 사항을 다른 브랜치로 병합. 소스 브랜치 > 대상 브랜치
 
 - git checkout : 다른 브랜치로 이동
+
 ### 로컬 저장소 만들기
 
 - git init
@@ -145,4 +148,3 @@ git config --global user.email [이메일@주소]
 - git stash
 - git stash list
 - git stash pop
-
