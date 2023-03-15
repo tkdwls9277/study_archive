@@ -1,5 +1,7 @@
 # 1. 데몬 실행 방법
 
+[참고](https://velog.io/@qlgks1/%EB%A6%AC%EB%88%85%EC%8A%A4-%EB%8D%B0%EB%AA%ACDaemon)
+
 ## 1.1. Standalone type daemon
 
 독립적으로 실행되며, 요청에 의해 실행되기 때문에 메모리에 항상 대기하는 데몬 방식이다.
