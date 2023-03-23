@@ -49,17 +49,20 @@
 -   정복(Conquer)
 -   결합(Combine)
 
-![](images/merge6.gif)
+![](images/merge6.png)
 
 -   배열(Array)인 경우, 임시 배열이 필요하고 이동 횟수가 많아서 시간적 낭비를 초래한다.
 -   연결 배열(Linked List)인 경우, 링크 인덱스만 변경되므로 데이터의 이동이 작다.
 -   따라서 크기가 큰 연결 배열의 정렬의 경우, 퀵 정렬을 포함한 다른 어떤 정렬 방법보다 효율적이다.
 -   시간복잡도 : T(n) = n log n(비교) + 2n log n(이동) = 3n log n = O(n log n)
 
-![](images/merge7.gif)
+![](images/merge7.png)
+
+<br />
+<br />
 
 ## 예제
 
 -   배열(21, 10, 12, 20, 25, 13, 15, 22), 오름차순 정렬
 
-![](images/merge8.gif)
+![](images/merge8.png)
