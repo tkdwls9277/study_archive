@@ -4,9 +4,9 @@
 
 뷰의 인스턴스가 생성되어 소멸되기까지 거치는 과정.
 
--   data 속성의 초기화 및 관찰(Reactivity 주입)
--   뷰 템플릿 코드 컴파일 (Virtual DOM -> DOM 변환)
--   인스턴스를 DOM에 부착
+- data 속성의 초기화 및 관찰(Reactivity 주입)
+- 뷰 템플릿 코드 컴파일 (Virtual DOM -> DOM 변환)
+- 인스턴스를 DOM에 부착
 
 <br/>
 <br/>

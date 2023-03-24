@@ -1,15 +1,15 @@
 # 클로저(Closure)
 
--   클로저는 코드 실행이 해당 블록 밖으로 이동 한 후에도 로컬 변수를 유지하는 영구 범위이다.
--   함수의 코드 블록이 실행을 마친 후에도 범위 (부모 범위 포함)에 대한 참조(모든 지역 변수)는 그 함수에 묶여 있으며 함수가 지속되는 한 계속 지속된다.
+- 클로저는 코드 실행이 해당 블록 밖으로 이동 한 후에도 로컬 변수를 유지하는 영구 범위이다.
+- 함수의 코드 블록이 실행을 마친 후에도 범위 (부모 범위 포함)에 대한 참조(모든 지역 변수)는 그 함수에 묶여 있으며 함수가 지속되는 한 계속 지속된다.
 
 ```js
 function funA() {
-    var x = "Hello";
-    var funB = function () {
-        console.log(x);
-    };
-    return funB;
+  var x = "Hello";
+  var funB = function () {
+    console.log(x);
+  };
+  return funB;
 }
 
 var funC = funA();
@@ -18,11 +18,11 @@ funC(); // Hello
 /////
 
 var add_the_handlers = function (nodes) {
-    for (var i = 0; i < nodes.length; i++) {
-        nodes[i].onClick = function (e) {
-            alert(i);
-        };
-    }
+  for (var i = 0; i < nodes.length; i++) {
+    nodes[i].onClick = function (e) {
+      alert(i);
+    };
+  }
 };
 ```
 
@@ -51,6 +51,6 @@ var add_the_handlers = function (nodes) {
 
 ## 클로저의 활용
 
--   상태 유지
--   전역 변수의 사용 억제
--   정보의 은닉
+- 상태 유지
+- 전역 변수의 사용 억제
+- 정보의 은닉

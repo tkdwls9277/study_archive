@@ -1,11 +1,11 @@
 # daemon(데몬)
+
     사용자가 직접적으로 제어하지 않고, 백그라운드에서 돌면서 여러 작업을 하는 프로그램
     시스템 로그를 남기는 `syslogd`처럼 보통 데몬을 뜻하는 'd'를 이름 끝에 달고 있으며, 일반적으로 프로세스로 실행된다.
 
 [참고자료1](https://wildeveloperetrain.tistory.com/168)
 
 [참고자료2](https://dahye-jeong.gitbook.io/til/os/linux/2020-07-19-linux-daemon)
-
 
 <br />
 
@@ -36,8 +36,6 @@
 
 ex) sendmail, apache, mysqld
 
- 
-
 **2. Xinetd**
 
 다른 데몬들의 상위에 존재하며, 슈퍼 데몬(Super Daemon)이라고도 한다.
@@ -48,10 +46,7 @@ ex) sendmail, apache, mysqld
 
 ex) telnet, finger, ftp, shell
 
- 
-
 윈도우 운영체제에서는 서비스(Service)가 데몬과 같은 역할을 하는 백그라운드 프로세스
-
 
 <br />
 
@@ -76,6 +71,6 @@ $ chkconfig --level 35 naemd on #실행 레벨 3,5에 대해서 named 서비스�
 $ chkconfig --level 5 --del adsl #실행 레벨 5에서 adsl 서비스 삭제
 $ chkconfig sendmail off # sendmail 서비스를 부팅시에 시작하지 않음. 특별히 레벨을 명시하지 않으면 2~5레벨이 on/off된다.
 $ chkconfig telent on #텔넷 서비스를 on한다. xinetd 기반을 동작
-$ chkconfig --list telnet #xinetd 기반으로 동작하는 서비스는 레벨을 보여주지 않고 사용가능 여부만 확인 가능하다. 
+$ chkconfig --list telnet #xinetd 기반으로 동작하는 서비스는 레벨을 보여주지 않고 사용가능 여부만 확인 가능하다.
 $ chkconfig --list xinetd #실행 레벨별 실행 여부는 해당 명령어로 확인
 ```

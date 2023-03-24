@@ -20,9 +20,9 @@ Super Daemon이라는 특별한 데몬에 의해 간접적으로 실행되는 �
 
 standalone방식보다 응답속도가 느리지만, 메모리 효율은 그에 비해 훨씬 좋다. 따라서 매우 빠른 응답속도가 필요하지 않을 경우에 사용한다.
 
-Ubuntu에서는 기본적으로 Super daemon이 설치되지 않기에 Package Manager를 통해 설치해줘야 한다. 
+Ubuntu에서는 기본적으로 Super daemon이 설치되지 않기에 Package Manager를 통해 설치해줘야 한다.
 
-```bash 
+```bash
 sudo apt install netkit-inetd
 ```
 
@@ -66,12 +66,11 @@ systemctl에 대해 더 자세히 알아보자면, systemd 를 알아야 한다.
 
 - 게다가 systemd는 단지 init 뿐만 아니라 다른 프로그램들의 기능들마저 가져와 추가하기 시작했다.
 
-    - 컴퓨터의 네임서버 주소를 설정하는 resolvconf의 자리를 systemd-resolved가 DHCP 서버에서 IP를 받아와서 네트위크 인터페이스에 설정하는 dhcpcd의 자리를 systemd-networkd가 대체할 수 있게 기능을 추가 했다. 이외에도 시스템 내부의 udev가 systemd에 포함되는 등 여러 방면에서 systemd의 존재가 강력해지고 있다.
-  
+  - 컴퓨터의 네임서버 주소를 설정하는 resolvconf의 자리를 systemd-resolved가 DHCP 서버에서 IP를 받아와서 네트위크 인터페이스에 설정하는 dhcpcd의 자리를 systemd-networkd가 대체할 수 있게 기능을 추가 했다. 이외에도 시스템 내부의 udev가 systemd에 포함되는 등 여러 방면에서 systemd의 존재가 강력해지고 있다.
+
 - 이렇게 systemd가 여러 영역을 아우르는 것을 보고 혹자들은 하나만 잘하자 라는 UNIX의 철학에 어긋난다고 말하기도 한다.
 
 <br/>
-
 
 ## 2.2. systemd 구성
 
@@ -107,23 +106,27 @@ systemctl에 대해 더 자세히 알아보자면, systemd 를 알아야 한다.
 
 ### 2.2.1. system 제어하기
 
-1. 서비스 목록 확인 
+1. 서비스 목록 확인
+
    - systemctl list-unit-files
 
 2. 서비스 시작, 종료, 재시작, 상태 확인
+
    - systemctl start|stop|restart|status [서비스명]
 
-3. 서비스 활성화, 비활성화 
-   - systemctl enable|disable [서비스명]
-    - enable 명령은 관련 서비스를 /etc/systemd/system/[target]/ 경로에 링크파일을 생성한다.
-    - disable 명령은 실행하면 링크파일을 삭제한다.
+3. 서비스 활성화, 비활성화
 
-4. 서비스 갱신 
+   - systemctl enable|disable [서비스명]
+   - enable 명령은 관련 서비스를 /etc/systemd/system/[target]/ 경로에 링크파일을 생성한다.
+   - disable 명령은 실행하면 링크파일을 삭제한다.
+
+4. 서비스 갱신
+
    - systemctl reload [서비스명]
 
-5. 시스템 중지, 재부팅 
+5. 시스템 중지, 재부팅
    - systemctl halt|reboot
-    - 위 명령어는 AUTHENTICATING 이 필수이며, 무지성으로 사용하다가 큰일이 날 수 있으므로, 충분하게 확인하고 사용을 해야한다.
+   - 위 명령어는 AUTHENTICATING 이 필수이며, 무지성으로 사용하다가 큰일이 날 수 있으므로, 충분하게 확인하고 사용을 해야한다.
 
 <br />
 
@@ -134,7 +137,6 @@ systemctl에 대해 더 자세히 알아보자면, systemd 를 알아야 한다.
 # 3. 직접 데몬 만들기
 
 1. [unit name].service 파일을 systemd에 만든다.
-   
 2. 해당 service 파일은 systemd 의 unit 문법에 따라야 한다. (사실 이 부분이 가장 핵심이다. 해당 파일에 대한 얘기는 하나의 색션이 필요해서 다음에 꼭 다루겠다.) 샘플은 아래와 같다.
 
 ```unit
@@ -154,7 +156,6 @@ WantedBy=multi-user.target
 ```
 
 3. systemctl enable [unit name] 명령으로 설치한다.
-   
 4. 이제 systemctl 명령어로 컨트롤을 한다.
 
 ## 3.1. service
@@ -163,7 +164,7 @@ WantedBy=multi-user.target
 
 - /etc/init.d 디렉토리에 있는 링크파일들 대상으로 start, stop, restart, reload, status 를 할 수 있다.
 
-- 위와 같이 systemd 가 등장하면서 systemctl 명령어를 사용할 수 있게 된 것이다. 사실 OS 특정 버전 부터는 (리눅스 기반인 OS) service를 수행해도 redirecting to /bin/systemctl start ***.service 라고 리다이렉팅 되어 systemctl로 실행이 되는 것이다.
+- 위와 같이 systemd 가 등장하면서 systemctl 명령어를 사용할 수 있게 된 것이다. 사실 OS 특정 버전 부터는 (리눅스 기반인 OS) service를 수행해도 redirecting to /bin/systemctl start \*\*\*.service 라고 리다이렉팅 되어 systemctl로 실행이 되는 것이다.
 
 - 사실 이제 service와 init은 잊고, systemctl 을 기억하는게 옳은 접근 방법 인 것이다.
 
@@ -178,4 +179,3 @@ WantedBy=multi-user.target
 - ex) systemctl start [데몬이름]
 
 - centos에서 데몬을 다루는 방법에 대해 더 자세한 명령어는 [이 글을 꼭 확인하길 바란다](https://server-talk.tistory.com/273)
-

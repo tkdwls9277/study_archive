@@ -127,15 +127,15 @@ UTF-8/UTF-16/UTF-32/EUC-KR은 유니코드가 아니고 유니코드를 인코�
 
 ## **중간정리**
 
--   UTF-8/UTF-16/UTF-32/UCS2/UCS4/EUC-KR/CP949는 유니코드 인코딩 종류이다.
+- UTF-8/UTF-16/UTF-32/UCS2/UCS4/EUC-KR/CP949는 유니코드 인코딩 종류이다.
 
--   KSC5601,EUC-KR,CP949는 다른 것이다.
+- KSC5601,EUC-KR,CP949는 다른 것이다.
 
--   UTF-8은 1~4BYTE 까지 가변적으로 인코딩 한다.(영문 :1BYTE 한글 : 3BYTE)
+- UTF-8은 1~4BYTE 까지 가변적으로 인코딩 한다.(영문 :1BYTE 한글 : 3BYTE)
 
--   UTF-16은 2~4BYTE 까지 가변적으로 인코딩 한다.(영문:2BYTE 한글 : 2BYTE)
+- UTF-16은 2~4BYTE 까지 가변적으로 인코딩 한다.(영문:2BYTE 한글 : 2BYTE)
 
--   UTF-32은 4BYTE로 고정으로 인코딩 한다.
+- UTF-32은 4BYTE로 고정으로 인코딩 한다.
 
 <br />
 <br />
