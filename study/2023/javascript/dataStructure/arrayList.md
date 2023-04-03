@@ -1,4 +1,4 @@
-# 2. 동적배열(ArrayList)
+# 동적배열(ArrayList)
 
 ## 선형 자료 구조
 
@@ -319,30 +319,30 @@ public class ArrayList<T> {
 
 ## **생성자**
 
--   **MyArrayList(int capacity)**: 비어 있는 상태에서 지정한 초기 용량을 가지는 MyArrayList 클래스의 새 인스턴스를 초기화합니다.
--   **MyArrayList()**: 비어 있는 상태에서 기본 초기 용량(4)을 가지는 MyArrayList 클래스의 새 인스턴스를 초기화합니다.
+- **MyArrayList(int capacity)**: 비어 있는 상태에서 지정한 초기 용량을 가지는 MyArrayList 클래스의 새 인스턴스를 초기화합니다.
+- **MyArrayList()**: 비어 있는 상태에서 기본 초기 용량(4)을 가지는 MyArrayList 클래스의 새 인스턴스를 초기화합니다.
 
 <br /><br />
 
 ## **속성**
 
--   **int Count**: MyArrayList에 실제로 포함된 요소의 수를 가져옵니다.
--   **object Item[ int index]**: 지정한 인덱스에 있는 요소를 가져오거나 설정합니다.
--   **int Capacity**: MyArrayList에 포함될 수 있는 요소의 수를 가져오거나 설정합니다.
+- **int Count**: MyArrayList에 실제로 포함된 요소의 수를 가져옵니다.
+- **object Item[ int index]**: 지정한 인덱스에 있는 요소를 가져오거나 설정합니다.
+- **int Capacity**: MyArrayList에 포함될 수 있는 요소의 수를 가져오거나 설정합니다.
 
 <br /><br />
 
 ## **메서드**
 
--   **void Add( object item)**: 개체를 MyArrayList의 끝 부분에 추가합니다.
--   **void Clear()**: MyArrayList에서 모든 요소를 제거합니다.
--   **void CopyTo(Array array)**: 대상 배열의 맨 처음부터 시작하여 전체 MyArrayList를 호환되는 1차원 Array에 복사합니다.
--   **void CopyTo(Array array, int arrayIndex)**: 대상 배열의 지정된      인덱스에서 시작하여 전체 MyArrayList을 호환되는 1차원 Array에 복사합니다.
--   **void Insert(int index, object item)**: MyArrayList의 지정된 인덱스에 요소를 삽입합니다.
--   **void RemoveAt(int index)**: MyArrayList의 지정된 인덱스에 있는 요소를 제거합니다.
--   **void RemoveRange(int index, int count)**: MyArrayLis 서 요소의 범위를 제거합니다.
--   **void Swap(int i, int j)**: MyArrayList의 지정된 첫번째 인덱스와 두번째 인덱스에 있는 요소들을 바꿉니다.
--   **object[] ToArray()**: MyArrayList의 요소를 새 Object 배열에 복사합니다.
+- **void Add( object item)**: 개체를 MyArrayList의 끝 부분에 추가합니다.
+- **void Clear()**: MyArrayList에서 모든 요소를 제거합니다.
+- **void CopyTo(Array array)**: 대상 배열의 맨 처음부터 시작하여 전체 MyArrayList를 호환되는 1차원 Array에 복사합니다.
+- **void CopyTo(Array array, int arrayIndex)**: 대상 배열의 지정된      인덱스에서 시작하여 전체 MyArrayList을 호환되는 1차원 Array에 복사합니다.
+- **void Insert(int index, object item)**: MyArrayList의 지정된 인덱스에 요소를 삽입합니다.
+- **void RemoveAt(int index)**: MyArrayList의 지정된 인덱스에 있는 요소를 제거합니다.
+- **void RemoveRange(int index, int count)**: MyArrayLis 서 요소의 범위를 제거합니다.
+- **void Swap(int i, int j)**: MyArrayList의 지정된 첫번째 인덱스와 두번째 인덱스에 있는 요소들을 바꿉니다.
+- **object[] ToArray()**: MyArrayList의 요소를 새 Object 배열에 복사합니다.
 
 <br /><br />
 
