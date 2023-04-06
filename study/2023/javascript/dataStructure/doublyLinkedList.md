@@ -1,10 +1,16 @@
 # 양방향 연결리스트(Doubly Linked List)
 
+<br />
+
 각 노드(Node)에 데이터를 담고 있는 공간과 이전 노드(Prev)와 다음 노드(Next)를 가리키는 두개의 포인터를 갖고 있는 자료구조다.
 
 단일 연결 리스트에 비해 구현은 복잡하지만 역방향 조회가 가능하다는 장점이 있다.
 
+<br /><br />
+
 ![](./images/doublyLinkedList1.png)
+
+<br /><br />
 
 ![](./images/doublyLinkedList2.png)
 
