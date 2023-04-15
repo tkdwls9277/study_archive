@@ -95,6 +95,4 @@ AB\*CDE+/-
 
 <br />
 
-![](images/StackCalculator1.png)
-
-<br />
+![](images/stackCalculator1.png)
