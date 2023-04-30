@@ -2,15 +2,13 @@
 
 DB/Table을 수정하는 쿼리문
 
-## 학습
-
-● DB
+## DB
 
 ALTER DATABASE DB명칭
 
 ALTER FILEGROUP 파일그룹01;
 
-●  Table
+## Table
 
 기존컬럼 변경
 
