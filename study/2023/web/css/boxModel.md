@@ -1,18 +1,53 @@
 # 박스 모델(box model)
 
+[참고 자료(poiemaweb)](https://poiemaweb.com/css3-box-model)
+
 모든 HTML 요소는 박스(box) 모양으로 구성되며, 이것을 박스 모델(box model)이라고 부릅니다.
 
 박스 모델은 HTML 요소를 패딩(padding), 테두리(border), 마진(margin), 그리고 내용(content)으로 구분합니다.
 
 ![](images/boxModel1.png)
 
-1. 내용(content) : 텍스트나 이미지가 들어있는 박스의 실질적인 내용 부분입니다.
+| 명칭    | 설명                                                                                                                                                                                                    |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Content | 요소의 텍스트나 이미지 등의 실제 내용이 위치하는 영역이다. width, height 프로퍼티를 갖는다.                                                                                                             |
+| Padding | 테두리(Border) 안쪽에 위치하는 요소의 내부 여백 영역이다. padding 프로퍼티 값은 패딩 영역의 두께를 의미하며 기본색은 투명(transparent)이다. 요소에 적용된 배경의 컬러, 이미지는 패딩 영역까지 적용된다. |
+| Border  | 테두리 영역으로 border 프로퍼티 값은 테두리의 두께를 의미한다.                                                                                                                                          |
+| Margin  | 테두리(Border) 바깥에 위치하는 요소의 외부 여백 영역이다. margin 프로퍼티 값은 마진 영역의 두께를 의미한다. 기본적으로 투명(transparent)하며 배경색을 지정할 수 없다                                    |
 
-2. 패딩(padding) : 내용과 테두리 사이의 간격입니다. 패딩은 눈에 보이지 않습니다.
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      div {
+        /* 배경색의 지정: 콘텐츠 영역과 패딩 영역에 적용된다. */
+        background-color: lightgrey;
+        /* 콘텐츠 영역의 너비 */
+        width: 300px;
+        /* 패딩 영역의 두께 */
+        padding: 25px;
+        /* 테두리: 두께 형태 색상 */
+        border: 25px solid navy;
+        /* 마진 영역의 두께 */
+        margin: 25px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Box Model</h2>
 
-3. 테두리(border) : 내용와 패딩 주변을 감싸는 테두리입니다.
+    <div>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+      magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+      consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+      Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    </div>
+  </body>
+</html>
+```
 
-4. 마진(margin) : 테두리와 이웃하는 요소 사이의 간격입니다. 마진은 눈에 보이지 않습니다.
+![](images/boxModel2.png)
 
 <br /><br />
 
