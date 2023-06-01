@@ -1,21 +1,23 @@
 # Property3 - font, text
 
+- [참고 자료(poiemaweb)](https://poiemaweb.com/css3-font-text)
+
 ## font-size
 
 텍스트의 크기를 정의한다.
 
 ```css
 .font-size-40 {
-    font-size: 40px;
+  font-size: 40px;
 }
 .font-size-2x {
-    font-size: 2em;
+  font-size: 2em;
 }
 .font-size-150ps {
-    font-size: 150%;
+  font-size: 150%;
 }
 .font-size-large {
-    font-size: large;
+  font-size: large;
 }
 ```
 
@@ -33,15 +35,15 @@
 
 ```css
 .serif {
-    font-family: "Times New Roman", Times, serif;
+  font-family: "Times New Roman", Times, serif;
 }
 
 .sans-serif {
-    font-family: Arial, Helvetica, sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 .monospace {
-    font-family: "Courier New", Courier, monospace;
+  font-family: "Courier New", Courier, monospace;
 }
 ```
 
@@ -57,7 +59,7 @@ font-style 프로퍼티는 이탤릭체의 지정, font-weight 프로퍼티는 �
 
 ```css
 p {
-    font-size: 2em;
+  font-size: 2em;
 }
 
 /*
@@ -65,7 +67,7 @@ p {
       normal / italic / oblique
     */
 .italic {
-    font-style: italic;
+  font-style: italic;
 }
 
 /*
@@ -73,13 +75,13 @@ p {
       100 ~ 900 or normal / bold / lighter / bolder
     */
 .light {
-    font-weight: lighter;
+  font-weight: lighter;
 }
 .thick {
-    font-weight: bold;
+  font-weight: bold;
 }
 .thicker {
-    font-weight: 900;
+  font-weight: 900;
 }
 ```
 
@@ -118,13 +120,13 @@ font: italic small-caps bolder 16px/3 cursive;
 
 ```css
 .small {
-    line-height: 70%; /* 16px * 70% */
+  line-height: 70%; /* 16px * 70% */
 }
 .big {
-    line-height: 1.2; /* 16px * 1.2 */
+  line-height: 1.2; /* 16px * 1.2 */
 }
 .lh-3x {
-    line-height: 3; /* 16px * 3 */
+  line-height: 3; /* 16px * 3 */
 }
 ```
 
@@ -257,17 +259,17 @@ white space는 공백(space), 들여쓰기(tab), 줄바꿈(line break)을 의미
 
 부모 영역을 벗어난 wrapping(자동줄바꿈)이 되지 않은 텍스트의 처리 방법을 정의한다. 이 프로퍼티를 사용하기 위해서는 아래의 조건이 필요하다.
 
--   width 프로퍼티가 지정되어 있어야 한다. 이를 위해 필요할 경우 block 레벨 요소로 변경하여야 한다.
--   자동 줄바꿈을 방지하려면 white-space 프로퍼티를 nowrap으로 설정한다.
--   overflow 프로퍼티에 반드시 “visible” 이외의 값이 지정되어 있어야 한다.
+- width 프로퍼티가 지정되어 있어야 한다. 이를 위해 필요할 경우 block 레벨 요소로 변경하여야 한다.
+- 자동 줄바꿈을 방지하려면 white-space 프로퍼티를 nowrap으로 설정한다.
+- overflow 프로퍼티에 반드시 “visible” 이외의 값이 지정되어 있어야 한다.
 
 ```css
 /* 부모 영역을 벗어난 텍스트를 잘라내어 보이지 않게 하고 말줄임표(...)를 표시한다. */
 .truncate {
-    width: 150px; /* width가 지정되어 있어야 한다. */
-    white-space: nowrap; /* 자동 줄바꿈을 방지 */
-    overflow: hidden; /* 반드시 "visible" 이외의 값이 지정되어 있어야 한다. */
-    text-overflow: ellipsis; /* ellipsis or clip */
+  width: 150px; /* width가 지정되어 있어야 한다. */
+  white-space: nowrap; /* 자동 줄바꿈을 방지 */
+  overflow: hidden; /* 반드시 "visible" 이외의 값이 지정되어 있어야 한다. */
+  text-overflow: ellipsis; /* ellipsis or clip */
 }
 ```
 
