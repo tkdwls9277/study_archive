@@ -1,5 +1,7 @@
 # Shadow
 
+- [참고 자료(poiemaweb)](https://poiemaweb.com/css3-shadow)
+
 텍스트나 요소에 그림자(Shadow) 효과를 부여하기 위한 프로퍼티를 선언한다.
 
 ## text-shadow

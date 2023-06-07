@@ -1,5 +1,7 @@
 # 캐스캐이딩(Cascading)
 
+- [참고 자료(poiemaweb)](https://poiemaweb.com/css3-inheritance-cascading)
+
 요소는 하나 이상의 CSS 선언에 영향을 받을 수 있다. 이때 충돌을 피하기 위해 CSS 적용 우선순위가 필요한데 이를 캐스캐이딩(Cascading Order)이라고 한다.
 
 캐스캐이딩에는 다음과 같이 세가지 규칙이 있다.
