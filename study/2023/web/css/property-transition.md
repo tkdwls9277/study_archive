@@ -1,4 +1,6 @@
-# Transition
+# Transition]
+
+-   [참고 자료(poiemaweb)](https://poiemaweb.com/css3-transition)
 
 트랜지션(transition)은 CSS 프로퍼티의 값이 변화할 때, 프로퍼티 값의 변화가 일정 시간(duration)에 걸쳐 일어나도록 하는 것이다. 예를 들어 아래의 예제를 살펴보자. div 요소는 기본 상태에서 hover 상태로 변화할 때, CSS 프로퍼티 border-radius와 background 프로퍼티의 값이 변화한다.
 
