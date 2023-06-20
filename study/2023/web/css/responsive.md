@@ -63,3 +63,77 @@ viewport란 웹페이지의 가시영역을 의미한다. viewport는 디바이�
 | color               | 디바이스에서 표현 가능한 최대 색상 비트수                |
 | monochrome          | 흑백 디바이스의 픽셀 당 비트수                           |
 | resolution          | 디바이스 해상도                                          |
+
+<br /><br />
+
+---
+
+<br /><br />
+
+## Responsive Navigation Bar
+
+이제까지의 내용을 바탕으로 앞서 만들어본 예제를 Responsive Web Design에 맞추어 수정해 보자.
+
+디바이스 해상도에 따라 반응할 수 있도록 viewport meta tag와 media query를 추가한다.
+
+```html
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <style>
+            /* Media Query */
+            /* for Desktop: 801px ~ */
+
+            /* for tablet: ~ 800px */
+            @media screen and (max-width: 800px) {
+            }
+            /* for smartphone: ~ 480px */
+            @media screen and (max-width: 480px) {
+            }
+        </style>
+    </head>
+</html>
+```
+
+스마트폰, 태블릿, 데스크탑 그룹의 3단계로 구분하여 breakpoint를 정의하였다. Non Mobile First Method로 정의하였기 때문에 Media Query로 정의하지 않은 스타일은 데스크탑 그룹을 위한 코드가 된다.
+
+최대 viewport width를 800px로 한정하였다는 것은 화면 크기가 800px 이하인 디바이스(태블릿)를 위한 정의란 의미가 된다. 위 예제 내에 정의 되는 스타일은 화면 크기가 800px 이하인 디바이스에서 웹사이트가 표시될 때 실행된다.
+
+최대 viewport width를 480px로 한정하였다는 것은 화면 크기가 480px 이하인 디바이스(스마트폰)를 위한 정의란 의미가 된다. 위 예제 내에 정의 되는 스타일은 화면 크기가 480px 이하인 디바이스에서 웹사이트가 표시될 때 실행된다.
+
+CSS 적용 우선 순위 (Cascading Order)에 따라 나중에 선언된 스타일이 우선 적용된다. 따라서 Media Query는 기술 순서에 의미가 있다. 만일 스마트폰용 스타일을 태블릿용 스타일보다 먼저 기술하면 최종적으로 태블릿용 스타일이 적용된다. 따라서 Non Mobile First 방식의 경우, max-width의 값이 큰 것부터 기술하여 한다.
+
+<br /><br />
+
+---
+
+<br /><br />
+
+## Responsive Navigation Bar - Tablet
+
+데스크탑 layout에서 화면이 작아질 때 header navigation bar가 header 영역 아래로 내려오는 현상이 발생하였다. 이를 보완하기 위해 다음과 같이 태블릿에서의 layout을 정의한다.
+
+viewport width가 800px 이하가 되면 header 영역을 2단(logo영역과 navigation bar영역)으로 구분하기 위하여 header 영역의 높이를 현재(60px)의 2배로 넓힌다. 그리고 logo image과 navigation bar를 centering한다.
+
+```css
+@media screen and (max-width: 800px) {
+    header {
+        height: 120px;
+        text-align: center;
+    }
+}
+```
+
+<br /><br />
+
+---
+
+<br /><br />
+
+## Responsive Navigation Bar - Smartphone
+
+태블릿 layout에서는 header 영역을 2단으로 분리하여 navigation bar는 header 하단 영역에 배치하였다. 하지만 스마트폰의 viewport width는 가로로 나란히 정렬되어 있는 navigation bar를 모두 담기에는 너무 좁다. 다음과 같이 스마트폰 layout을 정의한다.
+
+우측 navigation icon을 클릭하면 navigation bar가 수직 정렬되어 화면에 나타나도록 한다. 한번 더 클릭하면 화면에서 사라지도록 한다. 이때 navigation icon에 animation 효과를 부여한다.
+
+nav 요소 내에 클릭할 수 있는 navigation icon을 만들기 위한 html tag를 추가한다. label tag의 for 프로퍼티값과 input tag의 id 프로퍼티값이 일치하여야 한다.
