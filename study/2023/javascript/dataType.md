@@ -35,6 +35,8 @@
 
 원시 타입의 값은 변경 불가능한 값(immutable value)이며 pass-by-value(값에 의한 전달) 이다.
 
+<br /><br />
+
 ### number
 
 자바스크립트는 독특하게 하나의 숫자 타입만 존재한다.
@@ -94,6 +96,52 @@ console.log(nan); // NaN
 
 <br /><br />
 
----
+### string
 
-<br /><br />
+문자열(String) 타입은 텍스트 데이터를 나타내는데 사용한다. 문자열은 0개 이상의 16bit 유니코드 문자(UTF-16) 들의 집합으로 대부분의 전세계의 문자를 표현할 수 있다. 문자열은 작은 따옴표(‘’) 또는 큰 따옴표(“”) 안에 텍스트를 넣어 생성한다. 가장 일반적인 표기법은 작은 따옴표를 사용하는 것이다.
+
+```js
+var str = "string"; // 큰 따옴표
+str = "string"; // 작은 따옴표
+str = `string`; // 백틱(ES6 템플릿 리터럴)
+
+str = "큰 따옴표로 감싼 문자열 내의 '작은 따옴표'는 문자열이다.";
+str = '작은 따옴표로 감싼 문자열 내의 "큰 따옴표"는 문자열이다.';
+```
+
+C와 같은 언어와는 다르게, 자바스크립트의 문자열은 원시 타입이며 변경 불가능(immutable)하다. 이것은 한 번 문자열이 생성되면, 그 문자열을 변경할 수 없다는 것을 의미한다.
+
+```js
+var str = "string";
+// 문자열은 유사배열이다.
+for (var i = 0; i < str.length; i++) {
+    console.log(str[i]);
+}
+
+// 문자열을 변경할 수 없다.
+str[0] = "S";
+console.log(str); // string
+```
+
+문자열은 배열처럼 인덱스를 통해 접근할 수 있다. 이와 같은 특성을 갖는 데이터를 유사 배열이라 한다.
+
+str[0] = 'S'처럼 이미 생성된 문자열의 일부 문자를 변경해도 반영되지 않는다(이때 에러가 발생하지 않는다). 한번 생성된 문자열은 read only로서 변경할 수 없다. 이것을 변경 불가능(immutable)이라 한다.
+
+그러나 새로운 문자열을 재할당하는 것은 물론 가능하다. 이는 기존 문자열을 변경하는 것이 아니라 새로운 문자열을 새롭게 할당하는 것이기 때문이다.
+
+```js
+var str = "string";
+console.log(str); // string
+
+str = "String";
+console.log(str); // String
+
+str += " test";
+console.log(str); // String test
+
+str = str.substring(0, 3);
+console.log(str); // Str
+
+str = str.toUpperCase();
+console.log(str); // STR
+```
