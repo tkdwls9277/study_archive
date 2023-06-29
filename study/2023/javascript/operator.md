@@ -1,5 +1,7 @@
 # Operator
 
+- [참고 자료(poiemaweb)](https://poiemaweb.com/js-operator)
+
 연산자(Operator)는 하나 이상의 표현식을 대상으로 산술, 할당, 비교, 논리, 타입 연산 등을 수행해 하나의 값을 만든다. 이때 연산의 대상을 피연산자(Operand)라 한다. 피연산자도 평가되어 하나의 값이 되므로 표현식이고 피연산자를 연산자와 결합한 연산자 표현식도 물론 표현식이다.
 
 ```js
@@ -14,7 +16,7 @@
 
 // 단항 산술 연산자
 var x = 5,
-    result;
+  result;
 
 // 선대입 후증가 (Postfix increment operator)
 result = x++;
