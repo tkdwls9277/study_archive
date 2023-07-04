@@ -1,5 +1,7 @@
 # Type coercion (타입 변환)
 
+- [참고 자료(poiemaweb)](https://poiemaweb.com/js-type-coercion)
+
 자바스크립트의 모든 값은 타입이 있다. 값의 타입은 다른 타입으로 개발자에 의해 의도적으로 변환할 수 있다. 또는 자바스크립트 엔진에 의해 암묵적으로 자동 변환될 수 있다. 개발자에 의해 의도적으로 값의 타입을 변환하는 것을 명시적 타입 변환(Explicit coercion) 또는 타입 캐스팅(Type casting)이라 한다.
 
 ```js
