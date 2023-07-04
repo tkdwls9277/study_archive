@@ -49,3 +49,18 @@ userdel test
 # 옵션을 통해 계정에 설정된 홈 디렉토리도 삭제한다.
 userdel -r test
 ```
+
+<br /><br />
+
+---
+
+<br /><br />
+
+## error
+
+보통 계정 삭제를 하면
+![](images/user1.png)
+
+user [계정명] is currently used by process [프로세스 번호]
+
+이렇게 많이 뜨는데, user가 떠있는 프로세를 종료 후 다시 계정 삭제하면 정상동작 됨
