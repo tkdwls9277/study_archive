@@ -1,6 +1,6 @@
 # Object(객체)
 
-- [참고 자료(poiemaweb)](https://poiemaweb.com/js-object)
+-   [참고 자료(poiemaweb)](https://poiemaweb.com/js-object)
 
 자바스크립트의 객체는 키(key)과 값(value)으로 구성된 프로퍼티(Property)들의 집합이다. 프로퍼티의 값으로 자바스크립트에서 사용할 수 있는 모든 값을 사용할 수 있다. 자바스크립트의 함수는 일급 객체이므로 값으로 취급할 수 있다. 따라서 프로퍼티 값으로 함수를 사용할 수도 있으며 프로퍼티 값이 함수일 경우, 일반 함수와 구분하기 위해 메소드라 부른다.
 
@@ -8,7 +8,7 @@
 
 <br /><br />
 
-- 프로퍼티
+-   프로퍼티
 
 프로퍼티는 프로퍼티 키(이름)와 프로퍼티 값으로 구성된다. 프로퍼티는 프로퍼티 키로 유일하게 식별할 수 있다. 즉, 프로퍼티 키는 프로퍼티를 식별하기 위한 식별자(identifier)다. 프로퍼티 키의 명명 규칙과 프로퍼티 값으로 사용할 수 있는 값은 아래와 같다.
 
@@ -18,7 +18,7 @@
 
 <br /><br />
 
-- 메소드
+-   메소드
 
 프로퍼티 값이 함수일 경우, 일반 함수와 구분하기 위해 메소드라 부른다. 즉, 메소드는 객체에 제한되어 있는 함수를 의미한다.
 
@@ -38,11 +38,11 @@
 var emptyObject = {};
 
 var person = {
-  name: "Lee",
-  gender: "male",
-  sayHello: function () {
-    console.log("Hi! My name is " + this.name);
-  },
+    name: "Lee",
+    gender: "male",
+    sayHello: function () {
+        console.log("Hi! My name is " + this.name);
+    },
 };
 ```
 
@@ -62,7 +62,7 @@ var person = new Object();
 person.name = "Lee";
 person.gender = "male";
 person.sayHello = function () {
-  console.log("Hi! My name is " + this.name);
+    console.log("Hi! My name is " + this.name);
 };
 ```
 
@@ -75,11 +75,11 @@ person.sayHello = function () {
 ```js
 // 생성자 함수
 function Person(name, gender) {
-  this.name = name;
-  this.gender = gender;
-  this.sayHello = function () {
-    console.log("Hi! My name is " + this.name);
-  };
+    this.name = name;
+    this.gender = gender;
+    this.sayHello = function () {
+        console.log("Hi! My name is " + this.name);
+    };
 }
 
 // 인스턴스의 생성
@@ -87,10 +87,10 @@ var person1 = new Person("Lee", "male");
 var person2 = new Person("Kim", "female");
 ```
 
-- 생성자 함수 이름은 일반적으로 대문자로 시작한다. 이것은 생성자 함수임을 인식하도록 도움을 준다.
-- 프로퍼티 또는 메소드명 앞에 기술한 this는 생성자 함수가 생성할 인스턴스(instance)를 가리킨다.
-- this에 연결(바인딩)되어 있는 프로퍼티와 메소드는 public(외부에서 참조 가능)하다.
-- 생성자 함수 내에서 선언된 일반 변수는 private(외부에서 참조 불가능)하다. 즉, 생성자 함수 내부에서는 자유롭게 접근이 가능하나 외부에서 접근할 수 없다.
+-   생성자 함수 이름은 일반적으로 대문자로 시작한다. 이것은 생성자 함수임을 인식하도록 도움을 준다.
+-   프로퍼티 또는 메소드명 앞에 기술한 this는 생성자 함수가 생성할 인스턴스(instance)를 가리킨다.
+-   this에 연결(바인딩)되어 있는 프로퍼티와 메소드는 public(외부에서 참조 가능)하다.
+-   생성자 함수 내에서 선언된 일반 변수는 private(외부에서 참조 불가능)하다. 즉, 생성자 함수 내부에서는 자유롭게 접근이 가능하나 외부에서 접근할 수 없다.
 
 <br /><br />
 
@@ -139,9 +139,9 @@ console.log(person.1);    // SyntaxError
 
 ```js
 var person = {
-  "first-name": "Ung-mo",
-  "last-name": "Lee",
-  gender: "male",
+    "first-name": "Ung-mo",
+    "last-name": "Lee",
+    gender: "male",
 };
 
 person["first-name"] = "Kim";
@@ -155,9 +155,9 @@ person["first-name"] = "Kim";
 
 ```js
 var person = {
-  "first-name": "Ung-mo",
-  "last-name": "Lee",
-  gender: "male",
+    "first-name": "Ung-mo",
+    "last-name": "Lee",
+    gender: "male",
 };
 
 person.age = 20;
@@ -169,9 +169,9 @@ person.age = 20;
 
 ```js
 var person = {
-  "first-name": "Ung-mo",
-  "last-name": "Lee",
-  gender: "male",
+    "first-name": "Ung-mo",
+    "last-name": "Lee",
+    gender: "male",
 };
 
 delete person.gender;
@@ -183,14 +183,14 @@ delete person.gender;
 
 ```js
 var person = {
-  "first-name": "Ung-mo",
-  "last-name": "Lee",
-  gender: "male",
+    "first-name": "Ung-mo",
+    "last-name": "Lee",
+    gender: "male",
 };
 
 // prop에 객체의 프로퍼티 이름이 반환된다. 단, 순서는 보장되지 않는다.
 for (var prop in person) {
-  console.log(prop + ": " + person[prop]);
+    console.log(prop + ": " + person[prop]);
 }
 ```
 
@@ -207,7 +207,7 @@ object type을 객체 타입 또는 참조 타입이라 한다. 참조 타입이
 ```js
 // Pass-by-reference
 var foo = {
-  val: 10,
+    val: 10,
 };
 
 var bar = foo;
@@ -253,3 +253,94 @@ console.log(a === b); // false
 ## 객체의 분류
 
 ![](images/object1.png)
+
+<br /><br />
+
+---
+
+<br /><br />
+
+## 반환값
+
+함수는 자신을 호출한 코드에게 수행한 결과를 반환(return)할 수 있다. 이때 반환된 값을 반환값(return value)이라 한다.
+
+-   return 키워드는 함수를 호출한 코드(caller)에게 값을 반환할 때 사용한다.
+-   함수는 배열 등을 이용하여 한 번에 여러 개의 값을 리턴할 수 있다.
+-   함수는 반환을 생략할 수 있다. 이때 함수는 암묵적으로 undefined를 반환한다.
+-   자바스크립트 해석기는 return 키워드를 만나면 함수의 실행을 중단한 후, 함수를 호출한 코드로 되돌아간다. 만일 return 키워드 이후에 다른 구문이 존재하면 그 구문은 실행되지 않는다.
+
+<br /><br />
+
+---
+
+<br /><br />
+
+## 함수 객체의 프로퍼티
+
+![](images/object2.png)
+
+<br /><br />
+
+### arguments 프로퍼티
+
+arguments 객체는 함수 호출 시 전달된 인수(argument)들의 정보를 담고 있는 순회가능한(iterable) 유사 배열 객체(array-like object)이며 함수 내부에서 지역변수처럼 사용된다. 즉, 함수 외부에서는 사용할 수 없다.
+
+매개변수(parameter)는 인수(argument)로 초기화된다.
+
+매개변수의 갯수보다 인수를 적게 전달했을 때(multiply(), multiply(1)) 인수가 전달되지 않은 매개변수는 undefined으로 초기화된다.
+
+매개변수의 갯수보다 인수를 더 많이 전달한 경우, 초과된 인수는 무시된다.
+
+이러한 자바스크립트의 특성때문에 런타임 시에 호출된 함수의 인자 갯수를 확인하고 이에 따라 동작을 달리 정의할 필요가 있을 수 있다. 이때 유용하게 사용되는 것이 arguments 객체이다.
+
+arguments 객체는 매개변수 갯수가 확정되지 않은 가변 인자 함수를 구현할 때 유용하게 사용된다.
+
+```js
+function sum() {
+    var res = 0;
+
+    for (var i = 0; i < arguments.length; i++) {
+        res += arguments[i];
+    }
+
+    return res;
+}
+
+console.log(sum()); // 0
+console.log(sum(1, 2)); // 3
+console.log(sum(1, 2, 3)); // 6
+```
+
+자바스크립트는 함수를 호출할 때 인수들과 함께 암묵적으로 arguments 객체가 함수 내부로 전달된다. arguments 객체는 배열의 형태로 인자값 정보를 담고 있지만 실제 배열이 아닌 유사배열객체(array-like object)이다.
+
+<br /><br />
+
+### caller 프로퍼티
+
+자신을 호출한 함수
+
+<br /><br />
+
+### length 프로퍼티
+
+함수 정의 시 작성된 매개변수 갯수를 의미
+
+<br /><br />
+
+### name 프로퍼티
+
+함수명을 나타낸다. 기명함수의 경우 함수명을 값으로 갖고 익명함수의 경우 빈문자열을 값으로 갖는다.
+
+<br /><br />
+
+### **proto** 접근자 프로퍼티
+
+모든 객체는 [[Prototype]]이라는 내부 슬롯이 있다. [[Prototype]] 내부 슬롯은 프로토타입 객체를 가리킨다. 프로토타입 객체란 프로토타입 기반 객체 지향 프로그래밍의 근간을 이루는 객체로서 객체간의 상속(Inheritance)을 구현하기 위해 사용된다. 즉, 프로토타입 객체는 다른 객체에 공유 프로퍼티를 제공하는 객체를 말한다.
+
+<br /><br />
+
+### prototype 프로퍼티
+
+함수 객체만이 소유하는 프로퍼티
+
+prototype 프로퍼티는 함수가 객체를 생성하는 생성자 함수로 사용될 때, 생성자 함수가 생성한 인스턴스의 프로토타입 객체를 가리킨다.
