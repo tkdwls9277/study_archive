@@ -344,3 +344,90 @@ console.log(sum(1, 2, 3)); // 6
 함수 객체만이 소유하는 프로퍼티
 
 prototype 프로퍼티는 함수가 객체를 생성하는 생성자 함수로 사용될 때, 생성자 함수가 생성한 인스턴스의 프로토타입 객체를 가리킨다.
+
+<br /><br />
+
+---
+
+<br /><br />
+
+## 함수의 다양한 형태
+
+<br /><br />
+
+### 즉시 실행 함수(IIFE, Immediately Invoke Function Expression)
+
+함수의 정의와 동시에 실행되는 함수
+
+최초 한번만 호출되며 다시 호출할 수는 없다. 이러한 특징을 이용하여 최초 한번만 실행이 필요한 초기화 처리등에 사용할 수 있다.
+
+```js
+// 기명 즉시 실행 함수(named immediately-invoked function expression)
+(function myFunction() {
+    var a = 3;
+    var b = 5;
+    return a * b;
+})();
+
+// 익명 즉시 실행 함수(immediately-invoked function expression)
+(function () {
+    var a = 3;
+    var b = 5;
+    return a * b;
+})();
+```
+
+<br /><br />
+
+### 내부 함수(Inner function)
+
+함수 내부에 정의된 함수
+
+아래 예제의 내부함수 child는 자신을 포함하고 있는 부모함수 parent의 변수에 접근할 수 있다. 하지만 부모함수는 자식함수(내부함수)의 변수에 접근할 수 없다.
+
+```js
+function parent(param) {
+    var parentVar = param;
+    function child() {
+        var childVar = "lee";
+        console.log(parentVar + " " + childVar); // Hello lee
+    }
+    child();
+    console.log(parentVar + " " + childVar);
+    // Uncaught ReferenceError: childVar is not defined
+}
+```
+
+<br /><br />
+
+### 재귀 함수(Recusive function)
+
+자기 자신을 호출하는 함수
+
+```js
+// 피보나치 수열
+// 피보나치 수는 0과 1로 시작하며, 다음 피보나치 수는 바로 앞의 두 피보나치 수의 합이 된다.
+// 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, ...
+function fibonacci(n) {
+    if (n < 2) return n;
+    return fibonacci(n - 1) + fibonacci(n - 2);
+}
+
+// 팩토리얼
+// 팩토리얼(계승)은 1부터 자신까지의 모든 양의 정수의 곱이다.
+// n! = 1 * 2 * ... * (n-1) * n
+function factorial(n) {
+    if (n < 2) return 1;
+    return factorial(n - 1) * n;
+}
+```
+
+<br /><br />
+
+### 콜백 함수
+
+콜백 함수(Callback function)는 함수를 명시적으로 호출하는 방식이 아니라 특정 이벤트가 발생했을 때 시스템에 의해 호출되는 함수를 말한다.
+
+콜백 함수가 자주 사용되는 대표적인 예는 이벤트 핸들러 처리이다.
+
+![](images/object3.png)
