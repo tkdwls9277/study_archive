@@ -62,3 +62,112 @@ console.dir(foo); // prototype 프로퍼티가 없다.
 
     함수 객체만 가지고 있는 프로퍼티이다.
     함수 객체가 생성자로 사용될 때 이 함수를 통해 생성될 객체의 부모 역할을 하는 객체(프로토타입 객체)를 가리킨다.
+
+<br /><br />
+
+---
+
+<br /><br />
+
+## constructor 프로퍼티
+
+프로토타입 객체는 constructor 프로퍼티를 갖는다. 이 constructor 프로퍼티는 객체의 입장에서 자신을 생성한 객체를 가리킨다.
+
+예를 들어 Person() 생성자 함수에 의해 생성된 객체를 foo라 하자. 이 foo 객체를 생성한 객체는 Person() 생성자 함수이다. 이때 foo 객체 입장에서 자신을 생성한 객체는 Person() 생성자 함수이며, foo 객체의 프로토타입 객체는 Person.prototype이다. 따라서 프로토타입 객체 Person.prototype의 constructor 프로퍼티는 Person() 생성자 함수를 가리킨다.
+
+<br /><br />
+
+---
+
+<br /><br />
+
+## Prototype chain
+
+자바스크립트는 특정 객체의 프로퍼티나 메소드에 접근하려고 할 때 해당 객체에 접근하려는 프로퍼티 또는 메소드가 없다면 [[Prototype]]이 가리키는 링크를 따라 자신의 부모 역할을 하는 프로토타입 객체의 프로퍼티나 메소드를 차례대로 검색한다. 이것을 프로토타입 체인이라 한다.
+
+-   객체 리터럴 방식으로 생성된 객체의 프로토타입 체인
+
+-   생성자 함수로 생성된 객체의 프로토타입 체인
+
+<br /><br />
+
+---
+
+<br /><br />
+
+## 프로토타입 객체의 확장
+
+프로토타입 객체도 객체이므로 일반 객체와 같이 프로퍼티를 추가/삭제할 수 있다. 그리고 이렇게 추가/삭제된 프로퍼티는 즉시 프로토타입 체인에 반영된다.
+
+```js
+function Person(name) {
+    this.name = name;
+}
+
+var foo = new Person("Lee");
+
+Person.prototype.sayHello = function () {
+    console.log("Hi! my name is " + this.name);
+};
+
+foo.sayHello();
+```
+
+<br /><br />
+
+---
+
+<br /><br />
+
+## 원시 타입(Primitive data type)의 확장
+
+자바스크립트에서 원시 타입(숫자, 문자열, boolean, null, undefined)을 제외한 모든것은 객체이다. 그런데 아래 예제를 살펴보면 원시 타입인 문자열이 객체와 유사하게 동작한다.
+
+```js
+var str = "test";
+console.log(typeof str); // string
+console.log(str.constructor === String); // true
+console.dir(str); // test
+
+var strObj = new String("test");
+console.log(typeof strObj); // object
+console.log(strObj.constructor === String); // true
+console.dir(strObj);
+// {0: "t", 1: "e", 2: "s", 3: "t", length: 4, __proto__: String, [[PrimitiveValue]]: "test" }
+
+console.log(str.toUpperCase()); // TEST
+console.log(strObj.toUpperCase()); // TEST
+```
+
+원시 타입 문자열과 String() 생성자 함수로 생성한 문자열 객체의 타입은 분명이 다르다. 원시 타입은 객체가 아니므로 프로퍼티나 메소드를 가질수 없다. 하지만 원시 타입으로 프로퍼티나 메소드를 호출할 때 원시 타입과 연관된 객체로 일시적으로 변환되어 프로토타입 객체를 공유하게 된다.
+
+원시 타입은 객체가 아니므로 프로퍼티나 메소드를 직접 추가할 수 없다.
+
+<br /><br />
+
+---
+
+<br /><br />
+
+## 프로토타입 객체의 변경
+
+객체를 생성할 때 프로토타입은 결정된다. 결정된 프로토타입 객체는 다른 임의의 객체로 변경할 수 있다. 이것은 부모 객체인 프로토타입을 동적으로 변경할 수 있다는 것을 의미한다. 이러한 특징을 활용하여 객체의 상속을 구현할 수 있다.
+
+이때 주의할 것은 프로토타입 객체를 변경하면
+
+-   프로토타입 객체 변경 시점 이전에 생성된 객체
+    기존 프로토타입 객체를 [[Prototype]]에 바인딩한다.
+-   프로토타입 객체 변경 시점 이후에 생성된 객체
+    변경된 프로토타입 객체를 [[Prototype]]에 바인딩한다.
+
+<br /><br />
+
+---
+
+<br /><br />
+
+## 프로토타입 체인 동작 조건
+
+객체의 프로퍼티를 참조하는 경우, 해당 객체에 프로퍼티가 없는 경우, 프로토타입 체인이 동작한다.
+
+객체의 프로퍼티에 값을 할당하는 경우, 프로토타입 체인이 동작하지 않는다. 이는 객체에 해당 프로퍼티가 있는 경우, 값을 재할당하고 해당 프로퍼티가 없는 경우는 해당 객체에 프로퍼티를 동적으로 추가하기 때문이다.
