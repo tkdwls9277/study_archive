@@ -1,5 +1,7 @@
 # this(함수 호출 방식에 의해 결정되는 this)
 
+-   [참고 자료(poiemaweb)](https://poiemaweb.com/js-this)
+
 자바스크립트의 함수는 호출될 때, 매개변수로 전달되는 인자값 이외에, arguments 객체와 this를 암묵적으로 전달 받는다.
 
 자바스크립트의 경우 Java와 같이 this에 바인딩되는 객체는 한가지가 아니라 해당 함수 호출 방식에 따라 this에 바인딩되는 객체가 달라진다.

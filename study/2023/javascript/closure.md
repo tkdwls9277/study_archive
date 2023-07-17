@@ -1,15 +1,18 @@
 # 클로저(Closure)
 
-- 클로저는 코드 실행이 해당 블록 밖으로 이동 한 후에도 로컬 변수를 유지하는 영구 범위이다.
-- 함수의 코드 블록이 실행을 마친 후에도 범위 (부모 범위 포함)에 대한 참조(모든 지역 변수)는 그 함수에 묶여 있으며 함수가 지속되는 한 계속 지속된다.
+-   [참고 자료(poiemaweb)](https://poiemaweb.com/js-closure)
+
+-   클로저는 함수와 그 함수가 선언됐을 때의 렉시컬 환경(Lexical environment)과의 조합이다
+-   클로저는 코드 실행이 해당 블록 밖으로 이동 한 후에도 로컬 변수를 유지하는 영구 범위이다.
+-   함수의 코드 블록이 실행을 마친 후에도 범위 (부모 범위 포함)에 대한 참조(모든 지역 변수)는 그 함수에 묶여 있으며 함수가 지속되는 한 계속 지속된다.
 
 ```js
 function funA() {
-  var x = "Hello";
-  var funB = function () {
-    console.log(x);
-  };
-  return funB;
+    var x = "Hello";
+    var funB = function () {
+        console.log(x);
+    };
+    return funB;
 }
 
 var funC = funA();
@@ -18,11 +21,11 @@ funC(); // Hello
 /////
 
 var add_the_handlers = function (nodes) {
-  for (var i = 0; i < nodes.length; i++) {
-    nodes[i].onClick = function (e) {
-      alert(i);
-    };
-  }
+    for (var i = 0; i < nodes.length; i++) {
+        nodes[i].onClick = function (e) {
+            alert(i);
+        };
+    }
 };
 ```
 
@@ -51,6 +54,40 @@ var add_the_handlers = function (nodes) {
 
 ## 클로저의 활용
 
-- 상태 유지
-- 전역 변수의 사용 억제
-- 정보의 은닉
+-   상태 유지
+-   전역 변수의 사용 억제
+-   정보의 은닉
+
+<br />
+<br />
+
+## 예시
+
+```js
+function outerFunc() {
+    var x = 10;
+    var innerFunc = function () {
+        console.log(x);
+    };
+    return innerFunc;
+}
+
+/**
+ *  함수 outerFunc를 호출하면 내부 함수 innerFunc가 반환된다.
+ *  그리고 함수 outerFunc의 실행 컨텍스트는 소멸한다.
+ */
+var inner = outerFunc();
+inner(); // 10
+```
+
+<br /><br />
+
+---
+
+<br /><br />
+
+## 클로저의 활용
+
+-   상태 유지
+-   전역 변수의 사용 억제
+-   정보의 은닉
