@@ -1,5 +1,7 @@
 # Date
 
+- [참고 자료(poiemaweb)](https://poiemaweb.com/js-date)
+
 Date 객체는 날짜와 시간(년, 월, 일, 시, 분, 초, 밀리초(천분의 1초(millisecond, ms)))을 위한 메소드를 제공하는 빌트인 객체이면서 생성자 함수이다.
 
 Date 생성자 함수로 생성한 Date 객체는 내부적으로 숫자값을 갖는다. 이 값은 1970년 1월 1일 00:00(UTC)을 기점으로 현재 시간까지의 밀리초를 나타낸다.
@@ -18,11 +20,11 @@ KST(Korea Standard Time)는 UTC/GMT에 9시간을 더한 시간이다. 즉, KST�
 
 ## Date Constructor
 
--   new Date()
--   new Date(milliseconds)
--   new Date(dateString)
--   new Date(year, month[, day, hour, minute, second, millisecond])
--   Date 생성자 함수를 new 연산자없이 호출
+- new Date()
+- new Date(milliseconds)
+- new Date(dateString)
+- new Date(year, month[, day, hour, minute, second, millisecond])
+- Date 생성자 함수를 new 연산자없이 호출
 
 <br/><br/>
 
@@ -32,26 +34,26 @@ KST(Korea Standard Time)는 UTC/GMT에 9시간을 더한 시간이다. 즉, KST�
 
 ## Date 메소드
 
--   Date.now
--   Date.parse
--   Date.UTC
--   Date.prototype.getFullYear
--   Date.prototype.setFullYear
--   Date.prototype.getMonth
--   Date.prototype.setMonth
--   Date.prototype.getDate
--   Date.prototype.setDate
--   Date.prototype.getDay
--   Date.prototype.getHours
--   Date.prototype.setHours
--   Date.prototype.getMinutes
--   Date.prototype.setMinutes
--   Date.prototype.getSeconds
--   Date.prototype.setSeconds
--   Date.prototype.getMilliseconds
--   Date.prototype.setMilliseconds
--   Date.prototype.getTime
--   Date.prototype.setTime
--   Date.prototype.getTimezoneOffset
--   Date.prototype.toDateString
--   Date.prototype.toTimeString
+- Date.now
+- Date.parse
+- Date.UTC
+- Date.prototype.getFullYear
+- Date.prototype.setFullYear
+- Date.prototype.getMonth
+- Date.prototype.setMonth
+- Date.prototype.getDate
+- Date.prototype.setDate
+- Date.prototype.getDay
+- Date.prototype.getHours
+- Date.prototype.setHours
+- Date.prototype.getMinutes
+- Date.prototype.setMinutes
+- Date.prototype.getSeconds
+- Date.prototype.setSeconds
+- Date.prototype.getMilliseconds
+- Date.prototype.setMilliseconds
+- Date.prototype.getTime
+- Date.prototype.setTime
+- Date.prototype.getTimezoneOffset
+- Date.prototype.toDateString
+- Date.prototype.toTimeString
