@@ -1,5 +1,7 @@
 # 플래그
 
+- [참고 자료(poiemaweb)](https://poiemaweb.com/js-regexp)
+
 | Flag | Meaning     | Description                               |
 | ---- | ----------- | ----------------------------------------- |
 | i    | Ignore Case | 대소문자를 구별하지 않고 검색한다.        |
