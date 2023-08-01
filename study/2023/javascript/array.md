@@ -90,3 +90,34 @@ for (const item of arr) {
 - Array.prototype.shift(): T | undefined (ES3)
 - Array.prototype.slice(start=0, end=this.length): T[] (ES3)
 - Array.prototype.splice(start: number, deleteCount=this.length-start, …items: T[]): T[] (ES3)
+
+<br/><br/>
+
+---
+
+<br/><br/>
+
+## sparse array
+
+자바스크립트의 배열은 지금까지 살펴본 일반적인 의미의 배열과 다르다. 즉, 배열의 요소를 위한 각각의 메모리 공간은 동일한 크기를 갖지 않아도 되며 연속적으로 이어져 있지 않을 수도 있다. 배열의 요소가 연속적으로 이어져 있지 않는 배열을 희소 배열(sparse array)이라 한다.
+
+이처럼 자바스크립트의 배열은 엄밀히 말해 일반적 의미의 배열이 아니다. 자바스크립트의 배열은 일반적인 배열의 동작을 흉내낸 특수한 객체이다.
+
+```js
+console.log(Object.getOwnPropertyDescriptors([1, 2, 3]));
+/*
+{
+  '0': { value: 1, writable: true, enumerable: true, configurable: true },
+  '1': { value: 2, writable: true, enumerable: true, configurable: true },
+  '2': { value: 3, writable: true, enumerable: true, configurable: true },
+  length: { value: 3, writable: true, enumerable: false, configurable: false }
+}
+인덱스를 프로퍼티 키로 가지며 length 프로퍼티를 갖는 특수한 객체이다. 
+
+자바스크립트 배열의 요소는 사실 프로퍼티 값이다. 자바스크립트에서 사용할 수 있는 모든 값은 객체의 프로퍼티 값이 될 수 있으므로 어떤 타입의 값이라도 배열의 요소가 될 수 있다.
+*/
+
+const arr = ["string", 10, true, null, undefined, NaN, Infinity, [], {}, function () {}];
+```
+
+- 자바스크립트 배열은 인덱스로 배열 요소에 접근하는 경우에는 일반적인 배열보다 느리지만 특정 요소를 탐색하거나 요소를 삽입 또는 삭제하는 경우에는 일반적인 배열보다 빠르다. 자바스크립트 배열은 인덱스로 접근하는 경우의 성능 대신 특정 요소를 탐색하거나 배열 요소를 삽입 또는 삭제하는 경우의 성능을 선택한 것이다.
