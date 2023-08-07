@@ -1,22 +1,24 @@
 # 동기 && 비동기
 
+- [참고 자료(poiemaweb)](https://poiemaweb.com/js-async)
+
 ## 동기식 처리 모델(Synchronous processing model)
 
--   직렬적으로 태스크(task)를 수행한다. 즉, 태스크는 순차적으로 실행되며 어떤 작업이 수행 중이면 다음 작업은 대기하게 된다.
+- 직렬적으로 태스크(task)를 수행한다. 즉, 태스크는 순차적으로 실행되며 어떤 작업이 수행 중이면 다음 작업은 대기하게 된다.
 
 ```js
 function func1() {
-    console.log("func1");
-    func2();
+  console.log("func1");
+  func2();
 }
 
 function func2() {
-    console.log("func2");
-    func3();
+  console.log("func2");
+  func3();
 }
 
 function func3() {
-    console.log("func3");
+  console.log("func3");
 }
 
 func1();
@@ -36,20 +38,20 @@ func1();
 
 ```js
 function func1() {
-    console.log("func1");
-    func2();
+  console.log("func1");
+  func2();
 }
 
 function func2() {
-    setTimeout(function () {
-        console.log("func2");
-    }, 0);
+  setTimeout(function () {
+    console.log("func2");
+  }, 0);
 
-    func3();
+  func3();
 }
 
 function func3() {
-    console.log("func3");
+  console.log("func3");
 }
 
 func1();
