@@ -114,3 +114,20 @@
 - Event.preventDefault()
 - Event.stopPropagation()
 - preventDefault & stopPropagation
+
+<br /><br />
+
+---
+
+<br /><br />
+
+## Device Orientation Event
+
+Device Orientation는 HTML5가 제공하는 매우 유용한 기능으로 중력과의 관계에서 디바이스의 물리적 방향의 변화를 감지할 수 있다. 이것을 이용하면 모바일 디바이스를 회전시켰을 때 이벤트를 감지하여 적절히 화면을 변화 시킬 수 있다.
+
+- DeviceOrientationEvent: 가속도계(accelerometer)가 기기의 방향의 변화를 감지했을 때 발생한다.
+  - DeviceOrientationEvent.absolute
+  - DeviceOrientationEvent.alpha
+  - DeviceOrientationEvent.beta
+  - DeviceOrientationEvent.gamma
+- DeviceMotionEvent: 가속도에 변화가 일어났을 때 발생한다
