@@ -93,3 +93,75 @@ jQuery() 함수는 전달되는 인수의 종류에 따라 다른 움직임을 �
 -   HTML을 인수로 전달받을 때: HTML 문자열을 인수로 받으면 새로운 HTML 요소를 생성한다.
 -   JavaScript 객체를 인수로 전달받을 때: JavaScript 객체(plain object, DOM element, array 등)를 인수로 받으면 그 객체를 jQuery 객체로 wrap한 객체를 반환한다.
 -   콜백함수를 인수로 전달받을 때: 안전하게 DOM을 조작하기 위해서는 DOM이 완전히 로드된 후 자바스크립트가 실행되는 것이 바람직한데 이를 위해 이벤트 처리가 필요하다.DOM이 완전히 로드되기 전까지 대기하다가 로드가 완료되면 매개변수로 전달된 콜백함수가 실행된다.
+
+<br /><br />
+
+---
+
+<br /><br />
+
+## Selector
+
+jQuery는 CSS 스타일의 Selector를 이용하여 요소를 선택할 수 있다. 이것은 자바스크립트 DOM API보다 쉽고 강력하며 유연하다.
+
+-   태그 / ID / Class 선택자: jQuery는 반복문 없이 해당하는 모든 요소에 접근/조작할 수 있다. 이를 묵시적 반복(implicit iteration)
+-   후손 선택자 (Descendant Selector): 자신의 1 level 상위에 속하는 요소를 부모 요소, 1 level 하위에 속하는 요소를 자식 요소라고 한다. 자신보다 n level 하위에 속하는 요소는 후손 요소(하위 요소)라 한다. 후손 요소는 자손 요소를 포함하는 개념이다.
+-   자식 선택자 (Child Selector)
+-   복합 선택자 (Multiple Selector)
+-   가상 클래스 선택자 (Pseudo-Class Selector)
+
+-   [참고 자료(poiemaweb)](https://api.jquery.com/category/selectors/)
+
+<br /><br />
+
+---
+
+<br /><br />
+
+## Traversing
+
+Selector를 사용하여 matched set을 생성한 이후, matched set의 요소들과 관련있는 다른 요소에 접근할 수 있다. 이를 DOM 탐색(DOM Traversing)이라 한다. Traversing은 선택자 방식보다 더 빠르다.
+
+-   [참고 자료(poiemaweb)](https://api.jquery.com/category/traversing/)
+
+<br /><br />
+
+---
+
+<br /><br />
+
+## Manipulation
+
+DOM에 새로운 요소를 추가/삭제, 복사, 속성 변경 등을 실시할 수 있다. 이를 DOM 조작(DOM Manipulation)이라 한다.
+
+-   Appending: HTML에 의해 생성된 DOM에 새로운 요소를 추가한다.
+-   Removing: 요소의 제거
+
+-   [참고 자료(poiemaweb)](https://api.jquery.com/category/manipulation/)
+
+<br /><br />
+
+---
+
+<br /><br />
+
+## CSS / Attributes
+
+<br /><br />
+
+---
+
+<br /><br />
+
+## Event
+
+매치드셋에 이벤트를 바인딩하고 해당 이벤트가 발생했을 때 실행될 콜백 함수를 지정한다.
+
+| Parameter | Description                                                                        |
+| --------- | ---------------------------------------------------------------------------------- |
+| events    | 1개 또는 2개 이상의 공백으로 구분된 이벤트명                                       |
+| selector  | 이벤트를 바인딩할 매치드셋의 후손 선택자                                           |
+| data      | 이벤트핸들러에 전달할 데이터. 이벤트핸들러의 매개변수 event.data에 담겨 전달된다.  |
+| handler   | 이벤트가 발생했을 때 실행될 함수. 첫번째 인자로 이벤트 객체가 암묵적으로 전달된다. |
+
+-   [참고 자료(poiemaweb)](https://api.jquery.com/category/events/)
