@@ -8,9 +8,9 @@
 
 URI를 통해 자원을 표시하고, HTTP Method를 이용하여 해당 자원의 행위를 규정하여 그 결과를 받는 것
 
-- 자원(Resource): URI
-- 행위(Verb): HTTP Method
-- 표현(Representations)
+-   자원(Resource): URI
+-   행위(Verb): HTTP Method
+-   표현(Representations)
 
 <br />
 
@@ -23,9 +23,9 @@ URI를 통해 자원을 표시하고, HTTP Method를 이용하여 해당 자원�
 
 ## REST API의 특징
 
-- REST 기반으로 시스템을 분산해 확장성과 재사용성을 높여 유지보수 및 운용을 편리하게 할 수 있다.
-- REST는 HTTP 표준을 기반으로 구현하므로, HTTP를 지원하는 프로그램 언어로 클라이언트, 서버를 구현할 수 있다.
-  - 자바, C#, 웹 등
+-   REST 기반으로 시스템을 분산해 확장성과 재사용성을 높여 유지보수 및 운용을 편리하게 할 수 있다.
+-   REST는 HTTP 표준을 기반으로 구현하므로, HTTP를 지원하는 프로그램 언어로 클라이언트, 서버를 구현할 수 있다.
+    -   자바, C#, 웹 등
 
 <br />
 
@@ -35,16 +35,19 @@ URI를 통해 자원을 표시하고, HTTP Method를 이용하여 해당 자원�
 
 ### 자원(Resource): URI
 
-- 모든 자원에 고유한 ID가 존재하고, 이 자원은 Server에 존재한다.
-- 자원을 구별하는 ID는 ‘/groups/:group_id’와 같은 HTTP URI 다.
-- Client는 URI를 이용해서 자원을 지정하고 해당 자원의 상태(정보)에 대한 조작을 Server에 요청한다.
+-   모든 자원에 고유한 ID가 존재하고, 이 자원은 Server에 존재한다.
+-   자원을 구별하는 ID는 ‘/groups/:group_id’와 같은 HTTP URI 다.
+-   Client는 URI를 이용해서 자원을 지정하고 해당 자원의 상태(정보)에 대한 조작을 Server에 요청한다.
+
+http://myweb/users와 같은 URI
+모든 것을 Resource (명사)로 표현하고, 세부 Resource에는 id를 붙임
 
 <br />
 
 ### 행위(Verb): HTTP Method
 
-- HTTP 프로토콜의 Method를 사용한다.
-- HTTP 프로토콜은 GET, POST, PUT, DELETE 와 같은 메서드를 제공한다.
+-   HTTP 프로토콜의 Method를 사용한다.
+-   HTTP 프로토콜은 GET, POST, PUT, DELETE 와 같은 메서드를 제공한다.
 
 | METHOD  | 역할                                                                                                                                               |
 | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -60,10 +63,21 @@ URI를 통해 자원을 표시하고, HTTP Method를 이용하여 해당 자원�
 
  <br/>
 
-### 표현(Representations)
+### 표현(Representations) - Message
 
-- Client가 자원의 상태(정보)에 대한 조작을 요청하면 Server는 이에 적절한 응답(Representation)을 보낸다.
-- REST에서 하나의 자원은 JSON, XML, TEXT, RSS 등 여러 형태의 Representation으로 나타내어 질 수 있다.
+-   Client가 자원의 상태(정보)에 대한 조작을 요청하면 Server는 이에 적절한 응답(Representation)을 보낸다.
+-   REST에서 하나의 자원은 JSON, XML, TEXT, RSS 등 여러 형태의 Representation으로 나타내어 질 수 있다.
+
+메시지 포맷이 존재 : JSON, XML 과 같은 형태가 있음 (최근에는 JSON 을 씀)
+
+```json
+HTTP POST, http://myweb/users/
+{
+	"users" : {
+		"name" : "terry"
+	}
+}
+```
 
 <br />
 
@@ -72,3 +86,45 @@ URI를 통해 자원을 표시하고, HTTP Method를 이용하여 해당 자원�
 <br />
 
 ![](images\2023-03-16-13-46-32.png)
+
+-   REST 특징
+
+    -   Uniform Interface
+
+        -   HTTP 표준만 맞는다면, 어떤 기술도 가능한 Interface 스타일
+
+            예) REST API 정의를 HTTP + JSON로 하였다면, C, Java, Python, IOS 플랫폼 등 특정 언어나 기술에 종속 받지 않고, 모든 플랫폼에 사용이 가능한 Loosely Coupling 구조
+
+        -   포함
+
+            -   Self-Descriptive Messages
+
+                -   API 메시지만 보고, API를 이해할 수 있는 구조 (Resource, Method를 이용해 무슨 행위를 하는지 직관적으로 이해할 수 있음)
+
+            -   HATEOAS(Hypermedia As The Engine Of Application State)
+
+                -   Application의 상태(State)는 Hyperlink를 통해 전이되어야 함.
+                -   서버는 현재 이용 가능한 다른 작업에 대한 하이퍼링크를 포함하여 응답해야 함.
+
+            -   Resource Identification In Requests
+
+            -   Resource Manipulation Through Representations
+
+    -   Statelessness
+
+        -   즉, HTTP Session과 같은 컨텍스트 저장소에 **<u>상태 정보 저장 안함</u>**
+        -   **<u>Request만 Message로 처리</u>**하면 되고, 컨텍스트 정보를 신경쓰지 않아도 되므로, **<u>구현이 단순해짐</u>**.
+
+        -   따라서, REST API 실행중 실패가 발생한 경우, Transaction 복구를 위해 기존의 상태를 저장할 필요가 있다. (POST Method 제외)
+
+    -   Resource 지향 아키텍쳐 (ROA : Resource Oriented Architecture)
+
+        -   Resource 기반의 복수형 명사 형태의 정의를 권장.
+
+    -   Client-Server Architecture
+
+    -   Cache Ability
+
+    -   Layered System
+
+    -   Code On Demand(Optional)
