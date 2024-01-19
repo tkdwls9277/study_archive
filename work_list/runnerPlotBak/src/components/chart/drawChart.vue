@@ -36,7 +36,6 @@ export default Vue.extend({
      * @description bar chart와 line chart에 따라 다른 방법으로 그려주게 된다.
      */
     beforeCreateChart() {
-      console.log("chart 생성됨");
       if (!_.isEmpty(this.$route.name)) {
         this.createChart(chartData(this.dataList, this.type));
       } else {

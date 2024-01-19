@@ -3,13 +3,13 @@
     <v-container>
       <v-row justify="space-between" style="text-align: left">
         <v-col>
-          <v-form ref="form" v-model="valid" lazy-validation>
+          <v-form ref="form" lazy-validation>
             <h2 class="mb-3">평균 라인 커버리지: {{ aveLineCov }}%</h2>
             <h2 class="mb-3">평균 브랜치 커버리지: {{ aveBranCov }}%</h2>
           </v-form>
         </v-col>
         <v-col>
-          <v-form ref="form" v-model="valid" lazy-validation>
+          <v-form ref="form" lazy-validation>
             <h2>전체 소요시간: {{ totalTime }}</h2>
           </v-form>
         </v-col>

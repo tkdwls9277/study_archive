@@ -1,10 +1,12 @@
 <template>
   <div class="item">
-    <rootIndex :type="types" :projectName="projectName" :fileLocation="fileLocation" />
-    <div id="chartApp" class="small">
+    <div class="fixTop">
+      <rootIndex :type="types" :projectName="projectName" :fileLocation="fileLocation" />
       <search-chart @change="change" @switch_change="handleSwitchChange" :type="types" />
+    </div>
+    <div id="chartApp" class="small">
       <!-- dataList 배열의 수에 따라 반복적으로 그려주는 구문 -->
-      <div v-if="(response.contents && response.contents.length) != 0">
+      <div v-if="(response.contents && response.contents.length) != 0" style="padding-top: 180px">
         <!-- <v-virtual-scroll class="v-list" :item-height="50" :items="response.contents">
           <template v-slot="{ item, i }">
             <v-list-item-title>Item {{ item }}</v-list-item-title> -->
@@ -57,10 +59,7 @@ import controlAxios from "@/components/modules/controlAxios";
 import { Runner, List, Controller, hoverGrid, listitems, searchData } from "@/components/modules/dataDto.js";
 import searchChart from "@/components/search/searchChart.vue";
 import rootIndex from "@/components/scroll/rootIndex.vue";
-// import VirtualList from "vue-virtual-scroll-list";
-// import { VirtualScrollList } from "vue3-virtual-scroll-list";
-// import TriggerObserver from "@/components/modules/triggerObserver.vue";
-import testSet from "@/assets/testSet.json"; //TODO: 지우기
+// import testSet from "@/assets/testSet.json"; /**test set**/
 
 import _ from "lodash";
 import Vue from "vue";
@@ -242,15 +241,15 @@ export default Vue.extend({
         if (value.branchCov.length > 0)
           result.contents = this.searchCov(result.contents, Number(value.branchCompareNum), value.branchCov, "branch");
 
+        if (value.tag !== "") {
+          result.contents = this.searchTag(result.contents, value.tag);
+        }
+
         if (value.viewGraph !== "all") result.contents = this.skipChartData(result.contents, value.viewGraph);
 
         const foundCheckOption = value.checkboxOption.find((option) => option.id === "legacy");
         if (foundCheckOption?.enabled) {
           result.contents = this.findLegacyData(result.contents);
-        }
-
-        if (value.tag !== "") {
-          result.contents = this.searchTag(result.contents, value.tag);
         }
 
         this.response = result;
@@ -497,5 +496,14 @@ export default Vue.extend({
   border: 1px #3399dd solid;
   color: "primary";
   margin: 20px;
+}
+.fixTop {
+  position: fixed;
+  width: 84vw;
+  text-align: center;
+  top: 64px;
+  background: rgb(255, 255, 255);
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 </style>

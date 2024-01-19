@@ -64,7 +64,7 @@ export function getUrl(type: string) {
 
 // TODO: json 파일로 빼서 URL주소 지정하기
 function getApiUrl() {
-  // return "12348";
+  return "12348"; // TODO: 지우기
   if (~window.location.href.indexOf("12347")) {
     return "12348";
   } else {
@@ -75,7 +75,7 @@ function getApiUrl() {
 export async function deleteData(deleteAxiosData: deleteAxiosData) {
   const serverPort = deleteAxiosData.serverPort || getApiUrl();
   return await axios
-    .get("http://10.0.1.60:13467/api/v1/plot/delete", {
+    .get("http://10.0.1.60:12348/api/v1/plot/delete", {
       params: {
         projectName: deleteAxiosData.projectName,
         consumeTime: deleteAxiosData.consumeTime,

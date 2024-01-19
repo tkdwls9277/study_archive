@@ -14,6 +14,9 @@ interface dataSetDto {
   cov: object[];
   engineHash: string[];
   tag: string[];
+  os: string[];
+  cores: string[];
+  strategy: string[];
 }
 
 interface barChartDto {
@@ -83,9 +86,19 @@ export default function lineChartData(dataList: List, type: string) {
           },
           afterLabel: function (tooltipItems: { datasetIndex: number; index: string | number }) {
             if (tooltipItems.datasetIndex + 1 == dataSet.cov.length) {
-              return (
-                "version: " + dataSet.engineHash[tooltipItems.index] + "\n" + "tag: " + dataSet.tag[tooltipItems.index]
-              );
+              let text =
+                "version: " + dataSet.engineHash[tooltipItems.index] + "\n" + "tag: " + dataSet.tag[tooltipItems.index];
+
+              if (dataSet.strategy[tooltipItems.index] != undefined) {
+                text += "\nstrategy: " + dataSet.strategy[tooltipItems.index];
+              }
+              if (dataSet.os[tooltipItems.index] != undefined) {
+                text += "\nos: " + dataSet.os[tooltipItems.index];
+              }
+              if (dataSet.cores[tooltipItems.index] != undefined) {
+                text += "\ncores: " + dataSet.cores[tooltipItems.index];
+              }
+              return text;
             }
           },
         },
@@ -175,12 +188,19 @@ function makeLineDatasets(dataList: List, type: string): dataSetDto {
   const labels: string[] = [],
     lineCov: number[] = [],
     branchCov: number[] = [],
+    pairCov: number[] = [],
     dateCov: number[] = [],
     engineHash: string[] = [],
     branchTotal: number[] = [],
     tag: string[] = [],
+    os: string[] = [],
+    cores: string[] = [],
+    strategy: string[] = [],
     branchFlag = formatData.list.find(function (item) {
       return item.branchTotal !== 0;
+    }),
+    pairFlag = formatData.list.find(function (item) {
+      return item.pairTotal !== 0;
     });
 
   formatData.list.forEach((item: Controller) => {
@@ -197,10 +217,14 @@ function makeLineDatasets(dataList: List, type: string): dataSetDto {
     lineCov.push(item.lineCoverage);
     engineHash.push(item.engineHash);
     tag.push(item.tag);
+    os.push(item.os);
+    cores.push(item.cores);
+    strategy.push(item.strategy);
     // branch total이 없는 경우 브런치커버리지는 표시하지 않음 (하나라도 있는 경우 나머지를 number.nan으로 표시하지 않도록 함 branchFlag)
     item.branchTotal !== 0 ? branchCov.push(item.branchCoverage) : branchFlag ? branchCov.push(Number.NaN) : null;
-
     item.branchTotal !== 0 ? branchTotal.push(item.branchTotal) : branchFlag ? branchTotal.push(Number.NaN) : null;
+
+    item.pairTotal !== 0 ? pairCov.push(item.pairCoverage) : pairFlag ? pairCov.push(Number.NaN) : null;
 
     // consumeTime이 있는 경우만 넣어주기
     item.consumeTime && dateCov.push(makeSec(item.consumeTime));
@@ -249,6 +273,22 @@ function makeLineDatasets(dataList: List, type: string): dataSetDto {
     });
   }
 
+  if (!_.isEmpty(pairCov)) {
+    cov.push({
+      label: "pairCoverage",
+      yAxisID: "A",
+      fill: false,
+      backgroundColor: "rgba(217, 175, 0, 1)",
+      borderColor: "rgb(217, 175, 26)",
+      borderDash: [10, 0],
+      pointStyle: "rect",
+      pointHitRadius: 18,
+      lineTension: 0, //선 곡선모양 0이면 직선
+      datalabels: makeDataLabels("pairCoverage", hignIndex, formatData.list.length),
+      data: pairCov,
+    });
+  }
+
   if (!_.isEmpty(dateCov)) {
     cov.push({
       label: "consumeTime",
@@ -270,8 +310,8 @@ function makeLineDatasets(dataList: List, type: string): dataSetDto {
       label: "branchTotal",
       yAxisID: "B",
       fill: false,
-      backgroundColor: "rgba(204, 153, 204, 1)",
-      borderColor: "rgb(204, 153, 204)",
+      backgroundColor: "rgba(204, 111, 204, 1)",
+      borderColor: "rgb(204, 111, 204)",
       borderDash: [3, 5],
       pointStyle: "star",
       pointHitRadius: 18,
@@ -287,6 +327,9 @@ function makeLineDatasets(dataList: List, type: string): dataSetDto {
     cov,
     engineHash,
     tag,
+    os,
+    cores,
+    strategy,
   };
 }
 

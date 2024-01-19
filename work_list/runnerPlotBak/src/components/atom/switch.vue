@@ -1,6 +1,14 @@
 <template>
   <v-container>
-    <v-switch @change="onChange" v-model="isChecked" :label="label" :disabled="disabled" :style="userStyle"> </v-switch>
+    <v-switch
+      :id="userId"
+      @change="onChange"
+      v-model="isChecked"
+      :label="label"
+      :disabled="disabled"
+      :style="userStyle"
+    >
+    </v-switch>
   </v-container>
 </template>
 
@@ -29,15 +37,19 @@ export default Vue.extend({
       type: String,
       default: "",
     },
+    userId: {
+      type: String,
+      default: "switch",
+    },
   },
   data() {
     return {
       isChecked: this.value,
     };
   },
+  // created() {},
   methods: {
     onChange(val: string) {
-      console.log("여기 확인");
       this.$emit("switch_change", val);
     },
   },
