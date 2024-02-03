@@ -21,6 +21,24 @@
 
 - MView관련 기초 테이블을 변경하면, MView로 생성된 Summary 테이블도 변경 됩니다.
 
+### 인덱스와 유사한 특징
+
+1. 실제 데이터를 갖고 공간 차지
+
+ 2. master table의 데이터가 변할 때 refresh 될 수 있음.
+
+ 3. query rewrite operation이 사용될 때 SQL 실행 성능 향상
+
+ 4. SQL 응용 프로그램과 사용자에게 명확하다.
+
+### 뷰와 유사한 특징
+
+1. table과 view에 있는 데이터를 나타냄
+
+2. index와 달리 사용자들이 select문을 통해 직접적으로 materialized view를 조회 가능.
+
+3. refresh type에 따라 DML로 update 가능
+
 <br/>
 
 ## 일반 View와 차이점
@@ -46,3 +64,29 @@
     ENFORCED : QUERY_REWRITE_INTEGRITY 의 기본값으로, 사용자가 Integrity Constraint를 확인하여야 합니다.
 
 - COMPATIBLE : 사용할 수 있는 오라클 함수들의 Compatibility를 결정하는 값으로 8.1.0 또는 그 이상으로 설정 해야 합니다.
+
+<br/>
+
+## refresh 방법
+
+1. fast refresh
+
+- 정기적인 시간 간격 또는 원할 때 refresh 가능
+
+- master table의 변화는 transaction이 commit 될 때마다 refresh될 수 있음.
+
+- A materialized view log is a schema object that records changes to master table data so that a materialized view defined on the master table can be refreshed incrementally.
+
+- 요약하면 fast refresh를 위한 materialized view log가 있고 이 materialized view log때문에 점진적으로 refresh 가능(매번 처음부터가 아니라)
+
+​
+
+2. complete refresh
+
+- 느리다(특히, 많은 양의 데이터를 처리하고 읽어야 한다면..)
+
+- materialized view가 사전 빌드 된 테이블을 참조하지 않는 한 materialized view는 
+
+    처음 BUILD IMMEDIATE로 정의될 때 complete refresh가 발생합니다. 
+
+    refresh에는 materialized view를 정의하는 쿼리 실행이 포함됨.
