@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "My Momentum Style New Tab",
+  "version": "1.0.0",
+  "description": "React + TS 기반 모멘텀 스타일 새 탭 확장",
+  "icons": {
+    "128": "./icons/icon128.png"
+  },
+  "chrome_url_overrides": {
+    "newtab": "newtab.html"
+  },
+  "options_page": "options.html",
+  "permissions": ["storage"]
+}
