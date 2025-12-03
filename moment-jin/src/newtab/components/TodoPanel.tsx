@@ -54,11 +54,9 @@ export const TodoPanel: React.FC<TodoPanelProps> = ({
   return (
     <aside className={`todo-panel ${isOpen ? "open" : "collapsed"}`}>
       <div className="panel-header panel-header-right" onClick={onToggle} style={{ cursor: "pointer" }}>
-        {isOpen && (
-          <span className="panel-title">
-            📝 {t.todo.title} ({remainingCount}/{todos.length})
-          </span>
-        )}
+        <span className="panel-title">
+          📝 {t.todo.title} ({remainingCount}/{todos.length})
+        </span>
         <button
           className="panel-toggle-btn"
           onClick={(e) => {

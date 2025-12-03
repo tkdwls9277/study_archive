@@ -75,6 +75,7 @@ body,
   display: flex;
   flex-direction: row;
   align-items: stretch;
+  overflow: hidden;
 }
 
 /* 세로 화면 (높이가 너비보다 긴 경우) */
@@ -82,21 +83,39 @@ body,
   .app-content {
     flex-direction: column;
     overflow-y: auto;
+    overflow-x: hidden;
   }
 
   .favorites-panel,
   .todo-panel,
   .work-panel {
     width: 100% !important;
-    max-height: 40vh;
+    flex-shrink: 0;
     border-right: none;
     border-left: none;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  /* 펼쳐진 패널의 최대 높이 제한 */
+  .favorites-panel.open,
+  .todo-panel.open,
+  .work-panel.open {
+    max-height: 25vh;
     overflow-y: auto;
   }
 
+  /* 접힌 패널은 높이 자동 */
+  .favorites-panel.collapsed,
+  .todo-panel.collapsed,
+  .work-panel.collapsed {
+    max-height: none;
+    overflow: visible;
+  }
+
   .app-main {
-    min-height: 60vh;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
   }
 }
 
@@ -241,6 +260,13 @@ body,
 .favorites-panel.collapsed .panel-header {
   margin-bottom: 8px;
   justify-content: center;
+}
+
+/* 데스크톱에서 접힌 상태일 때 타이틀 숨김 */
+.favorites-panel.collapsed .panel-title,
+.todo-panel.collapsed .panel-title,
+.work-panel.collapsed .panel-title {
+  display: none;
 }
 
 .panel-header-right {
@@ -522,70 +548,19 @@ body,
 }
 
 .app-time {
-  font-size: 120px;
-  font-weight: 200;
+  font-size: 160px;
+  font-weight: 100;
   line-height: 1;
-  letter-spacing: -0.02em;
-  margin-bottom: 20px;
-}
-
-/* 구글 검색창 */
-.google-search-form {
-  width: 100%;
-  max-width: 900px;
-  margin: 35px auto;
-}
-
-.google-search-wrapper {
-  position: relative;
-  width: 100%;
-}
-
-.google-search-icon {
-  position: absolute;
-  left: 24px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 24px;
-  height: 24px;
-  color: rgba(255, 255, 255, 0.5);
-  pointer-events: none;
-  z-index: 10;
-}
-
-.google-search-input {
-  width: 100%;
-  padding: 20px 28px 20px 60px;
-  font-size: 18px;
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 50px;
-  outline: none;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
-  font-weight: 300;
-}
-
-.google-search-input::placeholder {
-  color: rgba(255, 255, 255, 0.4);
-}
-
-.google-search-input:focus {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.25);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-}
-
-.google-search-input:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.18);
+  letter-spacing: -0.03em;
+  margin-bottom: 24px;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 .app-greeting {
-  font-size: 28px;
+  font-size: 32px;
   font-weight: 300;
-  opacity: 0.9;
+  opacity: 0.95;
+  margin-bottom: 16px;
 }
 
 /* 핵심 목표 */
@@ -597,57 +572,58 @@ body,
   gap: 0;
   width: 100%;
   max-width: 900px;
-  margin-top: 32px;
+  margin-top: 40px;
 }
 
 .app-focus-label {
-  font-size: 12px;
-  opacity: 0.4;
+  font-size: 14px;
+  opacity: 0.5;
   font-weight: 300;
-  letter-spacing: 1px;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 .app-focus-input {
-  padding: 8px 20px;
-  border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  background: rgba(255, 255, 255, 0.02);
-  backdrop-filter: blur(5px);
+  padding: 12px 24px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(8px);
   outline: none;
-  font-size: 13px;
+  font-size: 18px;
   width: 100%;
-  max-width: 400px;
-  color: rgba(255, 255, 255, 0.7);
+  max-width: 500px;
+  color: rgba(255, 255, 255, 0.8);
   text-align: center;
   transition: all 0.2s;
   font-weight: 300;
 }
 
 .app-focus-input::placeholder {
-  color: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.25);
   font-weight: 300;
-  font-size: 12px;
+  font-size: 16px;
 }
 
 .app-focus-input:focus {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.12);
-  color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.95);
 }
 
 .app-focus-display {
-  font-size: 20px;
+  font-size: 28px;
   opacity: 0.95;
   font-weight: 300;
-  padding: 16px 32px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%);
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  margin-top: 20px;
-  letter-spacing: 0.3px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 20px 40px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  margin-top: 24px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(12px);
 }
 
 /* ========= 우측 투두 패널 ========= */
@@ -1423,11 +1399,16 @@ body,
 
 @media (max-width: 1200px) {
   .app-time {
-    font-size: 96px;
+    font-size: 120px;
   }
 
   .app-greeting {
+    font-size: 28px;
+  }
+
+  .app-focus-display {
     font-size: 24px;
+    padding: 18px 36px;
   }
 }
 
@@ -1439,17 +1420,24 @@ body,
   }
 
   .app-time {
-    font-size: 80px;
+    font-size: 100px;
   }
 
   .app-greeting {
-    font-size: 20px;
+    font-size: 24px;
+  }
+
+  .app-focus-display {
+    font-size: 22px;
+    padding: 16px 32px;
   }
 }
 
 @media (max-width: 768px) {
   .app-content {
     flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 
   .favorites-panel,
@@ -1459,6 +1447,25 @@ body,
     padding: 12px;
     border: none;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    flex-shrink: 0;
+  }
+
+  /* 펼쳐진 패널에 최대 높이와 스크롤 적용 */
+  .favorites-panel.open,
+  .todo-panel.open,
+  .work-panel.open {
+    max-height: 25vh;
+    overflow-y: auto;
+  }
+
+  /* 접힌 패널은 높이 제한 없음 */
+  .favorites-panel.collapsed,
+  .todo-panel.collapsed,
+  .work-panel.collapsed {
+    max-height: none;
+    overflow: visible;
+    background: rgba(0, 0, 0, 0.15);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
   }
 
   /* 접힌 패널의 텍스트를 가로로 표시 */
@@ -1473,19 +1480,54 @@ body,
 
   .collapsed-indicator {
     padding: 8px 0;
+    display: none;
+  }
+
+  /* 접힌 상태에서 패널 헤더를 한 줄로 정렬하고 타이틀 표시 */
+  .favorites-panel.collapsed .panel-header,
+  .todo-panel.collapsed .panel-header,
+  .work-panel.collapsed .panel-header {
+    justify-content: flex-start;
+    margin-bottom: 0;
+    gap: 12px;
+  }
+
+  /* 접힌 상태에서도 타이틀 표시 */
+  .favorites-panel.collapsed .panel-title,
+  .todo-panel.collapsed .panel-title,
+  .work-panel.collapsed .panel-title {
+    display: block;
+    font-size: 13px;
+    opacity: 0.8;
+  }
+
+  /* 접힌 상태의 즐겨찾기 리스트를 가로로 배치 */
+  .favorites-list-collapsed {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 8px;
+    padding: 8px 0;
   }
 
   .app-main {
     flex: 1;
     padding: 20px;
+    min-height: 0;
+    overflow-y: auto;
   }
 
   .app-time {
-    font-size: 64px;
+    font-size: 80px;
   }
 
   .app-greeting {
-    font-size: 18px;
+    font-size: 20px;
+  }
+
+  .app-focus-display {
+    font-size: 20px;
+    padding: 14px 28px;
   }
 
   .work-check-buttons {
@@ -1493,23 +1535,83 @@ body,
   }
 
   .work-panel.open {
-    max-height: 300px;
+    max-height: 25vh;
   }
 }
 
 /* 세로 모니터 또는 세로 방향 레이아웃 (높이가 너비보다 큰 경우) */
 @media (max-aspect-ratio: 1/1) {
   .app-content {
-    flex-direction: column;
+    flex-direction: row !important;
+    flex-wrap: wrap;
+    overflow-y: auto;
+    overflow-x: hidden;
+    align-items: flex-start;
   }
 
   .favorites-panel,
   .todo-panel,
   .work-panel {
-    width: 100% !important;
+    width: auto !important;
+    min-width: 250px;
+    max-width: 320px;
+    flex: 1 1 250px;
     padding: 12px;
     border: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+    flex-shrink: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+
+  .favorites-panel {
+    border-left: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .work-panel {
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  /* 펼쳐진 패널에 최대 높이와 스크롤 적용 */
+  .favorites-panel.open,
+  .todo-panel.open,
+  .work-panel.open {
+    max-height: 100vh;
+    overflow-y: auto;
+  }
+
+  /* 접힌 패널은 높이 제한 없음 */
+  .favorites-panel.collapsed,
+  .todo-panel.collapsed,
+  .work-panel.collapsed {
+    max-height: 100vh;
+    overflow: visible;
+    background: rgba(0, 0, 0, 0.15);
+    border-right: 1px solid rgba(255, 255, 255, 0.15);
+    min-width: 60px;
+    width: 60px !important;
+    flex: 0 0 60px;
+  }
+
+  /* 메인 영역 조정 */
+  .app-main {
+    flex: 1 1 auto;
+    min-width: 300px;
+    padding: 20px;
+    order: 0;
+  }
+
+  /* 패널 순서 조정 */
+  .favorites-panel {
+    order: -1;
+  }
+
+  .todo-panel {
+    order: 1;
+  }
+
+  .work-panel {
+    order: 2;
   }
 
   /* 접힌 패널의 텍스트를 가로로 표시 */
@@ -1528,5 +1630,35 @@ body,
 
   .panel-header {
     margin-bottom: 8px;
+  }
+
+  /* 접힌 상태에서 패널 헤더를 한 줄로 정렬하고 타이틀 숨김 */
+  .favorites-panel.collapsed .panel-header,
+  .todo-panel.collapsed .panel-header,
+  .work-panel.collapsed .panel-header {
+    justify-content: flex-start !important;
+    margin-bottom: 0 !important;
+    gap: 12px;
+  }
+
+  /* 접힌 상태에서는 타이틀 숨김 (세로 모니터에서도) */
+  .favorites-panel.collapsed .panel-title,
+  .todo-panel.collapsed .panel-title,
+  .work-panel.collapsed .panel-title {
+    display: none !important;
+  }
+
+  /* 접힌 상태의 즐겨찾기 리스트를 가로로 배치 */
+  .favorites-list-collapsed {
+    flex-direction: row !important;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 8px;
+    padding: 8px 0;
+  }
+
+  /* 접힌 패널의 indicator 숨김 */
+  .collapsed-indicator {
+    display: none !important;
   }
 }

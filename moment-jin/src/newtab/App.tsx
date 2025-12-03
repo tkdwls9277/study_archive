@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { FavoritesPanel } from "./components/FavoritesPanel";
 import { FocusInput } from "./components/FocusInput";
-import { SearchBar, type SearchBarRef } from "./components/SearchBar";
 import { TodoPanel } from "./components/TodoPanel";
 import { WorkPanel } from "./components/WorkPanel";
 import { FavoriteModal } from "./components/modals/FavoriteModal";
@@ -29,8 +28,6 @@ export const App: React.FC = () => {
 
   const [focus, setFocus] = useState("");
   const [focusInputValue, setFocusInputValue] = useState("");
-
-  const [searchQuery, setSearchQuery] = useState("");
 
   const [todos, setTodos] = useState<Todo[]>([]);
   const [newTodoText, setNewTodoText] = useState("");
@@ -70,7 +67,6 @@ export const App: React.FC = () => {
   const [optionsShowWork, setOptionsShowWork] = useState(true);
 
   const todoRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
-  const searchBarRef = useRef<SearchBarRef>(null);
 
   // ===== 배경 그라디언트 =====
   const background = useMemo(() => {
@@ -111,12 +107,6 @@ export const App: React.FC = () => {
     const timer = setInterval(updateTimeAndGreeting, 1000 * 30);
     return () => clearInterval(timer);
   }, [userName]);
-
-  // ===== 검색 핸들러 =====
-  const handleSearchSubmit = (query: string) => {
-    if (!query) return;
-    window.location.href = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
-  };
 
   // ===== Focus 핸들러 =====
   const handleFocusKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
@@ -190,8 +180,6 @@ export const App: React.FC = () => {
 
   const closeFavModal = () => {
     setIsFavModalOpen(false);
-    // 모달 닫힌 후 검색창으로 포커스 이동
-    setTimeout(() => searchBarRef.current?.focus(), 100);
   };
 
   const handleSubmitFavorite = () => {
@@ -268,8 +256,6 @@ export const App: React.FC = () => {
 
   const closeTimeEditModal = () => {
     setIsTimeEditModalOpen(false);
-    // 모달 닫힌 후 검색창으로 포커스 이동
-    setTimeout(() => searchBarRef.current?.focus(), 100);
   };
 
   const handleSaveTimeEdit = () => {
@@ -314,8 +300,6 @@ export const App: React.FC = () => {
 
   const closeOptionsModal = () => {
     setIsOptionsModalOpen(false);
-    // 모달 닫힌 후 검색창으로 포커스 이동
-    setTimeout(() => searchBarRef.current?.focus(), 100);
   };
 
   const handleSaveOptions = () => {
@@ -361,9 +345,6 @@ export const App: React.FC = () => {
           <div className="app-top">
             <div className="app-time">{time}</div>
             <div className="app-greeting">{greeting}</div>
-
-            {/* 구글 검색창 */}
-            <SearchBar ref={searchBarRef} value={searchQuery} onChange={setSearchQuery} onSubmit={handleSearchSubmit} />
 
             {/* 오늘의 목표 */}
             <FocusInput

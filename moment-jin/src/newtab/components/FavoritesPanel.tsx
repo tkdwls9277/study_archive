@@ -154,20 +154,18 @@ export const FavoritesPanel: React.FC<FavoritesPanelProps> = ({
         >
           {isOpen ? "◀" : "▶"}
         </button>
+        <span className="panel-title">{t.favorites.title}</span>
         {isOpen && (
-          <>
-            <span className="panel-title">{t.favorites.title}</span>
-            <button
-              className="panel-icon-btn"
-              onClick={(e) => {
-                e.stopPropagation();
-                onAddClick();
-              }}
-              aria-label={t.favorites.add}
-            >
-              ＋
-            </button>
-          </>
+          <button
+            className="panel-icon-btn"
+            onClick={(e) => {
+              e.stopPropagation();
+              onAddClick();
+            }}
+            aria-label={t.favorites.add}
+          >
+            ＋
+          </button>
         )}
       </div>
       {!isOpen && (

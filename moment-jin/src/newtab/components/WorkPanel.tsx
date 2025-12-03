@@ -64,7 +64,7 @@ export const WorkPanel: React.FC<WorkPanelProps> = ({
   return (
     <aside className={`work-panel ${isOpen ? "open" : "collapsed"}`}>
       <div className="panel-header panel-header-right" onClick={onToggle} style={{ cursor: "pointer" }}>
-        {isOpen && <span className="panel-title">📊 {t.work.title}</span>}
+        <span className="panel-title">📊 {t.work.title}</span>
         <button
           className="panel-toggle-btn"
           onClick={(e) => {
