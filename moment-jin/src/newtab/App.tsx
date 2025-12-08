@@ -12,6 +12,7 @@ import { useTranslation } from "./hooks/useTranslation";
 import { FavoriteService } from "./services/favoriteService";
 import { StorageService } from "./services/storageService";
 import { TodoService } from "./services/todoService";
+import { UnsplashService } from "./services/unsplashService";
 import { WorkService } from "./services/workService";
 import type { Favorite, Todo, WorkRecord } from "./types/index";
 import { formatDate } from "./utils/date";
@@ -68,8 +69,30 @@ export const App: React.FC = () => {
 
   const todoRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
-  // ===== 배경 그라디언트 =====
-  const background = useMemo(() => {
+  // ===== 배경 이미지 =====
+  const [backgroundImage, setBackgroundImage] = useState<string>("");
+
+  // 배경 이미지 로드 (시간별로 다른 이미지, 같은 시간에는 캐시 사용)
+  useEffect(() => {
+    const loadBackground = async () => {
+      // 캐시된 이미지 먼저 확인
+      const cached = UnsplashService.getCachedPhotoUrl();
+      if (cached) {
+        setBackgroundImage(cached);
+        return;
+      }
+
+      // 새 이미지 가져오기
+      const url = await UnsplashService.getRandomNaturePhoto();
+      setBackgroundImage(url);
+      UnsplashService.cachePhotoUrl(url);
+    };
+
+    loadBackground();
+  }, []);
+
+  // 폴백 그라디언트 (이미지 로딩 전)
+  const fallbackBackground = useMemo(() => {
     const idx = Math.floor(Math.random() * GRADIENTS.length);
     return GRADIENTS[idx];
   }, []);
@@ -117,6 +140,15 @@ export const App: React.FC = () => {
       setFocusInputValue("");
       StorageService.saveTodayFocus(value);
     }
+  };
+
+  const handleFocusBlur = () => {
+    const value = focusInputValue.trim();
+    if (value !== focus) {
+      setFocus(value);
+      StorageService.saveTodayFocus(value);
+    }
+    setFocusInputValue("");
   };
 
   // ===== Todo 핸들러 =====
@@ -321,9 +353,19 @@ export const App: React.FC = () => {
   // ===== 오늘의 출퇴근 기록 =====
   const todayRecord = workRecords.find((r) => r.date === formatDate(new Date()));
 
+  // 배경 스타일
+  const backgroundStyle = backgroundImage
+    ? {
+        backgroundImage: `url(${backgroundImage})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }
+    : { background: fallbackBackground };
+
   return (
     <div className="app-root">
-      <div className="app-bg" style={{ background }} />
+      <div className="app-bg" style={backgroundStyle} />
 
       <div className="app-content">
         {/* 좌측 즐겨찾기 패널 */}
@@ -352,6 +394,7 @@ export const App: React.FC = () => {
               focusInputValue={focusInputValue}
               onFocusInputChange={setFocusInputValue}
               onFocusKeyDown={handleFocusKeyDown}
+              onFocusBlur={handleFocusBlur}
             />
 
             {/* 출퇴근 체크 */}

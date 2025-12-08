@@ -6,6 +6,28 @@
   box-sizing: border-box;
 }
 
+/* 전역 드래그 방지 */
+button,
+[role="button"],
+label,
+.panel-header,
+.panel-title {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  cursor: pointer;
+}
+
+input,
+textarea {
+  -webkit-user-select: auto;
+  -moz-user-select: auto;
+  -ms-user-select: auto;
+  user-select: auto;
+}
+
 html,
 body,
 #root {
@@ -68,6 +90,15 @@ body,
   transition: background 0.6s ease;
 }
 
+/* 배경 위 어두운 오버레이 (가독성 향상) */
+.app-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(0.5px);
+}
+
 .app-content {
   position: relative;
   z-index: 1;
@@ -125,9 +156,9 @@ body,
   display: flex;
   flex-direction: column;
   padding: 14px;
-  background: rgba(0, 0, 0, 0.28);
-  backdrop-filter: blur(12px);
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(16px);
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
   transition: width 0.25s ease, padding 0.25s ease;
   overflow: hidden;
 }
@@ -220,10 +251,11 @@ body,
   bottom: 24px;
   left: 24px;
   padding: 14px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 12px;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.95);
   font-size: 22px;
   cursor: pointer;
   transition: all 0.2s;
@@ -232,14 +264,14 @@ body,
   align-items: center;
   justify-content: center;
   z-index: 100;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 .settings-btn:hover {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.65);
+  border-color: rgba(255, 255, 255, 0.3);
   transform: scale(1.1);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
 }
 
 .settings-btn:active {
@@ -553,7 +585,7 @@ body,
   line-height: 1;
   letter-spacing: -0.03em;
   margin-bottom: 24px;
-  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
 .app-greeting {
@@ -561,6 +593,7 @@ body,
   font-weight: 300;
   opacity: 0.95;
   margin-bottom: 16px;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4), 0 1px 4px rgba(0, 0, 0, 0.3);
 }
 
 /* 핵심 목표 */
@@ -587,29 +620,46 @@ body,
 .app-focus-input {
   padding: 12px 24px;
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.04);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(8px);
   outline: none;
   font-size: 18px;
   width: 100%;
   max-width: 500px;
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.9);
   text-align: center;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
   font-weight: 300;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .app-focus-input::placeholder {
-  color: rgba(255, 255, 255, 0.25);
+  color: rgba(255, 255, 255, 0.4);
   font-weight: 300;
   font-size: 16px;
 }
 
 .app-focus-input:focus {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.15);
-  color: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.35);
+  color: rgba(255, 255, 255, 1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2), 0 0 0 3px rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.app-focus-input:hover:not(:focus) {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.app-focus-display-container {
+  position: relative;
+  display: inline-block;
+  margin-top: 16px;
+  width: 100%;
+  max-width: 600px;
+  cursor: pointer;
 }
 
 .app-focus-display {
@@ -617,13 +667,26 @@ body,
   opacity: 0.95;
   font-weight: 300;
   padding: 20px 40px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.03) 100%);
   border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  margin-top: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   letter-spacing: 0.5px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-  backdrop-filter: blur(12px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+  word-break: break-word;
+}
+
+.app-focus-display-container:hover .app-focus-display {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.07) 100%);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.app-focus-display-container:active .app-focus-display {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* ========= 우측 투두 패널 ========= */
@@ -632,9 +695,9 @@ body,
   display: flex;
   flex-direction: column;
   padding: 14px;
-  background: rgba(0, 0, 0, 0.28);
-  backdrop-filter: blur(12px);
-  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(16px);
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
   transition: width 0.25s ease, padding 0.25s ease;
   overflow: hidden;
 }
@@ -1143,9 +1206,9 @@ body,
   display: flex;
   flex-direction: column;
   padding: 14px;
-  background: rgba(0, 0, 0, 0.28);
-  backdrop-filter: blur(12px);
-  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(16px);
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
   transition: width 0.25s ease, padding 0.25s ease;
   overflow: hidden;
 }
@@ -1483,8 +1546,7 @@ body,
     display: none;
   }
 
-  /* 접힌 상태에서 패널 헤더를 한 줄로 정렬하고 타이틀 표시 */
-  .favorites-panel.collapsed .panel-header,
+  /* 접힌 상태에서 패널 헤더를 한 줄로 정렬 */
   .todo-panel.collapsed .panel-header,
   .work-panel.collapsed .panel-header {
     justify-content: flex-start;
@@ -1492,22 +1554,12 @@ body,
     gap: 12px;
   }
 
-  /* 접힌 상태에서도 타이틀 표시 */
-  .favorites-panel.collapsed .panel-title,
+  /* 접힌 상태에서도 타이틀 표시 (할일, 근무기록만) */
   .todo-panel.collapsed .panel-title,
   .work-panel.collapsed .panel-title {
     display: block;
     font-size: 13px;
     opacity: 0.8;
-  }
-
-  /* 접힌 상태의 즐겨찾기 리스트를 가로로 배치 */
-  .favorites-list-collapsed {
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    gap: 8px;
-    padding: 8px 0;
   }
 
   .app-main {
@@ -1542,76 +1594,145 @@ body,
 /* 세로 모니터 또는 세로 방향 레이아웃 (높이가 너비보다 큰 경우) */
 @media (max-aspect-ratio: 1/1) {
   .app-content {
-    flex-direction: row !important;
-    flex-wrap: wrap;
-    overflow-y: auto;
-    overflow-x: hidden;
-    align-items: flex-start;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr auto;
+    overflow: hidden;
+    height: 100vh;
   }
 
-  .favorites-panel,
-  .todo-panel,
-  .work-panel {
-    width: auto !important;
-    min-width: 250px;
-    max-width: 320px;
-    flex: 1 1 250px;
+  /* 즐겨찾기 패널 - 첫 번째 행, 전체 너비 */
+  .favorites-panel {
+    grid-column: 1 / 3;
+    grid-row: 1;
+    width: 100% !important;
+    padding: 12px;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* 접힌 즐겨찾기는 flex-row로 변경 */
+  .favorites-panel.collapsed {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    max-height: 60px;
+  }
+
+  .favorites-panel .panel-header {
+    flex-shrink: 0;
+  }
+
+  /* 접힌 상태에서 헤더를 flex-row로 */
+  .favorites-panel.collapsed .panel-header {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 0;
+  }
+
+  /* 접힌 상태에서 타이틀 숨김 */
+  .favorites-panel.collapsed .panel-title {
+    display: none;
+  }
+
+  .favorites-panel .favorites-list {
+    overflow-y: auto;
+    flex: 1;
+    min-height: 0;
+  }
+
+  /* 접힌 상태의 즐겨찾기 리스트를 가로로 배치 */
+  .favorites-panel.collapsed .favorites-list-collapsed {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    padding: 0;
+    overflow-x: visible;
+    overflow-y: visible;
+    flex: 1;
+    align-items: center;
+  }
+
+  /* 메인 영역 - 두 번째 행, 전체 너비 */
+  .app-main {
+    grid-column: 1 / 3;
+    grid-row: 2;
+    width: 100% !important;
+    padding: 20px;
+    overflow-y: auto;
+  }
+
+  /* 할일 패널 - 세 번째 행 */
+  .todo-panel {
+    grid-column: 1; /* 항상 왼쪽 */
+    grid-row: 3;
+    width: 100% !important;
     padding: 12px;
     border: none;
     border-right: 1px solid rgba(255, 255, 255, 0.08);
-    flex-shrink: 0;
-    height: 100vh;
-    overflow-y: auto;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    align-self: start; /* 자신의 높이만큼만 차지 */
   }
 
-  .favorites-panel {
-    border-left: 1px solid rgba(255, 255, 255, 0.08);
-  }
-
+  /* 근무기록 패널 - 세 번째 행 */
   .work-panel {
-    border-right: 1px solid rgba(255, 255, 255, 0.08);
+    grid-column: 2; /* 항상 오른쪽 */
+    grid-row: 3;
+    width: 100% !important;
+    padding: 12px;
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    align-self: start; /* 자신의 높이만큼만 차지 */
   }
 
   /* 펼쳐진 패널에 최대 높이와 스크롤 적용 */
-  .favorites-panel.open,
+  .favorites-panel.open {
+    max-height: 200px;
+  }
+
+  .favorites-panel.open .favorites-list {
+    overflow-y: auto;
+  }
+
   .todo-panel.open,
   .work-panel.open {
-    max-height: 100vh;
+    max-height: 600px;
     overflow-y: auto;
   }
 
   /* 접힌 패널은 높이 제한 없음 */
-  .favorites-panel.collapsed,
-  .todo-panel.collapsed,
-  .work-panel.collapsed {
-    max-height: 100vh;
+  .favorites-panel.collapsed {
+    max-height: auto;
     overflow: visible;
     background: rgba(0, 0, 0, 0.15);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  .favorites-panel.collapsed .favorites-list {
+    overflow: visible;
+  }
+
+  .todo-panel.collapsed {
+    max-height: 60px; /* 헤더 높이만 */
+    overflow: visible;
+    background: rgba(0, 0, 0, 0.15);
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
     border-right: 1px solid rgba(255, 255, 255, 0.15);
-    min-width: 60px;
-    width: 60px !important;
-    flex: 0 0 60px;
+    align-self: end; /* 하단에 정렬 */
   }
 
-  /* 메인 영역 조정 */
-  .app-main {
-    flex: 1 1 auto;
-    min-width: 300px;
-    padding: 20px;
-    order: 0;
-  }
-
-  /* 패널 순서 조정 */
-  .favorites-panel {
-    order: -1;
-  }
-
-  .todo-panel {
-    order: 1;
-  }
-
-  .work-panel {
-    order: 2;
+  .work-panel.collapsed {
+    max-height: 60px; /* 헤더 높이만 */
+    overflow: visible;
+    background: rgba(0, 0, 0, 0.15);
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    align-self: end; /* 하단에 정렬 */
   }
 
   /* 접힌 패널의 텍스트를 가로로 표시 */
@@ -1632,20 +1753,27 @@ body,
     margin-bottom: 8px;
   }
 
-  /* 접힌 상태에서 패널 헤더를 한 줄로 정렬하고 타이틀 숨김 */
+  /* 접힌 상태에서 패널 헤더를 한 줄로 정렬하고 타이틀 표시 */
   .favorites-panel.collapsed .panel-header,
   .todo-panel.collapsed .panel-header,
   .work-panel.collapsed .panel-header {
     justify-content: flex-start !important;
     margin-bottom: 0 !important;
     gap: 12px;
+    flex-direction: row !important;
   }
 
-  /* 접힌 상태에서는 타이틀 숨김 (세로 모니터에서도) */
+  /* 접힌 상태에서 타이틀을 가로로 표시 */
   .favorites-panel.collapsed .panel-title,
   .todo-panel.collapsed .panel-title,
   .work-panel.collapsed .panel-title {
-    display: none !important;
+    display: block !important;
+    writing-mode: horizontal-tb !important;
+    text-orientation: mixed;
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+    letter-spacing: 1px;
   }
 
   /* 접힌 상태의 즐겨찾기 리스트를 가로로 배치 */
