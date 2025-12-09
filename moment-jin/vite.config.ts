@@ -9,7 +9,13 @@ export default defineConfig({
     rollupOptions: {
       input: {
         newtab: resolve(__dirname, "newtab.html"),
-        options: resolve(__dirname, "options.html"),
+        background: resolve(__dirname, "src/background.ts"),
+      },
+      output: {
+        entryFileNames: (chunkInfo) => {
+          // background.ts는 background.js로 출력
+          return chunkInfo.name === "background" ? "background.js" : "assets/[name]-[hash].js";
+        },
       },
     },
     outDir: "dist",

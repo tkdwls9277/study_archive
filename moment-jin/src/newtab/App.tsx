@@ -1,101 +1,32 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import { AppHeader } from "./components/AppHeader";
 import { FavoritesPanel } from "./components/FavoritesPanel";
-import { FocusInput } from "./components/FocusInput";
+import { ModalContainer } from "./components/ModalContainer";
+import { NotificationPanel } from "./components/NotificationPanel";
 import { TodoPanel } from "./components/TodoPanel";
 import { WorkPanel } from "./components/WorkPanel";
-import { FavoriteModal } from "./components/modals/FavoriteModal";
-import { OptionsModal } from "./components/modals/OptionsModal";
-import { TimeEditModal } from "./components/modals/TimeEditModal";
 import { GRADIENTS } from "./constants/index";
+import { useAppState } from "./hooks/useAppState";
+import { useComputedValues } from "./hooks/useComputedValues";
+import { useFavoriteHandler } from "./hooks/useFavoriteHandler";
+import { useFocusHandler } from "./hooks/useFocusHandler";
+import { useOptionsModal } from "./hooks/useOptionsModal";
+import { usePanelToggle } from "./hooks/usePanelToggle";
 import { useStorage } from "./hooks/useStorage";
+import { useStorageSync } from "./hooks/useStorageSync";
+import { useTodoHandler } from "./hooks/useTodoHandler";
 import { useTranslation } from "./hooks/useTranslation";
-import { FavoriteService } from "./services/favoriteService";
-import { StorageService } from "./services/storageService";
-import { TodoService } from "./services/todoService";
+import { useWorkHandler } from "./hooks/useWorkHandler";
 import { UnsplashService } from "./services/unsplashService";
-import { WorkService } from "./services/workService";
-import type { Favorite, Todo, WorkRecord } from "./types/index";
 import { formatDate } from "./utils/date";
 import { getGreeting, getTimeString } from "./utils/index";
-import { calculateWorkMinutes, formatWorkTime } from "./utils/work";
 
 export const App: React.FC = () => {
   const { t } = useTranslation();
-
-  // ===== 상태 관리 =====
-  const [time, setTime] = useState("");
-  const [greeting, setGreeting] = useState("");
-  const [userName, setUserName] = useState<string | null>(null);
-
-  const [focus, setFocus] = useState("");
-  const [focusInputValue, setFocusInputValue] = useState("");
-
-  const [todos, setTodos] = useState<Todo[]>([]);
-  const [newTodoText, setNewTodoText] = useState("");
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  const [showCompletedTodos, setShowCompletedTodos] = useState(false);
-
-  const [favorites, setFavorites] = useState<Favorite[]>([]);
-
-  const [favoritesOpen, setFavoritesOpen] = useState(true);
-  const [todosOpen, setTodosOpen] = useState(true);
-  const [workPanelOpen, setWorkPanelOpen] = useState(true);
-
-  const [showFavoritesPanel, setShowFavoritesPanel] = useState(true);
-  const [showTodosPanel, setShowTodosPanel] = useState(true);
-  const [showWorkPanel, setShowWorkPanel] = useState(true);
-
-  const [workRecords, setWorkRecords] = useState<WorkRecord[]>([]);
-  const [weekOffset, setWeekOffset] = useState(0);
-
-  // 모달 상태
-  const [isFavModalOpen, setIsFavModalOpen] = useState(false);
-  const [favLabel, setFavLabel] = useState("");
-  const [favUrl, setFavUrl] = useState("");
-  const [favIcon, setFavIcon] = useState("");
-  const [editingFavoriteId, setEditingFavoriteId] = useState<string | null>(null);
-
-  const [isTimeEditModalOpen, setIsTimeEditModalOpen] = useState(false);
-  const [editingDate, setEditingDate] = useState("");
-  const [editingCheckIn, setEditingCheckIn] = useState("");
-  const [editingCheckOut, setEditingCheckOut] = useState("");
-  const [editingIsVacation, setEditingIsVacation] = useState(false);
-
-  const [isOptionsModalOpen, setIsOptionsModalOpen] = useState(false);
-  const [optionsUserName, setOptionsUserName] = useState("");
-  const [optionsShowFavorites, setOptionsShowFavorites] = useState(true);
-  const [optionsShowTodos, setOptionsShowTodos] = useState(true);
-  const [optionsShowWork, setOptionsShowWork] = useState(true);
-
   const todoRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
-  // ===== 배경 이미지 =====
-  const [backgroundImage, setBackgroundImage] = useState<string>("");
-
-  // 배경 이미지 로드 (시간별로 다른 이미지, 같은 시간에는 캐시 사용)
-  useEffect(() => {
-    const loadBackground = async () => {
-      // 캐시된 이미지 먼저 확인
-      const cached = UnsplashService.getCachedPhotoUrl();
-      if (cached) {
-        setBackgroundImage(cached);
-        return;
-      }
-
-      // 새 이미지 가져오기
-      const url = await UnsplashService.getRandomNaturePhoto();
-      setBackgroundImage(url);
-      UnsplashService.cachePhotoUrl(url);
-    };
-
-    loadBackground();
-  }, []);
-
-  // 폴백 그라디언트 (이미지 로딩 전)
-  const fallbackBackground = useMemo(() => {
-    const idx = Math.floor(Math.random() * GRADIENTS.length);
-    return GRADIENTS[idx];
-  }, []);
+  // ===== 상태 관리 =====
+  const state = useAppState();
 
   // ===== Storage 로드 =====
   const { data: storageData } = useStorage();
@@ -103,260 +34,159 @@ export const App: React.FC = () => {
   useEffect(() => {
     if (!storageData) return;
 
-    if (storageData.userName) setUserName(storageData.userName);
+    if (storageData.userName) state.setUserName(storageData.userName);
     if (storageData.todayFocus) {
-      setFocus(storageData.todayFocus);
-      setFocusInputValue("");
+      state.setFocus(storageData.todayFocus);
+      state.setFocusInputValue("");
     }
-    if (Array.isArray(storageData.todos)) setTodos(storageData.todos);
-    if (Array.isArray(storageData.favorites)) setFavorites(storageData.favorites);
-    if (typeof storageData.favoritesOpen === "boolean") setFavoritesOpen(storageData.favoritesOpen);
-    if (typeof storageData.todosOpen === "boolean") setTodosOpen(storageData.todosOpen);
-    if (Array.isArray(storageData.workRecords)) setWorkRecords(storageData.workRecords);
-    if (typeof storageData.workPanelOpen === "boolean") setWorkPanelOpen(storageData.workPanelOpen);
-    if (typeof storageData.showFavoritesPanel === "boolean") setShowFavoritesPanel(storageData.showFavoritesPanel);
-    if (typeof storageData.showTodosPanel === "boolean") setShowTodosPanel(storageData.showTodosPanel);
-    if (typeof storageData.showWorkPanel === "boolean") setShowWorkPanel(storageData.showWorkPanel);
+    if (Array.isArray(storageData.todos)) state.setTodos(storageData.todos);
+    if (Array.isArray(storageData.favorites)) state.setFavorites(storageData.favorites);
+    if (typeof storageData.favoritesOpen === "boolean") state.setFavoritesOpen(storageData.favoritesOpen);
+    if (typeof storageData.todosOpen === "boolean") state.setTodosOpen(storageData.todosOpen);
+    if (Array.isArray(storageData.workRecords)) state.setWorkRecords(storageData.workRecords);
+    if (typeof storageData.workPanelOpen === "boolean") state.setWorkPanelOpen(storageData.workPanelOpen);
+    if (typeof storageData.notificationPanelOpen === "boolean")
+      state.setNotificationPanelOpen(storageData.notificationPanelOpen);
+    if (typeof storageData.showFavoritesPanel === "boolean")
+      state.setShowFavoritesPanel(storageData.showFavoritesPanel);
+    if (typeof storageData.showTodosPanel === "boolean") state.setShowTodosPanel(storageData.showTodosPanel);
+    if (typeof storageData.showWorkPanel === "boolean") state.setShowWorkPanel(storageData.showWorkPanel);
+    if (typeof storageData.showNotificationPanel === "boolean")
+      state.setShowNotificationPanel(storageData.showNotificationPanel);
   }, [storageData]);
+
+  // ===== Storage 동기화 (다른 탭) =====
+  useStorageSync({
+    setUserName: state.setUserName,
+    setFocus: state.setFocus,
+    setFocusInputValue: state.setFocusInputValue,
+    setTodos: state.setTodos,
+    setFavorites: state.setFavorites,
+    setWorkRecords: state.setWorkRecords,
+    setFavoritesOpen: state.setFavoritesOpen,
+    setTodosOpen: state.setTodosOpen,
+    setWorkPanelOpen: state.setWorkPanelOpen,
+    setNotificationPanelOpen: state.setNotificationPanelOpen,
+    setShowFavoritesPanel: state.setShowFavoritesPanel,
+    setShowTodosPanel: state.setShowTodosPanel,
+    setShowWorkPanel: state.setShowWorkPanel,
+    setShowNotificationPanel: state.setShowNotificationPanel,
+  });
 
   // ===== 시간 & 인사 업데이트 =====
   useEffect(() => {
     const updateTimeAndGreeting = () => {
-      setTime(getTimeString());
-      setGreeting(getGreeting(userName));
+      state.setTime(getTimeString());
+      state.setGreeting(getGreeting(state.userName));
     };
 
     updateTimeAndGreeting();
     const timer = setInterval(updateTimeAndGreeting, 1000 * 30);
     return () => clearInterval(timer);
-  }, [userName]);
+  }, [state.userName]);
 
-  // ===== Focus 핸들러 =====
-  const handleFocusKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
-    if (e.key === "Enter") {
-      const value = focusInputValue.trim();
-      if (!value) return;
-      setFocus(value);
-      setFocusInputValue("");
-      StorageService.saveTodayFocus(value);
-    }
-  };
-
-  const handleFocusBlur = () => {
-    const value = focusInputValue.trim();
-    if (value !== focus) {
-      setFocus(value);
-      StorageService.saveTodayFocus(value);
-    }
-    setFocusInputValue("");
-  };
-
-  // ===== Todo 핸들러 =====
-  const handleSaveTodos = (next: Todo[]) => {
-    setTodos(next);
-    TodoService.saveTodos(next);
-  };
-
-  const handleAddTodo = () => {
-    const text = newTodoText.trim();
-    if (!text) return;
-    const next = TodoService.addTodo(todos, text, selectedDate);
-    handleSaveTodos(next);
-    setNewTodoText("");
-  };
-
-  const handleToggleTodo = (id: string) => {
-    const next = TodoService.toggleTodo(todos, id);
-    handleSaveTodos(next);
-  };
-
-  const handleDeleteTodo = (id: string) => {
-    const next = TodoService.deleteTodo(todos, id);
-    handleSaveTodos(next);
-  };
-
-  const todosByDate = TodoService.getTodosByDate(todos, showCompletedTodos);
-  const remainingCount = TodoService.getRemainingTodoCount(todos);
-
-  const scrollToDate = (date: string) => {
-    setSelectedDate(date);
-    setTimeout(() => {
-      const element = todoRefs.current[date];
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth", block: "start" });
+  // ===== 배경 이미지 로드 =====
+  useEffect(() => {
+    const loadBackground = async () => {
+      const cached = UnsplashService.getCachedPhotoUrl();
+      if (cached) {
+        state.setBackgroundImage(cached);
+        return;
       }
-    }, 100);
-  };
 
-  // ===== Favorite 핸들러 =====
-  const handleSaveFavorites = (next: Favorite[]) => {
-    setFavorites(next);
-    FavoriteService.saveFavorites(next);
-  };
+      const url = await UnsplashService.getRandomNaturePhoto();
+      state.setBackgroundImage(url);
+      UnsplashService.cachePhotoUrl(url);
+    };
 
-  const openAddFavoriteModal = () => {
-    setEditingFavoriteId(null);
-    setFavLabel("");
-    setFavUrl("");
-    setFavIcon("");
-    setIsFavModalOpen(true);
-  };
+    loadBackground();
+  }, []);
 
-  const openEditFavoriteModal = (fav: Favorite) => {
-    setEditingFavoriteId(fav.id);
-    setFavLabel(fav.label);
-    setFavUrl(fav.url);
-    setFavIcon(fav.icon || "");
-    setIsFavModalOpen(true);
-  };
+  const fallbackBackground = useMemo(() => {
+    const idx = Math.floor(Math.random() * GRADIENTS.length);
+    return GRADIENTS[idx];
+  }, []);
 
-  const closeFavModal = () => {
-    setIsFavModalOpen(false);
-  };
+  // ===== Handlers =====
+  const focusHandler = useFocusHandler({
+    focus: state.focus,
+    setFocus: state.setFocus,
+    focusInputValue: state.focusInputValue,
+    setFocusInputValue: state.setFocusInputValue,
+  });
 
-  const handleSubmitFavorite = () => {
-    const label = favLabel.trim();
-    const url = favUrl.trim();
-    if (!label || !url) return;
+  const todoHandler = useTodoHandler({
+    todos: state.todos,
+    setTodos: state.setTodos,
+    newTodoText: state.newTodoText,
+    setNewTodoText: state.setNewTodoText,
+    selectedDate: state.selectedDate,
+  });
 
-    let next: Favorite[];
-    if (editingFavoriteId) {
-      next = FavoriteService.updateFavorite(favorites, editingFavoriteId, label, url, favIcon);
-    } else {
-      next = FavoriteService.addFavorite(favorites, label, url, favIcon);
-    }
+  const favoriteHandler = useFavoriteHandler({
+    favorites: state.favorites,
+    setFavorites: state.setFavorites,
+  });
 
-    handleSaveFavorites(next);
-    closeFavModal();
-  };
+  const workHandler = useWorkHandler({
+    workRecords: state.workRecords,
+    setWorkRecords: state.setWorkRecords,
+  });
 
-  const handleDeleteFavorite = (id: string) => {
-    const next = FavoriteService.deleteFavorite(favorites, id);
-    handleSaveFavorites(next);
-  };
+  const optionsModal = useOptionsModal({
+    userName: state.userName,
+    showFavoritesPanel: state.showFavoritesPanel,
+    showTodosPanel: state.showTodosPanel,
+    showWorkPanel: state.showWorkPanel,
+    showNotificationPanel: state.showNotificationPanel,
+    setUserName: state.setUserName,
+    setShowFavoritesPanel: state.setShowFavoritesPanel,
+    setShowTodosPanel: state.setShowTodosPanel,
+    setShowWorkPanel: state.setShowWorkPanel,
+    setShowNotificationPanel: state.setShowNotificationPanel,
+  });
 
-  const handleOpenFavorite = (fav: Favorite) => {
-    FavoriteService.openFavorite(fav);
-  };
+  const panelToggle = usePanelToggle({
+    favoritesOpen: state.favoritesOpen,
+    setFavoritesOpen: state.setFavoritesOpen,
+    todosOpen: state.todosOpen,
+    setTodosOpen: state.setTodosOpen,
+    workPanelOpen: state.workPanelOpen,
+    setWorkPanelOpen: state.setWorkPanelOpen,
+    notificationPanelOpen: state.notificationPanelOpen,
+    setNotificationPanelOpen: state.setNotificationPanelOpen,
+  });
 
-  const handleReorderFavorites = (reorderedFavorites: Favorite[]) => {
-    handleSaveFavorites(reorderedFavorites);
-  };
+  // ===== 계산된 값들 (메모이제이션) =====
+  const computed = useComputedValues({
+    todos: state.todos,
+    showCompletedTodos: state.showCompletedTodos,
+    workRecords: state.workRecords,
+    weekOffset: state.weekOffset,
+  });
 
-  // ===== Work 핸들러 =====
-  const handleSaveWorkRecords = (next: WorkRecord[]) => {
-    setWorkRecords(next);
-    WorkService.saveWorkRecords(next);
-  };
+  const scrollToDate = useCallback(
+    (date: string) => {
+      state.setSelectedDate(date);
+      setTimeout(() => {
+        const element = todoRefs.current[date];
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }, 100);
+    },
+    [state]
+  );
 
-  const handleCheckIn = () => {
-    const next = WorkService.checkIn(workRecords);
-    handleSaveWorkRecords(next);
-  };
+  const todayRecord = useMemo(
+    () => state.workRecords.find((r) => r.date === formatDate(new Date())),
+    [state.workRecords]
+  );
 
-  const handleCheckOut = () => {
-    const next = WorkService.checkOut(workRecords);
-    handleSaveWorkRecords(next);
-  };
-
-  const handleCheckInEdit = () => {
-    const data = WorkService.getCheckInEditData(workRecords);
-    setEditingDate(data.date);
-    setEditingCheckIn(data.checkIn);
-    setEditingCheckOut(data.checkOut);
-    setEditingIsVacation(data.isVacation);
-    setIsTimeEditModalOpen(true);
-  };
-
-  const handleCheckOutEdit = () => {
-    const data = WorkService.getCheckOutEditData(workRecords);
-    setEditingDate(data.date);
-    setEditingCheckIn(data.checkIn);
-    setEditingCheckOut(data.checkOut);
-    setEditingIsVacation(data.isVacation);
-    setIsTimeEditModalOpen(true);
-  };
-
-  const openTimeEditModal = (record: WorkRecord) => {
-    const data = WorkService.getEditModalData(record);
-    setEditingDate(record.date);
-    setEditingCheckIn(data.checkIn);
-    setEditingCheckOut(data.checkOut);
-    setEditingIsVacation(data.isVacation);
-    setIsTimeEditModalOpen(true);
-  };
-
-  const closeTimeEditModal = () => {
-    setIsTimeEditModalOpen(false);
-  };
-
-  const handleSaveTimeEdit = () => {
-    const next = WorkService.saveTimeEdit(workRecords, editingDate, editingCheckIn, editingCheckOut, editingIsVacation);
-    handleSaveWorkRecords(next);
-    closeTimeEditModal();
-  };
-
-  const weekRecords = WorkService.getWeekRecords(workRecords, weekOffset);
-  const weekTotal = WorkService.calculateWeekTotal(weekRecords);
-  const weekTarget = WorkService.calculateWeekTarget(weekRecords);
-  const overtime = WorkService.calculateOvertime(weekRecords, weekOffset);
-  const weekRangeText = WorkService.getWeekRangeText(weekRecords);
-
-  // ===== 패널 토글 핸들러 =====
-  const toggleFavoritesOpen = () => {
-    const next = !favoritesOpen;
-    setFavoritesOpen(next);
-    StorageService.savePanelState("favoritesOpen", next);
-  };
-
-  const toggleTodosOpen = () => {
-    const next = !todosOpen;
-    setTodosOpen(next);
-    StorageService.savePanelState("todosOpen", next);
-  };
-
-  const toggleWorkPanelOpen = () => {
-    const next = !workPanelOpen;
-    setWorkPanelOpen(next);
-    StorageService.savePanelState("workPanelOpen", next);
-  };
-
-  // ===== 옵션 모달 핸들러 =====
-  const openOptionsModal = () => {
-    setOptionsUserName(userName || "");
-    setOptionsShowFavorites(showFavoritesPanel);
-    setOptionsShowTodos(showTodosPanel);
-    setOptionsShowWork(showWorkPanel);
-    setIsOptionsModalOpen(true);
-  };
-
-  const closeOptionsModal = () => {
-    setIsOptionsModalOpen(false);
-  };
-
-  const handleSaveOptions = () => {
-    const newUserName = optionsUserName.trim() || null;
-    setUserName(newUserName);
-    StorageService.saveUserName(newUserName);
-
-    setShowFavoritesPanel(optionsShowFavorites);
-    setShowTodosPanel(optionsShowTodos);
-    setShowWorkPanel(optionsShowWork);
-
-    StorageService.savePanelVisibility("showFavoritesPanel", optionsShowFavorites);
-    StorageService.savePanelVisibility("showTodosPanel", optionsShowTodos);
-    StorageService.savePanelVisibility("showWorkPanel", optionsShowWork);
-
-    closeOptionsModal();
-  };
-
-  // ===== 오늘의 출퇴근 기록 =====
-  const todayRecord = workRecords.find((r) => r.date === formatDate(new Date()));
-
-  // 배경 스타일
-  const backgroundStyle = backgroundImage
+  // ===== 배경 스타일 =====
+  const backgroundStyle = state.backgroundImage
     ? {
-        backgroundImage: `url(${backgroundImage})`,
+        backgroundImage: `url(${state.backgroundImage})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
@@ -369,169 +199,129 @@ export const App: React.FC = () => {
 
       <div className="app-content">
         {/* 좌측 즐겨찾기 패널 */}
-        {showFavoritesPanel && (
+        {state.showFavoritesPanel && (
           <FavoritesPanel
-            isOpen={favoritesOpen}
-            favorites={favorites}
-            onToggle={toggleFavoritesOpen}
-            onAddClick={openAddFavoriteModal}
-            onEditClick={openEditFavoriteModal}
-            onDeleteClick={handleDeleteFavorite}
-            onOpenFavorite={handleOpenFavorite}
-            onReorder={handleReorderFavorites}
+            isOpen={state.favoritesOpen}
+            favorites={state.favorites}
+            onToggle={panelToggle.toggleFavoritesOpen}
+            onAddClick={favoriteHandler.openAddModal}
+            onEditClick={favoriteHandler.openEditModal}
+            onDeleteClick={favoriteHandler.handleDeleteFavorite}
+            onOpenFavorite={favoriteHandler.handleOpenFavorite}
+            onReorder={favoriteHandler.handleReorderFavorites}
           />
         )}
 
         {/* 중앙 메인 영역 */}
         <main className="app-main">
-          <div className="app-top">
-            <div className="app-time">{time}</div>
-            <div className="app-greeting">{greeting}</div>
-
-            {/* 오늘의 목표 */}
-            <FocusInput
-              focus={focus}
-              focusInputValue={focusInputValue}
-              onFocusInputChange={setFocusInputValue}
-              onFocusKeyDown={handleFocusKeyDown}
-              onFocusBlur={handleFocusBlur}
-            />
-
-            {/* 출퇴근 체크 */}
-            <div className="work-check-container">
-              <div className="work-check-buttons">
-                <button
-                  className={`work-btn check-in ${todayRecord?.checkIn ? "recorded" : ""}`}
-                  onClick={todayRecord?.checkIn ? handleCheckInEdit : handleCheckIn}
-                  onContextMenu={(e) => {
-                    e.preventDefault();
-                    handleCheckInEdit();
-                  }}
-                  title={
-                    todayRecord?.checkIn
-                      ? `${t.work.clickToEdit} | ${t.work.rightClickToEdit}`
-                      : `${t.work.clickToCheckIn} | ${t.work.rightClickToEdit}`
-                  }
-                >
-                  {todayRecord?.checkIn ? t.work.checkInButtonRecorded : t.work.checkInButton}
-                  {todayRecord?.checkIn && <span className="work-time-badge">{todayRecord.checkIn}</span>}
-                </button>
-                <button
-                  className={`work-btn check-out ${todayRecord?.checkOut ? "recorded" : ""}`}
-                  onClick={todayRecord?.checkOut ? handleCheckOutEdit : handleCheckOut}
-                  onContextMenu={(e) => {
-                    e.preventDefault();
-                    handleCheckOutEdit();
-                  }}
-                  title={
-                    todayRecord?.checkOut
-                      ? `${t.work.clickToEdit} | ${t.work.rightClickToEdit}`
-                      : `${t.work.clickToCheckOut} | ${t.work.rightClickToEdit}`
-                  }
-                >
-                  {todayRecord?.checkOut ? t.work.checkOutButtonRecorded : t.work.checkOutButton}
-                  {todayRecord?.checkOut && <span className="work-time-badge">{todayRecord.checkOut}</span>}
-                </button>
-              </div>
-
-              {todayRecord?.checkIn && todayRecord?.checkOut && (
-                <div className="today-work-summary">
-                  {t.work.todayWork}:{" "}
-                  {formatWorkTime(
-                    calculateWorkMinutes(todayRecord.checkIn, todayRecord.checkOut),
-                    t.work.hour,
-                    t.work.minute
-                  )}{" "}
-                  ({t.work.lunchExcluded})
-                </div>
-              )}
-            </div>
-          </div>
+          <AppHeader
+            time={state.time}
+            greeting={state.greeting}
+            focus={state.focus}
+            focusInputValue={state.focusInputValue}
+            todayRecord={todayRecord}
+            showWorkPanel={state.showWorkPanel}
+            workTranslations={t.work}
+            onFocusInputChange={state.setFocusInputValue}
+            onFocusKeyDown={focusHandler.handleFocusKeyDown}
+            onFocusBlur={focusHandler.handleFocusBlur}
+            onCheckIn={workHandler.handleCheckIn}
+            onCheckOut={workHandler.handleCheckOut}
+            onCheckInEdit={workHandler.handleCheckInEdit}
+            onCheckOutEdit={workHandler.handleCheckOutEdit}
+          />
         </main>
 
-        {/* 우측 투두 패널 */}
-        {showTodosPanel && (
-          <TodoPanel
-            isOpen={todosOpen}
-            todos={todos}
-            todosByDate={todosByDate}
-            remainingCount={remainingCount}
-            selectedDate={selectedDate}
-            newTodoText={newTodoText}
-            showCompletedTodos={showCompletedTodos}
-            todoRefs={todoRefs}
-            onToggle={toggleTodosOpen}
-            onAddTodo={handleAddTodo}
-            onToggleTodo={handleToggleTodo}
-            onDeleteTodo={handleDeleteTodo}
-            onNewTodoTextChange={setNewTodoText}
-            onSelectedDateChange={setSelectedDate}
-            onShowCompletedTodosToggle={() => setShowCompletedTodos(!showCompletedTodos)}
+        {/* 알림 패널 */}
+        {state.showNotificationPanel && (
+          <NotificationPanel
+            isCollapsed={!state.notificationPanelOpen}
+            onToggle={panelToggle.toggleNotificationPanelOpen}
           />
         )}
 
-        {/* 주간 근무 기록 패널 */}
-        {showWorkPanel && (
-          <WorkPanel
-            isOpen={workPanelOpen}
-            weekRecords={weekRecords}
-            weekOffset={weekOffset}
-            selectedDate={selectedDate}
-            weekRangeText={weekRangeText}
-            weekTotal={weekTotal}
-            weekTarget={weekTarget}
-            overtime={overtime}
-            onToggle={toggleWorkPanelOpen}
-            onWeekOffsetChange={setWeekOffset}
-            onEditClick={openTimeEditModal}
-            onDateClick={scrollToDate}
-          />
-        )}
+        {/* 하단 패널 영역 (할일 + 근무기록) */}
+        <div className="bottom-panels">
+          {/* 우측 투두 패널 */}
+          {state.showTodosPanel && (
+            <TodoPanel
+              isOpen={state.todosOpen}
+              todos={state.todos}
+              todosByDate={computed.todosByDate}
+              remainingCount={computed.remainingCount}
+              selectedDate={state.selectedDate}
+              newTodoText={state.newTodoText}
+              showCompletedTodos={state.showCompletedTodos}
+              todoRefs={todoRefs}
+              onToggle={panelToggle.toggleTodosOpen}
+              onAddTodo={todoHandler.handleAddTodo}
+              onToggleTodo={todoHandler.handleToggleTodo}
+              onDeleteTodo={todoHandler.handleDeleteTodo}
+              onNewTodoTextChange={state.setNewTodoText}
+              onSelectedDateChange={state.setSelectedDate}
+              onShowCompletedTodosToggle={() => state.setShowCompletedTodos(!state.showCompletedTodos)}
+            />
+          )}
+
+          {/* 주간 근무 기록 패널 */}
+          {state.showWorkPanel && (
+            <WorkPanel
+              isOpen={state.workPanelOpen}
+              weekRecords={computed.weekRecords}
+              weekOffset={state.weekOffset}
+              selectedDate={state.selectedDate}
+              weekRangeText={computed.weekRangeText}
+              weekTotal={computed.weekTotal}
+              weekTarget={computed.weekTarget}
+              overtime={computed.overtime}
+              onToggle={panelToggle.toggleWorkPanelOpen}
+              onWeekOffsetChange={state.setWeekOffset}
+              onEditClick={workHandler.handleDateEdit}
+              onDateClick={scrollToDate}
+            />
+          )}
+        </div>
       </div>
 
       {/* 모달들 */}
-      <FavoriteModal
-        isOpen={isFavModalOpen}
-        isEditing={!!editingFavoriteId}
-        label={favLabel}
-        url={favUrl}
-        icon={favIcon}
-        onClose={closeFavModal}
-        onSubmit={handleSubmitFavorite}
-        onLabelChange={setFavLabel}
-        onUrlChange={setFavUrl}
-        onIconChange={setFavIcon}
-      />
-
-      <TimeEditModal
-        isOpen={isTimeEditModalOpen}
-        date={editingDate}
-        checkIn={editingCheckIn}
-        checkOut={editingCheckOut}
-        isVacation={editingIsVacation}
-        onClose={closeTimeEditModal}
-        onSave={handleSaveTimeEdit}
-        onCheckInChange={setEditingCheckIn}
-        onCheckOutChange={setEditingCheckOut}
-        onIsVacationChange={setEditingIsVacation}
-      />
-
-      <OptionsModal
-        isOpen={isOptionsModalOpen}
-        userName={optionsUserName}
-        showFavorites={optionsShowFavorites}
-        showTodos={optionsShowTodos}
-        showWork={optionsShowWork}
-        onClose={closeOptionsModal}
-        onSave={handleSaveOptions}
-        onUserNameChange={setOptionsUserName}
-        onShowFavoritesChange={setOptionsShowFavorites}
-        onShowTodosChange={setOptionsShowTodos}
-        onShowWorkChange={setOptionsShowWork}
+      <ModalContainer
+        isFavModalOpen={favoriteHandler.isFavModalOpen}
+        isEditingFavorite={!!favoriteHandler.favIcon}
+        favLabel={favoriteHandler.favLabel}
+        favUrl={favoriteHandler.favUrl}
+        favIcon={favoriteHandler.favIcon}
+        onFavClose={favoriteHandler.closeModal}
+        onFavSubmit={favoriteHandler.handleSubmitFavorite}
+        onFavLabelChange={favoriteHandler.setFavLabel}
+        onFavUrlChange={favoriteHandler.setFavUrl}
+        onFavIconChange={favoriteHandler.setFavIcon}
+        isTimeEditModalOpen={workHandler.isTimeEditModalOpen}
+        editingDate={workHandler.editingDate}
+        editingCheckIn={workHandler.editingCheckIn}
+        editingCheckOut={workHandler.editingCheckOut}
+        editingIsVacation={workHandler.editingIsVacation}
+        onTimeEditClose={workHandler.closeTimeEditModal}
+        onTimeEditSave={workHandler.handleSaveTimeEdit}
+        onCheckInChange={workHandler.setEditingCheckIn}
+        onCheckOutChange={workHandler.setEditingCheckOut}
+        onIsVacationChange={workHandler.setEditingIsVacation}
+        isOptionsModalOpen={optionsModal.isOptionsModalOpen}
+        optionsUserName={optionsModal.optionsUserName}
+        optionsShowFavorites={optionsModal.optionsShowFavorites}
+        optionsShowTodos={optionsModal.optionsShowTodos}
+        optionsShowWork={optionsModal.optionsShowWork}
+        optionsShowNotifications={optionsModal.optionsShowNotifications}
+        onOptionsClose={optionsModal.closeOptionsModal}
+        onOptionsSave={optionsModal.handleSaveOptions}
+        onUserNameChange={optionsModal.setOptionsUserName}
+        onShowFavoritesChange={optionsModal.setOptionsShowFavorites}
+        onShowTodosChange={optionsModal.setOptionsShowTodos}
+        onShowWorkChange={optionsModal.setOptionsShowWork}
+        onShowNotificationsChange={optionsModal.setOptionsShowNotifications}
       />
 
       {/* 설정 버튼 */}
-      <button className="settings-btn" onClick={openOptionsModal} aria-label={t.options.settings}>
+      <button className="settings-btn" onClick={optionsModal.openOptionsModal} aria-label={t.options.settings}>
         ⚙️
       </button>
     </div>

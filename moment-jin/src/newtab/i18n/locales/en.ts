@@ -85,6 +85,7 @@ export const en: Translations = {
     showFavorites: "Show Favorites Panel",
     showTodos: "Show To-Do Panel",
     showWork: "Show Work Record Panel",
+    showNotifications: "Show Notifications Panel",
     settings: "Settings",
   },
 };

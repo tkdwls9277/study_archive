@@ -9,6 +9,15 @@
   "chrome_url_overrides": {
     "newtab": "newtab.html"
   },
-  "options_page": "options.html",
-  "permissions": ["storage"]
+  "permissions": ["storage", "alarms", "notifications"],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["icons/*.png"],
+      "matches": ["<all_urls>"]
+    }
+  ]
 }

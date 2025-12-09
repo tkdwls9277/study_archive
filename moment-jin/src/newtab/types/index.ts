@@ -39,7 +39,9 @@ export interface StorageData {
   todosOpen?: boolean;
   workRecords?: WorkRecord[];
   workPanelOpen?: boolean;
+  notificationPanelOpen?: boolean;
   showFavoritesPanel?: boolean;
   showTodosPanel?: boolean;
   showWorkPanel?: boolean;
+  showNotificationPanel?: boolean;
 }

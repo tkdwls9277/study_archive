@@ -109,47 +109,6 @@ body,
   overflow: hidden;
 }
 
-/* 세로 화면 (높이가 너비보다 긴 경우) */
-@media (max-aspect-ratio: 1/1) {
-  .app-content {
-    flex-direction: column;
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
-
-  .favorites-panel,
-  .todo-panel,
-  .work-panel {
-    width: 100% !important;
-    flex-shrink: 0;
-    border-right: none;
-    border-left: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  }
-
-  /* 펼쳐진 패널의 최대 높이 제한 */
-  .favorites-panel.open,
-  .todo-panel.open,
-  .work-panel.open {
-    max-height: 25vh;
-    overflow-y: auto;
-  }
-
-  /* 접힌 패널은 높이 자동 */
-  .favorites-panel.collapsed,
-  .todo-panel.collapsed,
-  .work-panel.collapsed {
-    max-height: none;
-    overflow: visible;
-  }
-
-  .app-main {
-    flex: 1;
-    min-height: 0;
-    overflow-y: auto;
-  }
-}
-
 /* ========= 좌측 즐겨찾기 패널 ========= */
 
 .favorites-panel {
@@ -164,7 +123,7 @@ body,
 }
 
 .favorites-panel.open {
-  width: 280px;
+  width: 240px; /* 280px에서 240px로 축소 */
   flex-shrink: 0;
 }
 
@@ -689,6 +648,11 @@ body,
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* ========= 하단 패널 컨테이너 (기본: 가로 화면용) ========= */
+.bottom-panels {
+  display: contents; /* 가로 화면에서는 투명하게, 자식들이 직접 배치됨 */
+}
+
 /* ========= 우측 투두 패널 ========= */
 
 .todo-panel {
@@ -703,7 +667,7 @@ body,
 }
 
 .todo-panel.open {
-  width: 320px;
+  width: 280px; /* 320px에서 280px로 축소 */
   flex-shrink: 0;
 }
 
@@ -1214,7 +1178,7 @@ body,
 }
 
 .work-panel.open {
-  width: 360px;
+  width: 280px; /* 360px에서 280px로 축소 */
   flex-shrink: 0;
 }
 
@@ -1496,132 +1460,42 @@ body,
   }
 }
 
-@media (max-width: 768px) {
+/* 세로 모니터 또는 세로 방향 레이아웃 (높이가 너비보다 큰 경우) */
+@media (max-aspect-ratio: 1/1) {
   .app-content {
+    display: flex;
     flex-direction: column;
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: hidden;
+    height: 100vh;
   }
 
-  .favorites-panel,
-  .todo-panel,
-  .work-panel {
+  /* 즐겨찾기 패널 - 상단 */
+  .favorites-panel {
     width: 100% !important;
     padding: 12px;
     border: none;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     flex-shrink: 0;
-  }
-
-  /* 펼쳐진 패널에 최대 높이와 스크롤 적용 */
-  .favorites-panel.open,
-  .todo-panel.open,
-  .work-panel.open {
-    max-height: 25vh;
-    overflow-y: auto;
-  }
-
-  /* 접힌 패널은 높이 제한 없음 */
-  .favorites-panel.collapsed,
-  .todo-panel.collapsed,
-  .work-panel.collapsed {
-    max-height: none;
-    overflow: visible;
-    background: rgba(0, 0, 0, 0.15);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-  }
-
-  /* 접힌 패널의 텍스트를 가로로 표시 */
-  .vertical-text {
-    writing-mode: horizontal-tb;
-    text-orientation: mixed;
-    font-size: 13px;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.7);
-    letter-spacing: 1px;
-  }
-
-  .collapsed-indicator {
-    padding: 8px 0;
-    display: none;
-  }
-
-  /* 접힌 상태에서 패널 헤더를 한 줄로 정렬 */
-  .todo-panel.collapsed .panel-header,
-  .work-panel.collapsed .panel-header {
-    justify-content: flex-start;
-    margin-bottom: 0;
-    gap: 12px;
-  }
-
-  /* 접힌 상태에서도 타이틀 표시 (할일, 근무기록만) */
-  .todo-panel.collapsed .panel-title,
-  .work-panel.collapsed .panel-title {
-    display: block;
-    font-size: 13px;
-    opacity: 0.8;
-  }
-
-  .app-main {
-    flex: 1;
-    padding: 20px;
-    min-height: 0;
-    overflow-y: auto;
-  }
-
-  .app-time {
-    font-size: 80px;
-  }
-
-  .app-greeting {
-    font-size: 20px;
-  }
-
-  .app-focus-display {
-    font-size: 20px;
-    padding: 14px 28px;
-  }
-
-  .work-check-buttons {
-    flex-direction: column;
-  }
-
-  .work-panel.open {
-    max-height: 25vh;
-  }
-}
-
-/* 세로 모니터 또는 세로 방향 레이아웃 (높이가 너비보다 큰 경우) */
-@media (max-aspect-ratio: 1/1) {
-  .app-content {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto 1fr auto;
-    overflow: hidden;
-    height: 100vh;
-  }
-
-  /* 즐겨찾기 패널 - 첫 번째 행, 전체 너비 */
-  .favorites-panel {
-    grid-column: 1 / 3;
-    grid-row: 1;
-    width: 100% !important;
-    padding: 12px;
-    border: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    overflow: hidden;
     display: flex;
     flex-direction: column;
   }
 
+  .favorites-panel.open {
+    max-height: 200px;
+    overflow: hidden;
+  }
+
   /* 접힌 즐겨찾기는 flex-row로 변경 */
   .favorites-panel.collapsed {
+    flex: 0 0 auto;
     flex-direction: row;
     align-items: center;
     gap: 12px;
     overflow-x: auto;
     overflow-y: hidden;
     max-height: 60px;
+    background: rgba(0, 0, 0, 0.15);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
   }
 
   .favorites-panel .panel-header {
@@ -1659,36 +1533,113 @@ body,
     align-items: center;
   }
 
-  /* 메인 영역 - 두 번째 행, 전체 너비 */
+  /* 메인 영역 - flex: 1로 남은 공간 차지 */
   .app-main {
-    grid-column: 1 / 3;
-    grid-row: 2;
+    flex: 1;
     width: 100% !important;
     padding: 20px;
     overflow-y: auto;
+    min-height: 0;
   }
 
-  /* 할일 패널 - 세 번째 행 */
-  .todo-panel {
-    grid-column: 1; /* 항상 왼쪽 */
-    grid-row: 3;
+  /* 알림 패널 */
+  .notification-panel {
     width: 100% !important;
+    padding: 12px;
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+  }
+
+  /* 알림 패널이 열렸을 때 - 할일/근무기록이 닫혔으면 공간 차지 */
+  .notification-panel.open {
+    flex: 1;
+    min-height: 200px;
+    overflow-y: auto;
+  }
+
+  /* 알림 패널이 닫혔을 때 */
+  .notification-panel.collapsed {
+    flex: 0 0 auto;
+    max-height: 60px;
+    overflow: visible;
+    background: rgba(0, 0, 0, 0.15);
+  }
+
+  /* 하단 패널 영역 (할일 + 근무기록 가로 배치) */
+  .bottom-panels {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    min-height: 0;
+    gap: 0;
+    align-items: stretch; /* 기본: 전체 높이 차지 */
+  }
+
+  /* 할일 패널 */
+  .todo-panel {
+    flex: 1;
     padding: 12px;
     border: none;
     border-right: 1px solid rgba(255, 255, 255, 0.08);
     border-top: 1px solid rgba(255, 255, 255, 0.08);
-    align-self: start; /* 자신의 높이만큼만 차지 */
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    width: auto;
+    align-self: stretch; /* 기본: 전체 높이 */
   }
 
-  /* 근무기록 패널 - 세 번째 행 */
+  /* 할일 패널이 열렸을 때 */
+  .bottom-panels .todo-panel.open {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    align-self: stretch;
+  }
+
+  /* 할일 패널이 닫혔을 때 */
+  .bottom-panels .todo-panel.collapsed {
+    flex: 0 0 auto;
+    width: 50%;
+    max-height: 60px;
+    overflow: visible;
+    background: rgba(0, 0, 0, 0.15);
+    align-self: flex-end; /* 닫혔을 때 하단 정렬 */
+  }
+
+  /* 근무기록 패널 */
   .work-panel {
-    grid-column: 2; /* 항상 오른쪽 */
-    grid-row: 3;
-    width: 100% !important;
+    flex: 1;
     padding: 12px;
     border: none;
     border-top: 1px solid rgba(255, 255, 255, 0.08);
-    align-self: start; /* 자신의 높이만큼만 차지 */
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    width: auto;
+    align-self: stretch; /* 기본: 전체 높이 */
+  }
+
+  /* 근무기록 패널이 열렸을 때 */
+  .bottom-panels .work-panel.open {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    align-self: stretch;
+  }
+
+  /* 근무기록 패널이 닫혔을 때 */
+  .bottom-panels .work-panel.collapsed {
+    flex: 0 0 auto;
+    width: 50%;
+    max-height: 60px;
+    overflow: visible;
+    background: rgba(0, 0, 0, 0.15);
+    align-self: flex-end; /* 닫혔을 때 하단 정렬 */
   }
 
   /* 펼쳐진 패널에 최대 높이와 스크롤 적용 */
@@ -1700,14 +1651,9 @@ body,
     overflow-y: auto;
   }
 
-  .todo-panel.open,
-  .work-panel.open {
-    max-height: 600px;
-    overflow-y: auto;
-  }
-
   /* 접힌 패널은 높이 제한 없음 */
   .favorites-panel.collapsed {
+    flex: 0 0 auto;
     max-height: auto;
     overflow: visible;
     background: rgba(0, 0, 0, 0.15);
@@ -1716,23 +1662,6 @@ body,
 
   .favorites-panel.collapsed .favorites-list {
     overflow: visible;
-  }
-
-  .todo-panel.collapsed {
-    max-height: 60px; /* 헤더 높이만 */
-    overflow: visible;
-    background: rgba(0, 0, 0, 0.15);
-    border-top: 1px solid rgba(255, 255, 255, 0.15);
-    border-right: 1px solid rgba(255, 255, 255, 0.15);
-    align-self: end; /* 하단에 정렬 */
-  }
-
-  .work-panel.collapsed {
-    max-height: 60px; /* 헤더 높이만 */
-    overflow: visible;
-    background: rgba(0, 0, 0, 0.15);
-    border-top: 1px solid rgba(255, 255, 255, 0.15);
-    align-self: end; /* 하단에 정렬 */
   }
 
   /* 접힌 패널의 텍스트를 가로로 표시 */
@@ -1751,6 +1680,14 @@ body,
 
   .panel-header {
     margin-bottom: 8px;
+  }
+
+  /* 패널 내부 컨텐츠도 flex 적용 */
+  .todo-panel.open .todo-list-container,
+  .work-panel.open .week-records {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
   }
 
   /* 접힌 상태에서 패널 헤더를 한 줄로 정렬하고 타이틀 표시 */
@@ -1789,4 +1726,348 @@ body,
   .collapsed-indicator {
     display: none !important;
   }
+}
+
+/* ===== 알림 (Notifications) ===== */
+
+/* 다음 알림 위젯 */
+.next-notification {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  margin: 20px auto 0;
+  max-width: 500px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  backdrop-filter: blur(12px);
+  transition: all 0.2s;
+}
+
+.next-notification:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.next-notification-icon {
+  flex-shrink: 0;
+  color: rgba(255, 255, 255, 0.9);
+  animation: ring 2s infinite ease-in-out;
+}
+
+@keyframes ring {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  10%,
+  30% {
+    transform: rotate(-10deg);
+  }
+  20%,
+  40% {
+    transform: rotate(10deg);
+  }
+  50% {
+    transform: rotate(0deg);
+  }
+}
+
+.next-notification-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.next-notification-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.next-notification-info {
+  display: flex;
+  gap: 8px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.next-notification-timing,
+.next-notification-countdown {
+  padding: 2px 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.next-notification-countdown {
+  background: rgba(255, 200, 0, 0.2);
+  color: rgba(255, 255, 255, 0.95);
+  font-weight: 600;
+}
+
+/* 알림 패널 */
+.notification-panel {
+  display: flex;
+  flex-direction: column;
+  padding: 14px;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(16px);
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+  transition: width 0.25s ease, padding 0.25s ease;
+  overflow: hidden;
+}
+
+.notification-panel.open {
+  width: 280px; /* 다른 패널과 동일한 너비 */
+  flex-shrink: 0;
+}
+
+.notification-panel.collapsed {
+  width: 50px;
+  flex-shrink: 0;
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+.notification-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 400px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.empty-state p {
+  margin-bottom: 16px;
+}
+
+.add-first-btn {
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.add-first-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* 알림 항목 */
+.notification-item {
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.notification-item:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+.notification-item.disabled {
+  opacity: 0.5;
+}
+
+.notification-item.past {
+  border-color: rgba(255, 100, 100, 0.3);
+}
+
+.notification-item-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.notification-toggle {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.notification-item-title {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0;
+}
+
+.notification-item-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.notification-edit-btn,
+.notification-delete-btn {
+  padding: 4px 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.notification-edit-btn:hover {
+  background: rgba(100, 150, 255, 0.3);
+}
+
+.notification-delete-btn:hover {
+  background: rgba(255, 100, 100, 0.3);
+}
+
+.notification-item-description {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0 0 8px 26px;
+  line-height: 1.4;
+}
+
+.notification-item-datetime {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.75);
+  margin: 0 0 8px 26px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.past-badge {
+  padding: 2px 6px;
+  background: rgba(255, 100, 100, 0.2);
+  color: rgba(255, 255, 255, 0.9);
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.notification-item-timings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-left: 26px;
+}
+
+.timing-badge {
+  padding: 3px 8px;
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.85);
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+/* 알림 모달 */
+.notification-modal {
+  width: 90%;
+  max-width: 500px;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.modal-close-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.modal-close-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 1);
+}
+
+.notification-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0; /* modal-label이 이미 margin-bottom 있음 */
+}
+
+.form-row {
+  display: flex;
+  gap: 12px;
+}
+
+.form-row .modal-label {
+  flex: 1;
+}
+
+.modal-input[type="date"],
+.modal-input[type="time"] {
+  cursor: pointer;
+}
+
+.timing-options {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.timing-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.timing-option:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.timing-option input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: rgba(59, 130, 246, 0.8);
+}
+
+.timing-option span {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+textarea.modal-input {
+  resize: vertical;
+  min-height: 60px;
+  font-family: inherit;
 }

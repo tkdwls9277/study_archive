@@ -37,7 +37,10 @@ export class StorageService {
   /**
    * 패널 상태 저장
    */
-  static savePanelState(key: "favoritesOpen" | "todosOpen" | "workPanelOpen", value: boolean): void {
+  static savePanelState(
+    key: "favoritesOpen" | "todosOpen" | "workPanelOpen" | "notificationPanelOpen",
+    value: boolean
+  ): void {
     if (typeof chrome !== "undefined" && chrome.storage) {
       chrome.storage.sync.set({ [key]: value });
     }
@@ -46,7 +49,10 @@ export class StorageService {
   /**
    * 패널 표시 설정 저장
    */
-  static savePanelVisibility(key: "showFavoritesPanel" | "showTodosPanel" | "showWorkPanel", value: boolean): void {
+  static savePanelVisibility(
+    key: "showFavoritesPanel" | "showTodosPanel" | "showWorkPanel" | "showNotificationPanel",
+    value: boolean
+  ): void {
     if (typeof chrome !== "undefined" && chrome.storage) {
       chrome.storage.sync.set({ [key]: value });
     }

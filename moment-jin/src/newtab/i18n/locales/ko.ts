@@ -85,6 +85,7 @@ export const ko: Translations = {
     showFavorites: "즐겨찾기 패널 표시",
     showTodos: "할 일 패널 표시",
     showWork: "주간 근무 기록 패널 표시",
+    showNotifications: "알림 패널 표시",
     settings: "설정",
   },
 };
