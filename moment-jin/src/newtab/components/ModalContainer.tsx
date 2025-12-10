@@ -35,6 +35,7 @@ interface ModalContainerProps {
   optionsShowTodos: boolean;
   optionsShowWork: boolean;
   optionsShowNotifications: boolean;
+  optionsShowFocus: boolean;
   onOptionsClose: () => void;
   onOptionsSave: () => void;
   onUserNameChange: (value: string) => void;
@@ -42,6 +43,7 @@ interface ModalContainerProps {
   onShowTodosChange: (value: boolean) => void;
   onShowWorkChange: (value: boolean) => void;
   onShowNotificationsChange: (value: boolean) => void;
+  onShowFocusChange: (value: boolean) => void;
 }
 
 /**
@@ -79,6 +81,7 @@ export const ModalContainer: React.FC<ModalContainerProps> = ({
   optionsShowTodos,
   optionsShowWork,
   optionsShowNotifications,
+  optionsShowFocus,
   onOptionsClose,
   onOptionsSave,
   onUserNameChange,
@@ -86,6 +89,7 @@ export const ModalContainer: React.FC<ModalContainerProps> = ({
   onShowTodosChange,
   onShowWorkChange,
   onShowNotificationsChange,
+  onShowFocusChange,
 }) => {
   return (
     <>
@@ -122,6 +126,7 @@ export const ModalContainer: React.FC<ModalContainerProps> = ({
         showTodos={optionsShowTodos}
         showWork={optionsShowWork}
         showNotifications={optionsShowNotifications}
+        showFocus={optionsShowFocus}
         onClose={onOptionsClose}
         onSave={onOptionsSave}
         onUserNameChange={onUserNameChange}
@@ -129,6 +134,7 @@ export const ModalContainer: React.FC<ModalContainerProps> = ({
         onShowTodosChange={onShowTodosChange}
         onShowWorkChange={onShowWorkChange}
         onShowNotificationsChange={onShowNotificationsChange}
+        onShowFocusChange={onShowFocusChange}
       />
     </>
   );

@@ -16,6 +16,7 @@ interface StorageSyncProps {
   setShowTodosPanel: (value: boolean) => void;
   setShowWorkPanel: (value: boolean) => void;
   setShowNotificationPanel: (value: boolean) => void;
+  setShowFocusSection: (value: boolean) => void;
 }
 
 /**
@@ -37,6 +38,7 @@ export function useStorageSync(props: StorageSyncProps) {
     setShowTodosPanel,
     setShowWorkPanel,
     setShowNotificationPanel,
+    setShowFocusSection,
   } = props;
 
   useEffect(() => {
@@ -110,6 +112,10 @@ export function useStorageSync(props: StorageSyncProps) {
         const newValue = changes.showNotificationPanel.newValue as boolean | undefined;
         setShowNotificationPanel(newValue ?? true);
       }
+      if (changes.showFocusSection !== undefined) {
+        const newValue = changes.showFocusSection.newValue as boolean | undefined;
+        setShowFocusSection(newValue ?? true);
+      }
     };
 
     chrome.storage.onChanged.addListener(handleStorageChange);
@@ -131,5 +137,6 @@ export function useStorageSync(props: StorageSyncProps) {
     setShowTodosPanel,
     setShowWorkPanel,
     setShowNotificationPanel,
+    setShowFocusSection,
   ]);
 }

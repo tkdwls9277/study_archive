@@ -86,6 +86,7 @@ export const en: Translations = {
     showTodos: "Show To-Do Panel",
     showWork: "Show Work Record Panel",
     showNotifications: "Show Notifications Panel",
+    showFocus: "Show Focus Section",
     settings: "Settings",
   },
 };

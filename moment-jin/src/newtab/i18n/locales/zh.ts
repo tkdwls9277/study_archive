@@ -86,6 +86,7 @@ export const zh: Translations = {
     showTodos: "显示待办事项面板",
     showWork: "显示工作记录面板",
     showNotifications: "显示通知面板",
+    showFocus: "显示核心目标",
     settings: "设置",
   },
 };

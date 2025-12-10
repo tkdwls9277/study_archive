@@ -87,6 +87,7 @@ export interface Translations {
     showTodos: string;
     showWork: string;
     showNotifications: string;
+    showFocus: string;
     settings: string;
   };
 }

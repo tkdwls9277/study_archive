@@ -44,4 +44,5 @@ export interface StorageData {
   showTodosPanel?: boolean;
   showWorkPanel?: boolean;
   showNotificationPanel?: boolean;
+  showFocusSection?: boolean; // 핵심목표 표시 여부
 }

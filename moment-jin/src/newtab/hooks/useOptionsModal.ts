@@ -7,11 +7,13 @@ interface UseOptionsModalProps {
   showTodosPanel: boolean;
   showWorkPanel: boolean;
   showNotificationPanel: boolean;
+  showFocusSection: boolean;
   setUserName: (value: string | null) => void;
   setShowFavoritesPanel: (value: boolean) => void;
   setShowTodosPanel: (value: boolean) => void;
   setShowWorkPanel: (value: boolean) => void;
   setShowNotificationPanel: (value: boolean) => void;
+  setShowFocusSection: (value: boolean) => void;
 }
 
 /**
@@ -24,11 +26,13 @@ export function useOptionsModal(props: UseOptionsModalProps) {
     showTodosPanel,
     showWorkPanel,
     showNotificationPanel,
+    showFocusSection,
     setUserName,
     setShowFavoritesPanel,
     setShowTodosPanel,
     setShowWorkPanel,
     setShowNotificationPanel,
+    setShowFocusSection,
   } = props;
 
   const [isOptionsModalOpen, setIsOptionsModalOpen] = useState(false);
@@ -37,6 +41,7 @@ export function useOptionsModal(props: UseOptionsModalProps) {
   const [optionsShowTodos, setOptionsShowTodos] = useState(true);
   const [optionsShowWork, setOptionsShowWork] = useState(true);
   const [optionsShowNotifications, setOptionsShowNotifications] = useState(true);
+  const [optionsShowFocus, setOptionsShowFocus] = useState(true);
 
   const openOptionsModal = () => {
     setOptionsUserName(userName || "");
@@ -44,6 +49,7 @@ export function useOptionsModal(props: UseOptionsModalProps) {
     setOptionsShowTodos(showTodosPanel);
     setOptionsShowWork(showWorkPanel);
     setOptionsShowNotifications(showNotificationPanel);
+    setOptionsShowFocus(showFocusSection);
     setIsOptionsModalOpen(true);
   };
 
@@ -60,11 +66,13 @@ export function useOptionsModal(props: UseOptionsModalProps) {
     setShowTodosPanel(optionsShowTodos);
     setShowWorkPanel(optionsShowWork);
     setShowNotificationPanel(optionsShowNotifications);
+    setShowFocusSection(optionsShowFocus);
 
     StorageService.savePanelVisibility("showFavoritesPanel", optionsShowFavorites);
     StorageService.savePanelVisibility("showTodosPanel", optionsShowTodos);
     StorageService.savePanelVisibility("showWorkPanel", optionsShowWork);
     StorageService.savePanelVisibility("showNotificationPanel", optionsShowNotifications);
+    StorageService.savePanelVisibility("showFocusSection", optionsShowFocus);
 
     closeOptionsModal();
   };
@@ -81,6 +89,8 @@ export function useOptionsModal(props: UseOptionsModalProps) {
     setOptionsShowWork,
     optionsShowNotifications,
     setOptionsShowNotifications,
+    optionsShowFocus,
+    setOptionsShowFocus,
     openOptionsModal,
     closeOptionsModal,
     handleSaveOptions,

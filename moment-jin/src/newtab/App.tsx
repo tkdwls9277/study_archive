@@ -53,6 +53,7 @@ export const App: React.FC = () => {
     if (typeof storageData.showWorkPanel === "boolean") state.setShowWorkPanel(storageData.showWorkPanel);
     if (typeof storageData.showNotificationPanel === "boolean")
       state.setShowNotificationPanel(storageData.showNotificationPanel);
+    if (typeof storageData.showFocusSection === "boolean") state.setShowFocusSection(storageData.showFocusSection);
   }, [storageData]);
 
   // ===== Storage 동기화 (다른 탭) =====
@@ -71,6 +72,7 @@ export const App: React.FC = () => {
     setShowTodosPanel: state.setShowTodosPanel,
     setShowWorkPanel: state.setShowWorkPanel,
     setShowNotificationPanel: state.setShowNotificationPanel,
+    setShowFocusSection: state.setShowFocusSection,
   });
 
   // ===== 시간 & 인사 업데이트 =====
@@ -139,11 +141,13 @@ export const App: React.FC = () => {
     showTodosPanel: state.showTodosPanel,
     showWorkPanel: state.showWorkPanel,
     showNotificationPanel: state.showNotificationPanel,
+    showFocusSection: state.showFocusSection,
     setUserName: state.setUserName,
     setShowFavoritesPanel: state.setShowFavoritesPanel,
     setShowTodosPanel: state.setShowTodosPanel,
     setShowWorkPanel: state.setShowWorkPanel,
     setShowNotificationPanel: state.setShowNotificationPanel,
+    setShowFocusSection: state.setShowFocusSection,
   });
 
   const panelToggle = usePanelToggle({
@@ -221,6 +225,8 @@ export const App: React.FC = () => {
             focusInputValue={state.focusInputValue}
             todayRecord={todayRecord}
             showWorkPanel={state.showWorkPanel}
+            showNotificationPanel={state.showNotificationPanel}
+            showFocusSection={state.showFocusSection}
             workTranslations={t.work}
             onFocusInputChange={state.setFocusInputValue}
             onFocusKeyDown={focusHandler.handleFocusKeyDown}
@@ -232,54 +238,57 @@ export const App: React.FC = () => {
           />
         </main>
 
-        {/* 알림 패널 */}
-        {state.showNotificationPanel && (
-          <NotificationPanel
-            isCollapsed={!state.notificationPanelOpen}
-            onToggle={panelToggle.toggleNotificationPanelOpen}
-          />
-        )}
-
-        {/* 하단 패널 영역 (할일 + 근무기록) */}
+        {/* 하단 패널 영역 (알림 + 할일 + 근무기록) */}
         <div className="bottom-panels">
-          {/* 우측 투두 패널 */}
-          {state.showTodosPanel && (
-            <TodoPanel
-              isOpen={state.todosOpen}
-              todos={state.todos}
-              todosByDate={computed.todosByDate}
-              remainingCount={computed.remainingCount}
-              selectedDate={state.selectedDate}
-              newTodoText={state.newTodoText}
-              showCompletedTodos={state.showCompletedTodos}
-              todoRefs={todoRefs}
-              onToggle={panelToggle.toggleTodosOpen}
-              onAddTodo={todoHandler.handleAddTodo}
-              onToggleTodo={todoHandler.handleToggleTodo}
-              onDeleteTodo={todoHandler.handleDeleteTodo}
-              onNewTodoTextChange={state.setNewTodoText}
-              onSelectedDateChange={state.setSelectedDate}
-              onShowCompletedTodosToggle={() => state.setShowCompletedTodos(!state.showCompletedTodos)}
+          {/* 알림 패널 */}
+          {state.showNotificationPanel && (
+            <NotificationPanel
+              isCollapsed={!state.notificationPanelOpen}
+              onToggle={panelToggle.toggleNotificationPanelOpen}
             />
           )}
 
-          {/* 주간 근무 기록 패널 */}
-          {state.showWorkPanel && (
-            <WorkPanel
-              isOpen={state.workPanelOpen}
-              weekRecords={computed.weekRecords}
-              weekOffset={state.weekOffset}
-              selectedDate={state.selectedDate}
-              weekRangeText={computed.weekRangeText}
-              weekTotal={computed.weekTotal}
-              weekTarget={computed.weekTarget}
-              overtime={computed.overtime}
-              onToggle={panelToggle.toggleWorkPanelOpen}
-              onWeekOffsetChange={state.setWeekOffset}
-              onEditClick={workHandler.handleDateEdit}
-              onDateClick={scrollToDate}
-            />
-          )}
+          {/* 할일 + 근무기록 래퍼 */}
+          <div className="todo-work-wrapper">
+            {/* 우측 투두 패널 */}
+            {state.showTodosPanel && (
+              <TodoPanel
+                isOpen={state.todosOpen}
+                todos={state.todos}
+                todosByDate={computed.todosByDate}
+                remainingCount={computed.remainingCount}
+                selectedDate={state.selectedDate}
+                newTodoText={state.newTodoText}
+                showCompletedTodos={state.showCompletedTodos}
+                todoRefs={todoRefs}
+                onToggle={panelToggle.toggleTodosOpen}
+                onAddTodo={todoHandler.handleAddTodo}
+                onToggleTodo={todoHandler.handleToggleTodo}
+                onDeleteTodo={todoHandler.handleDeleteTodo}
+                onNewTodoTextChange={state.setNewTodoText}
+                onSelectedDateChange={state.setSelectedDate}
+                onShowCompletedTodosToggle={() => state.setShowCompletedTodos(!state.showCompletedTodos)}
+              />
+            )}
+
+            {/* 주간 근무 기록 패널 */}
+            {state.showWorkPanel && (
+              <WorkPanel
+                isOpen={state.workPanelOpen}
+                weekRecords={computed.weekRecords}
+                weekOffset={state.weekOffset}
+                selectedDate={state.selectedDate}
+                weekRangeText={computed.weekRangeText}
+                weekTotal={computed.weekTotal}
+                weekTarget={computed.weekTarget}
+                overtime={computed.overtime}
+                onToggle={panelToggle.toggleWorkPanelOpen}
+                onWeekOffsetChange={state.setWeekOffset}
+                onEditClick={workHandler.handleDateEdit}
+                onDateClick={scrollToDate}
+              />
+            )}
+          </div>
         </div>
       </div>
 
@@ -311,6 +320,7 @@ export const App: React.FC = () => {
         optionsShowTodos={optionsModal.optionsShowTodos}
         optionsShowWork={optionsModal.optionsShowWork}
         optionsShowNotifications={optionsModal.optionsShowNotifications}
+        optionsShowFocus={optionsModal.optionsShowFocus}
         onOptionsClose={optionsModal.closeOptionsModal}
         onOptionsSave={optionsModal.handleSaveOptions}
         onUserNameChange={optionsModal.setOptionsUserName}
@@ -318,6 +328,7 @@ export const App: React.FC = () => {
         onShowTodosChange={optionsModal.setOptionsShowTodos}
         onShowWorkChange={optionsModal.setOptionsShowWork}
         onShowNotificationsChange={optionsModal.setOptionsShowNotifications}
+        onShowFocusChange={optionsModal.setOptionsShowFocus}
       />
 
       {/* 설정 버튼 */}

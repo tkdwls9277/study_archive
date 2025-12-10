@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "../hooks/useTranslation";
 import type { WorkRecord } from "../types/index";
 import { formatDate } from "../utils/date";
@@ -34,6 +34,17 @@ export const WorkPanel: React.FC<WorkPanelProps> = ({
   onDateClick,
 }) => {
   const { t, locale } = useTranslation();
+  const [isVerticalScreen, setIsVerticalScreen] = useState(window.innerHeight > window.innerWidth);
+
+  // 화면 크기 변경 감지
+  useEffect(() => {
+    const handleResize = () => {
+      setIsVerticalScreen(window.innerHeight > window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // 요일 이름을 번역에 따라 반환
   const getDayName = (dayIndex: number): string => {
@@ -73,7 +84,7 @@ export const WorkPanel: React.FC<WorkPanelProps> = ({
           }}
           aria-label={`${t.work.title} ${isOpen ? "collapse" : "expand"}`}
         >
-          {isOpen ? "▶" : "◀"}
+          {isOpen ? (isVerticalScreen ? "▲" : "▶") : isVerticalScreen ? "▼" : "◀"}
         </button>
       </div>
       {!isOpen && (

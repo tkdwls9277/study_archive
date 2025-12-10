@@ -26,6 +26,7 @@ export function useAppState() {
   const [showTodosPanel, setShowTodosPanel] = useState(true);
   const [showWorkPanel, setShowWorkPanel] = useState(true);
   const [showNotificationPanel, setShowNotificationPanel] = useState(true);
+  const [showFocusSection, setShowFocusSection] = useState(true);
 
   // ===== Todo 관련 =====
   const [newTodoText, setNewTodoText] = useState("");
@@ -76,6 +77,8 @@ export function useAppState() {
     setShowWorkPanel,
     showNotificationPanel,
     setShowNotificationPanel,
+    showFocusSection,
+    setShowFocusSection,
 
     // Todo 관련
     newTodoText,

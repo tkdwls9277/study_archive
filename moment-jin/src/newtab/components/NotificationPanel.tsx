@@ -12,6 +12,17 @@ export function NotificationPanel({ isCollapsed, onToggle }: NotificationPanelPr
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingNotification, setEditingNotification] = useState<Notification | null>(null);
+  const [isVerticalScreen, setIsVerticalScreen] = useState(window.innerHeight > window.innerWidth);
+
+  // 화면 크기 변경 감지
+  useEffect(() => {
+    const handleResize = () => {
+      setIsVerticalScreen(window.innerHeight > window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // localStorage를 chrome.storage.local에 동기화
   const syncToStorage = () => {
@@ -79,10 +90,13 @@ export function NotificationPanel({ isCollapsed, onToggle }: NotificationPanelPr
     return (
       <div className="notification-panel collapsed">
         <div className="panel-header" onClick={onToggle} style={{ cursor: "pointer" }}>
-          <h3 className="panel-title">📢 알림</h3>
-          <button className="panel-toggle-btn" onClick={handleToggleClick}>
-            ▶
+          <span className="panel-title">📢 알림</span>
+          <button className="panel-toggle-btn" onClick={handleToggleClick} aria-label="알림 expand">
+            {isVerticalScreen ? "▼" : "◀"}
           </button>
+        </div>
+        <div className="collapsed-indicator" onClick={onToggle} style={{ cursor: "pointer" }}>
+          <span className="vertical-text">📢 알림</span>
         </div>
       </div>
     );
@@ -91,12 +105,12 @@ export function NotificationPanel({ isCollapsed, onToggle }: NotificationPanelPr
   return (
     <div className="notification-panel open">
       <div className="panel-header" onClick={onToggle} style={{ cursor: "pointer" }}>
-        <h3 className="panel-title">📢 알림</h3>
+        <span className="panel-title">📢 알림</span>
         <button className="panel-icon-btn" onClick={handleAddClick} title="알림 추가">
           +
         </button>
-        <button className="panel-toggle-btn" onClick={handleToggleClick}>
-          ▼
+        <button className="panel-toggle-btn" onClick={handleToggleClick} aria-label="알림 collapse">
+          {isVerticalScreen ? "▲" : "▶"}
         </button>
       </div>
 

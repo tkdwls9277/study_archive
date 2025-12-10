@@ -86,6 +86,7 @@ export const ko: Translations = {
     showTodos: "할 일 패널 표시",
     showWork: "주간 근무 기록 패널 표시",
     showNotifications: "알림 패널 표시",
+    showFocus: "핵심목표 표시",
     settings: "설정",
   },
 };

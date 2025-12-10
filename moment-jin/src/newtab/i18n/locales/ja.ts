@@ -86,6 +86,7 @@ export const ja: Translations = {
     showTodos: "やることパネルを表示",
     showWork: "勤務記録パネルを表示",
     showNotifications: "通知パネルを表示",
+    showFocus: "フォーカスセクションを表示",
     settings: "設定",
   },
 };

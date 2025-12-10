@@ -9,6 +9,7 @@ interface OptionsModalProps {
   showTodos: boolean;
   showWork: boolean;
   showNotifications: boolean;
+  showFocus: boolean;
   onClose: () => void;
   onSave: () => void;
   onUserNameChange: (userName: string) => void;
@@ -16,6 +17,7 @@ interface OptionsModalProps {
   onShowTodosChange: (show: boolean) => void;
   onShowWorkChange: (show: boolean) => void;
   onShowNotificationsChange: (show: boolean) => void;
+  onShowFocusChange: (show: boolean) => void;
 }
 
 export const OptionsModal: React.FC<OptionsModalProps> = ({
@@ -25,6 +27,7 @@ export const OptionsModal: React.FC<OptionsModalProps> = ({
   showTodos,
   showWork,
   showNotifications,
+  showFocus,
   onClose,
   onSave,
   onUserNameChange,
@@ -32,6 +35,7 @@ export const OptionsModal: React.FC<OptionsModalProps> = ({
   onShowTodosChange,
   onShowWorkChange,
   onShowNotificationsChange,
+  onShowFocusChange,
 }) => {
   const { t } = useTranslation();
   const nameInputRef = useRef<HTMLInputElement>(null);
@@ -206,6 +210,18 @@ ${settingsSummary.length > 0 ? `\n⚙️ 설정:\n${settingsSummary.map((s) => `
               onChange={(e) => onShowNotificationsChange(e.target.checked)}
             />
             <span>{t.options.showNotifications}</span>
+          </label>
+          <label
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem",
+              marginTop: "0.5rem",
+              cursor: "pointer",
+            }}
+          >
+            <input type="checkbox" checked={showFocus} onChange={(e) => onShowFocusChange(e.target.checked)} />
+            <span>{t.options.showFocus}</span>
           </label>
         </div>
 

@@ -11,6 +11,8 @@ interface AppHeaderProps {
   focusInputValue: string;
   todayRecord: WorkRecord | undefined;
   showWorkPanel: boolean;
+  showNotificationPanel: boolean;
+  showFocusSection: boolean;
   onFocusInputChange: (value: string) => void;
   onFocusKeyDown: React.KeyboardEventHandler<HTMLInputElement>;
   onFocusBlur: () => void;
@@ -44,6 +46,8 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
   focusInputValue,
   todayRecord,
   showWorkPanel,
+  showNotificationPanel,
+  showFocusSection,
   onFocusInputChange,
   onFocusKeyDown,
   onFocusBlur,
@@ -58,17 +62,19 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
       <div className="app-time">{time}</div>
       <div className="app-greeting">{greeting}</div>
 
-      {/* 오늘의 목표 */}
-      <FocusInput
-        focus={focus}
-        focusInputValue={focusInputValue}
-        onFocusInputChange={onFocusInputChange}
-        onFocusKeyDown={onFocusKeyDown}
-        onFocusBlur={onFocusBlur}
-      />
+      {/* 오늘의 목표 - 표시 설정에 따라 조건부 렌더링 */}
+      {showFocusSection && (
+        <FocusInput
+          focus={focus}
+          focusInputValue={focusInputValue}
+          onFocusInputChange={onFocusInputChange}
+          onFocusKeyDown={onFocusKeyDown}
+          onFocusBlur={onFocusBlur}
+        />
+      )}
 
-      {/* 다음 알림 */}
-      <NextNotification />
+      {/* 다음 알림 - 알림 패널이 활성화된 경우만 표시 */}
+      {showNotificationPanel && <NextNotification />}
 
       {/* 출퇴근 체크 - 근무 기록 패널이 활성화된 경우만 표시 */}
       {showWorkPanel && (

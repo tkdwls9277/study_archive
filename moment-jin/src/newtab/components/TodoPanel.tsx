@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "../hooks/useTranslation";
 import type { Todo, TodoGroup } from "../types/index";
 import { formatDate } from "../utils/date";
@@ -39,6 +39,17 @@ export const TodoPanel: React.FC<TodoPanelProps> = ({
   onShowCompletedTodosToggle,
 }) => {
   const { t, locale } = useTranslation();
+  const [isVerticalScreen, setIsVerticalScreen] = useState(window.innerHeight > window.innerWidth);
+
+  // 화면 크기 변경 감지
+  useEffect(() => {
+    const handleResize = () => {
+      setIsVerticalScreen(window.innerHeight > window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // 요일 이름을 번역에 따라 반환
   const getDayName = (dayIndex: number): string => {
@@ -65,7 +76,7 @@ export const TodoPanel: React.FC<TodoPanelProps> = ({
           }}
           aria-label={`${t.todo.title} ${isOpen ? "collapse" : "expand"}`}
         >
-          {isOpen ? "▶" : "◀"}
+          {isOpen ? (isVerticalScreen ? "▲" : "▶") : isVerticalScreen ? "▼" : "◀"}
         </button>
       </div>
       {!isOpen && (
