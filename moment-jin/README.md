@@ -175,14 +175,17 @@ npm run type-check
 **401 에러 (Invalid API key) 해결 방법:**
 
 1. **API 키 확인**
+
    - 설정에서 입력한 API 키가 정확한지 재확인
    - 공백이나 특수문자가 포함되지 않았는지 확인
 
 2. **API 키 활성화 대기**
+
    - 새로 발급받은 API 키는 활성화까지 **최대 2시간** 소요
    - [OpenWeatherMap API Keys](https://home.openweathermap.org/api_keys)에서 상태 확인
 
 3. **할당량 확인**
+
    - 무료 플랜: 1분당 60회, 하루 1,000회
    - 한도 초과 시 429 에러 발생
    - [Usage Statistics](https://home.openweathermap.org/statistics)에서 확인

@@ -10,10 +10,7 @@
     "newtab": "newtab.html"
   },
   "permissions": ["storage", "alarms", "notifications"],
-  "host_permissions": [
-    "https://api.unsplash.com/*",
-    "https://api.openweathermap.org/*"
-  ],
+  "host_permissions": ["https://api.unsplash.com/*", "https://api.openweathermap.org/*"],
   "background": {
     "service_worker": "background.js",
     "type": "module"

@@ -1999,6 +1999,40 @@ body,
   font-size: 12px;
 }
 
+/* 알림 전체보기 토글 */
+.notification-view-toggle {
+  margin: 12px 0;
+  padding: 0 12px;
+}
+
+.view-toggle-btn {
+  width: 100%;
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.view-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 1);
+  transform: translateY(-1px);
+}
+
+.view-toggle-btn:active {
+  transform: translateY(0);
+}
+
 /* 알림 모달 */
 .notification-modal {
   width: 90%;
@@ -2291,4 +2325,3 @@ textarea.modal-input {
     font-size: 1.1rem;
   }
 }
-

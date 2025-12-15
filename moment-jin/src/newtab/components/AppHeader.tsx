@@ -2,8 +2,8 @@ import React from "react";
 import type { WorkRecord } from "../types/index";
 import { FocusInput } from "./FocusInput";
 import { NextNotification } from "./NextNotification";
-import { WorkCheckButtons } from "./WorkCheckButtons";
 import { Weather } from "./Weather";
+import { WorkCheckButtons } from "./WorkCheckButtons";
 
 interface AppHeaderProps {
   time: string;

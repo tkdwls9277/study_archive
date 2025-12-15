@@ -13,6 +13,7 @@ export function NotificationPanel({ isCollapsed, onToggle }: NotificationPanelPr
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingNotification, setEditingNotification] = useState<Notification | null>(null);
   const [isVerticalScreen, setIsVerticalScreen] = useState(window.innerHeight > window.innerWidth);
+  const [showAllNotifications, setShowAllNotifications] = useState(false); // 전체보기 상태
 
   // 화면 크기 변경 감지
   useEffect(() => {
@@ -123,15 +124,55 @@ export function NotificationPanel({ isCollapsed, onToggle }: NotificationPanelPr
             </button>
           </div>
         ) : (
-          notifications.map((notification) => (
-            <NotificationItem
-              key={notification.id}
-              notification={notification}
-              onEdit={() => handleEdit(notification)}
-              onDelete={() => handleDelete(notification.id)}
-              onToggle={() => handleToggle(notification.id)}
-            />
-          ))
+          <>
+            {(() => {
+              const now = new Date();
+              const upcomingNotifications = notifications.filter((n) => new Date(n.targetDateTime) >= now);
+              const pastNotifications = notifications.filter((n) => new Date(n.targetDateTime) < now);
+              const displayNotifications = showAllNotifications ? notifications : upcomingNotifications;
+
+              return (
+                <>
+                  {displayNotifications.map((notification) => (
+                    <NotificationItem
+                      key={notification.id}
+                      notification={notification}
+                      onEdit={() => handleEdit(notification)}
+                      onDelete={() => handleDelete(notification.id)}
+                      onToggle={() => handleToggle(notification.id)}
+                    />
+                  ))}
+
+                  {pastNotifications.length > 0 && (
+                    <div className="notification-view-toggle">
+                      <button
+                        className="view-toggle-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setShowAllNotifications(!showAllNotifications);
+                        }}
+                      >
+                        {showAllNotifications ? (
+                          <>▲ 지나간 알림 숨기기 ({pastNotifications.length}개)</>
+                        ) : (
+                          <>▼ 지나간 알림 보기 ({pastNotifications.length}개)</>
+                        )}
+                      </button>
+                    </div>
+                  )}
+
+                  {displayNotifications.length === 0 && !showAllNotifications && (
+                    <div className="empty-state">
+                      <p>예정된 알림이 없습니다</p>
+                      <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.6)", marginTop: "8px" }}>
+                        {pastNotifications.length}개의 지나간 알림이 있습니다
+                      </p>
+                    </div>
+                  )}
+                </>
+              );
+            })()}
+          </>
         )}
       </div>
 

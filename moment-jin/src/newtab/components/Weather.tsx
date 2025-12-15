@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { WeatherService } from "../services/weatherService";
 import type { WeatherData } from "../types";
 
@@ -47,11 +47,7 @@ export const Weather: React.FC<WeatherProps> = ({ compact = true, apiKey, onSett
       const position = await getGeolocation();
 
       // 3. 날씨 API 호출
-      const data = await WeatherService.getCurrentWeather(
-        position.coords.latitude,
-        position.coords.longitude,
-        apiKey
-      );
+      const data = await WeatherService.getCurrentWeather(position.coords.latitude, position.coords.longitude, apiKey);
 
       console.log("[Weather] Weather data loaded:", data);
       setWeather(data);
@@ -104,13 +100,10 @@ export const Weather: React.FC<WeatherProps> = ({ compact = true, apiKey, onSett
   /**
    * 온도 단위 토글
    */
-  const toggleUnit = useCallback(
-    (e: React.MouseEvent) => {
-      e.stopPropagation();
-      setUnit((prev) => (prev === "C" ? "F" : "C"));
-    },
-    []
-  );
+  const toggleUnit = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    setUnit((prev) => (prev === "C" ? "F" : "C"));
+  }, []);
 
   /**
    * 온도 변환 (섭씨 ↔ 화씨)
@@ -158,7 +151,7 @@ export const Weather: React.FC<WeatherProps> = ({ compact = true, apiKey, onSett
   if (error === "no-api-key") {
     return (
       <div className="weather-widget no-api-key">
-        <div 
+        <div
           className="weather-setup-trigger"
           onClick={() => setShowApiKeyGuide(!showApiKeyGuide)}
           title="날씨 위젯 설정하기"
@@ -171,7 +164,7 @@ export const Weather: React.FC<WeatherProps> = ({ compact = true, apiKey, onSett
           <div className="weather-api-guide">
             <div className="weather-guide-header">
               <strong>🌤️ 날씨 위젯 설정</strong>
-              <button 
+              <button
                 className="weather-guide-close"
                 onClick={(e) => {
                   e.stopPropagation();
@@ -208,7 +201,8 @@ export const Weather: React.FC<WeatherProps> = ({ compact = true, apiKey, onSett
                 ⚙️ 설정 열기
               </button>
               <p className="weather-guide-note">
-                💡 무료 플랜: 하루 1,000회 호출 가능<br />
+                💡 무료 플랜: 하루 1,000회 호출 가능
+                <br />
                 ⚠️ API 키는 브라우저에만 저장되며 안전합니다
               </p>
             </div>
@@ -222,10 +216,10 @@ export const Weather: React.FC<WeatherProps> = ({ compact = true, apiKey, onSett
   if (error || !weather) {
     // 401 에러 (잘못된 API 키)인 경우 특별 처리
     const isInvalidApiKey = error?.includes("Invalid API key") || error?.includes("401");
-    
+
     return (
       <div className="weather-widget error">
-        <div 
+        <div
           className="weather-error-trigger"
           onClick={() => setShowApiKeyGuide(!showApiKeyGuide)}
           title={error || "날씨 정보를 불러올 수 없습니다"}
@@ -238,7 +232,7 @@ export const Weather: React.FC<WeatherProps> = ({ compact = true, apiKey, onSett
           <div className="weather-api-guide">
             <div className="weather-guide-header">
               <strong>🔑 API 키 오류</strong>
-              <button 
+              <button
                 className="weather-guide-close"
                 onClick={(e) => {
                   e.stopPropagation();
@@ -249,13 +243,13 @@ export const Weather: React.FC<WeatherProps> = ({ compact = true, apiKey, onSett
               </button>
             </div>
             <div className="weather-guide-content">
-              <p className="weather-guide-step" style={{ color: '#ff6b6b' }}>
+              <p className="weather-guide-step" style={{ color: "#ff6b6b" }}>
                 ❌ API 키가 유효하지 않습니다
               </p>
               <p className="weather-guide-step">
                 <strong>해결 방법:</strong>
               </p>
-              <ul style={{ margin: '8px 0', paddingLeft: '20px', fontSize: '13px', lineHeight: '1.6' }}>
+              <ul style={{ margin: "8px 0", paddingLeft: "20px", fontSize: "13px", lineHeight: "1.6" }}>
                 <li>API 키를 다시 확인해주세요</li>
                 <li>OpenWeatherMap에서 활성화 확인 (최대 2시간 소요)</li>
                 <li>무료 플랜 한도 확인 (하루 1,000회)</li>
@@ -276,7 +270,7 @@ export const Weather: React.FC<WeatherProps> = ({ compact = true, apiKey, onSett
                 rel="noopener noreferrer"
                 className="weather-guide-link"
                 onClick={(e) => e.stopPropagation()}
-                style={{ marginTop: '8px' }}
+                style={{ marginTop: "8px" }}
               >
                 🔗 API 키 관리 페이지
               </a>
@@ -297,19 +291,14 @@ export const Weather: React.FC<WeatherProps> = ({ compact = true, apiKey, onSett
       >
         <span className="weather-icon">{weather.icon}</span>
         <span className="weather-temp">
-          {Math.round(getTemperature(weather.temp))}°
-          <span className="weather-unit">{unit}</span>
+          {Math.round(getTemperature(weather.temp))}°<span className="weather-unit">{unit}</span>
         </span>
 
         {expanded && (
           <div className="weather-details">
             <div className="weather-details-header">
               <strong>{weather.location}</strong>
-              <button
-                className="weather-refresh"
-                onClick={handleRefresh}
-                title="새로고침"
-              >
+              <button className="weather-refresh" onClick={handleRefresh} title="새로고침">
                 🔄
               </button>
             </div>

@@ -31,7 +31,7 @@ export class WeatherService {
       if (!response.ok) {
         // 상세한 에러 정보 수집
         let errorMessage = `Weather API request failed: ${response.status}`;
-        
+
         try {
           const errorData = await response.json();
           if (errorData.message) {

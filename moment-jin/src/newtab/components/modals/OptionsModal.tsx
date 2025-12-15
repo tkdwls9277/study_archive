@@ -186,7 +186,16 @@ ${settingsSummary.length > 0 ? `\n⚙️ 설정:\n${settingsSummary.map((s) => `
             />
           </label>
           <div style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.6)", marginTop: "0.5rem" }}>
-            💡 무료 API 키는 <a href="https://openweathermap.org/api" target="_blank" rel="noopener noreferrer" style={{ color: "#60a5fa", textDecoration: "underline" }}>openweathermap.org</a>에서 발급받으세요.
+            💡 무료 API 키는{" "}
+            <a
+              href="https://openweathermap.org/api"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "#60a5fa", textDecoration: "underline" }}
+            >
+              openweathermap.org
+            </a>
+            에서 발급받으세요.
             <br />
             ⚠️ API 키는 사용자의 브라우저에만 저장되며, 다른 곳으로 전송되지 않습니다.
           </div>
