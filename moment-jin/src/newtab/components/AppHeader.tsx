@@ -3,6 +3,7 @@ import type { WorkRecord } from "../types/index";
 import { FocusInput } from "./FocusInput";
 import { NextNotification } from "./NextNotification";
 import { WorkCheckButtons } from "./WorkCheckButtons";
+import { Weather } from "./Weather";
 
 interface AppHeaderProps {
   time: string;
@@ -13,6 +14,7 @@ interface AppHeaderProps {
   showWorkPanel: boolean;
   showNotificationPanel: boolean;
   showFocusSection: boolean;
+  weatherApiKey: string;
   onFocusInputChange: (value: string) => void;
   onFocusKeyDown: React.KeyboardEventHandler<HTMLInputElement>;
   onFocusBlur: () => void;
@@ -20,6 +22,7 @@ interface AppHeaderProps {
   onCheckOut: () => void;
   onCheckInEdit: () => void;
   onCheckOutEdit: () => void;
+  onSettingsClick: () => void;
   workTranslations: {
     clickToEdit: string;
     rightClickToEdit: string;
@@ -48,6 +51,7 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
   showWorkPanel,
   showNotificationPanel,
   showFocusSection,
+  weatherApiKey,
   onFocusInputChange,
   onFocusKeyDown,
   onFocusBlur,
@@ -55,11 +59,17 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
   onCheckOut,
   onCheckInEdit,
   onCheckOutEdit,
+  onSettingsClick,
   workTranslations,
 }) => {
   return (
     <div className="app-top">
-      <div className="app-time">{time}</div>
+      {/* 시간 + 날씨 위젯 */}
+      <div className="time-weather-row">
+        <div className="app-time">{time}</div>
+        <Weather compact apiKey={weatherApiKey} onSettingsClick={onSettingsClick} />
+      </div>
+
       <div className="app-greeting">{greeting}</div>
 
       {/* 오늘의 목표 - 표시 설정에 따라 조건부 렌더링 */}

@@ -1,5 +1,6 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import type { Favorite, Todo, WorkRecord } from "../types/index";
+import { formatDate } from "../utils/date";
 
 interface StorageSyncProps {
   setUserName: (value: string | null) => void;
@@ -17,11 +18,14 @@ interface StorageSyncProps {
   setShowWorkPanel: (value: boolean) => void;
   setShowNotificationPanel: (value: boolean) => void;
   setShowFocusSection: (value: boolean) => void;
+  setCurrentDate: (value: string) => void;
+  setWeatherApiKey: (value: string) => void;
 }
 
 /**
  * Chrome Storage 동기화를 관리하는 커스텀 훅
  * 다른 탭에서의 변경사항을 실시간으로 감지하여 상태 업데이트
+ * 추가로 날짜 변경도 주기적으로 감지
  */
 export function useStorageSync(props: StorageSyncProps) {
   const {
@@ -39,13 +43,30 @@ export function useStorageSync(props: StorageSyncProps) {
     setShowWorkPanel,
     setShowNotificationPanel,
     setShowFocusSection,
+    setCurrentDate,
+    setWeatherApiKey,
   } = props;
 
+  const lastCheckedDateRef = useRef<string>(formatDate(new Date()));
+
   useEffect(() => {
+    // 날짜 변경을 체크하는 함수
+    const checkDateChange = () => {
+      const currentDate = formatDate(new Date());
+      if (currentDate !== lastCheckedDateRef.current) {
+        console.log(`[StorageSync] 날짜 변경 감지: ${lastCheckedDateRef.current} -> ${currentDate}`);
+        lastCheckedDateRef.current = currentDate;
+        setCurrentDate(currentDate);
+      }
+    };
+
     const handleStorageChange = (changes: { [key: string]: chrome.storage.StorageChange }, namespace: string) => {
       if (namespace !== "sync") return;
 
       console.log("[App] Storage changed in another tab:", changes);
+
+      // Storage 변경이 있을 때마다 날짜도 체크
+      checkDateChange();
 
       // userName 변경
       if (changes.userName) {
@@ -116,12 +137,27 @@ export function useStorageSync(props: StorageSyncProps) {
         const newValue = changes.showFocusSection.newValue as boolean | undefined;
         setShowFocusSection(newValue ?? true);
       }
+
+      // 날씨 API 키 변경
+      if (changes.weatherApiKey !== undefined) {
+        const newValue = changes.weatherApiKey.newValue as string | undefined;
+        setWeatherApiKey(newValue ?? "");
+      }
     };
 
+    // Storage 변경 리스너 등록
     chrome.storage.onChanged.addListener(handleStorageChange);
+
+    // 초기 날짜 체크
+    checkDateChange();
+
+    // 주기적으로 날짜 체크 (1분마다)
+    // Storage 이벤트가 없어도 날짜 변경을 감지할 수 있도록
+    const dateCheckTimer = setInterval(checkDateChange, 1000 * 60);
 
     return () => {
       chrome.storage.onChanged.removeListener(handleStorageChange);
+      clearInterval(dateCheckTimer);
     };
   }, [
     setUserName,
@@ -138,5 +174,7 @@ export function useStorageSync(props: StorageSyncProps) {
     setShowWorkPanel,
     setShowNotificationPanel,
     setShowFocusSection,
+    setCurrentDate,
+    setWeatherApiKey,
   ]);
 }

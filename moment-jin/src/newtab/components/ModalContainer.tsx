@@ -36,6 +36,7 @@ interface ModalContainerProps {
   optionsShowWork: boolean;
   optionsShowNotifications: boolean;
   optionsShowFocus: boolean;
+  weatherApiKey: string;
   onOptionsClose: () => void;
   onOptionsSave: () => void;
   onUserNameChange: (value: string) => void;
@@ -44,6 +45,7 @@ interface ModalContainerProps {
   onShowWorkChange: (value: boolean) => void;
   onShowNotificationsChange: (value: boolean) => void;
   onShowFocusChange: (value: boolean) => void;
+  onWeatherApiKeyChange: (value: string) => void;
 }
 
 /**
@@ -82,6 +84,7 @@ export const ModalContainer: React.FC<ModalContainerProps> = ({
   optionsShowWork,
   optionsShowNotifications,
   optionsShowFocus,
+  weatherApiKey,
   onOptionsClose,
   onOptionsSave,
   onUserNameChange,
@@ -90,6 +93,7 @@ export const ModalContainer: React.FC<ModalContainerProps> = ({
   onShowWorkChange,
   onShowNotificationsChange,
   onShowFocusChange,
+  onWeatherApiKeyChange,
 }) => {
   return (
     <>
@@ -127,6 +131,7 @@ export const ModalContainer: React.FC<ModalContainerProps> = ({
         showWork={optionsShowWork}
         showNotifications={optionsShowNotifications}
         showFocus={optionsShowFocus}
+        weatherApiKey={weatherApiKey}
         onClose={onOptionsClose}
         onSave={onOptionsSave}
         onUserNameChange={onUserNameChange}
@@ -135,6 +140,7 @@ export const ModalContainer: React.FC<ModalContainerProps> = ({
         onShowWorkChange={onShowWorkChange}
         onShowNotificationsChange={onShowNotificationsChange}
         onShowFocusChange={onShowFocusChange}
+        onWeatherApiKeyChange={onWeatherApiKeyChange}
       />
     </>
   );

@@ -13,6 +13,7 @@ interface WorkPanelProps {
   weekTotal: number;
   weekTarget: number;
   overtime: { minutes: number; isOver: boolean };
+  currentDate?: string; // 현재 날짜 (날짜 변경 감지용)
   onToggle: () => void;
   onWeekOffsetChange: (offset: number) => void;
   onEditClick: (record: WorkRecord) => void;
@@ -28,6 +29,7 @@ export const WorkPanel: React.FC<WorkPanelProps> = ({
   weekTotal,
   weekTarget,
   overtime,
+  currentDate, // 날짜 변경 시 리렌더링 트리거용
   onToggle,
   onWeekOffsetChange,
   onEditClick,
@@ -45,6 +47,14 @@ export const WorkPanel: React.FC<WorkPanelProps> = ({
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  // currentDate가 변경되면 컴포넌트가 리렌더링됨 (날짜 변경 감지)
+  useEffect(() => {
+    if (currentDate) {
+      // 날짜가 변경되었을 때 로그 출력 (선택사항)
+      console.log(`[WorkPanel] 날짜 업데이트: ${currentDate}`);
+    }
+  }, [currentDate]);
 
   // 요일 이름을 번역에 따라 반환
   const getDayName = (dayIndex: number): string => {

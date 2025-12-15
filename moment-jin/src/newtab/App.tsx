@@ -54,6 +54,7 @@ export const App: React.FC = () => {
     if (typeof storageData.showNotificationPanel === "boolean")
       state.setShowNotificationPanel(storageData.showNotificationPanel);
     if (typeof storageData.showFocusSection === "boolean") state.setShowFocusSection(storageData.showFocusSection);
+    if (typeof storageData.weatherApiKey === "string") state.setWeatherApiKey(storageData.weatherApiKey);
   }, [storageData]);
 
   // ===== Storage 동기화 (다른 탭) =====
@@ -73,6 +74,8 @@ export const App: React.FC = () => {
     setShowWorkPanel: state.setShowWorkPanel,
     setShowNotificationPanel: state.setShowNotificationPanel,
     setShowFocusSection: state.setShowFocusSection,
+    setCurrentDate: state.setCurrentDate,
+    setWeatherApiKey: state.setWeatherApiKey,
   });
 
   // ===== 시간 & 인사 업데이트 =====
@@ -86,6 +89,14 @@ export const App: React.FC = () => {
     const timer = setInterval(updateTimeAndGreeting, 1000 * 30);
     return () => clearInterval(timer);
   }, [state.userName]);
+
+  // ===== 날짜가 변경되면 시간과 인사말도 즉시 업데이트 =====
+  useEffect(() => {
+    if (state.currentDate) {
+      state.setTime(getTimeString());
+      state.setGreeting(getGreeting(state.userName));
+    }
+  }, [state.currentDate, state.userName]);
 
   // ===== 배경 이미지 로드 =====
   useEffect(() => {
@@ -142,12 +153,14 @@ export const App: React.FC = () => {
     showWorkPanel: state.showWorkPanel,
     showNotificationPanel: state.showNotificationPanel,
     showFocusSection: state.showFocusSection,
+    weatherApiKey: state.weatherApiKey,
     setUserName: state.setUserName,
     setShowFavoritesPanel: state.setShowFavoritesPanel,
     setShowTodosPanel: state.setShowTodosPanel,
     setShowWorkPanel: state.setShowWorkPanel,
     setShowNotificationPanel: state.setShowNotificationPanel,
     setShowFocusSection: state.setShowFocusSection,
+    setWeatherApiKey: state.setWeatherApiKey,
   });
 
   const panelToggle = usePanelToggle({
@@ -184,7 +197,7 @@ export const App: React.FC = () => {
 
   const todayRecord = useMemo(
     () => state.workRecords.find((r) => r.date === formatDate(new Date())),
-    [state.workRecords]
+    [state.workRecords, state.currentDate] // currentDate가 변경되면 재계산
   );
 
   // ===== 배경 스타일 =====
@@ -227,6 +240,7 @@ export const App: React.FC = () => {
             showWorkPanel={state.showWorkPanel}
             showNotificationPanel={state.showNotificationPanel}
             showFocusSection={state.showFocusSection}
+            weatherApiKey={state.weatherApiKey}
             workTranslations={t.work}
             onFocusInputChange={state.setFocusInputValue}
             onFocusKeyDown={focusHandler.handleFocusKeyDown}
@@ -235,6 +249,7 @@ export const App: React.FC = () => {
             onCheckOut={workHandler.handleCheckOut}
             onCheckInEdit={workHandler.handleCheckInEdit}
             onCheckOutEdit={workHandler.handleCheckOutEdit}
+            onSettingsClick={optionsModal.openOptionsModal}
           />
         </main>
 
@@ -261,6 +276,7 @@ export const App: React.FC = () => {
                 newTodoText={state.newTodoText}
                 showCompletedTodos={state.showCompletedTodos}
                 todoRefs={todoRefs}
+                currentDate={state.currentDate}
                 onToggle={panelToggle.toggleTodosOpen}
                 onAddTodo={todoHandler.handleAddTodo}
                 onToggleTodo={todoHandler.handleToggleTodo}
@@ -282,6 +298,7 @@ export const App: React.FC = () => {
                 weekTotal={computed.weekTotal}
                 weekTarget={computed.weekTarget}
                 overtime={computed.overtime}
+                currentDate={state.currentDate}
                 onToggle={panelToggle.toggleWorkPanelOpen}
                 onWeekOffsetChange={state.setWeekOffset}
                 onEditClick={workHandler.handleDateEdit}
@@ -321,6 +338,7 @@ export const App: React.FC = () => {
         optionsShowWork={optionsModal.optionsShowWork}
         optionsShowNotifications={optionsModal.optionsShowNotifications}
         optionsShowFocus={optionsModal.optionsShowFocus}
+        weatherApiKey={optionsModal.optionsWeatherApiKey}
         onOptionsClose={optionsModal.closeOptionsModal}
         onOptionsSave={optionsModal.handleSaveOptions}
         onUserNameChange={optionsModal.setOptionsUserName}
@@ -329,6 +347,7 @@ export const App: React.FC = () => {
         onShowWorkChange={optionsModal.setOptionsShowWork}
         onShowNotificationsChange={optionsModal.setOptionsShowNotifications}
         onShowFocusChange={optionsModal.setOptionsShowFocus}
+        onWeatherApiKeyChange={optionsModal.setOptionsWeatherApiKey}
       />
 
       {/* 설정 버튼 */}

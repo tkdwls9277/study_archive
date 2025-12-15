@@ -9,6 +9,7 @@ export function useAppState() {
   const [userName, setUserName] = useState<string | null>(null);
   const [focus, setFocus] = useState("");
   const [focusInputValue, setFocusInputValue] = useState("");
+  const [weatherApiKey, setWeatherApiKey] = useState<string>("");
 
   // ===== 데이터 =====
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -40,6 +41,7 @@ export function useAppState() {
   const [time, setTime] = useState("");
   const [greeting, setGreeting] = useState("");
   const [backgroundImage, setBackgroundImage] = useState<string>("");
+  const [currentDate, setCurrentDate] = useState(""); // 현재 날짜 (YYYY-MM-DD)
 
   return {
     // 사용자 설정
@@ -49,6 +51,8 @@ export function useAppState() {
     setFocus,
     focusInputValue,
     setFocusInputValue,
+    weatherApiKey,
+    setWeatherApiKey,
 
     // 데이터
     todos,
@@ -99,5 +103,7 @@ export function useAppState() {
     setGreeting,
     backgroundImage,
     setBackgroundImage,
+    currentDate,
+    setCurrentDate,
   };
 }

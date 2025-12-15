@@ -10,6 +10,7 @@ interface OptionsModalProps {
   showWork: boolean;
   showNotifications: boolean;
   showFocus: boolean;
+  weatherApiKey: string;
   onClose: () => void;
   onSave: () => void;
   onUserNameChange: (userName: string) => void;
@@ -18,6 +19,7 @@ interface OptionsModalProps {
   onShowWorkChange: (show: boolean) => void;
   onShowNotificationsChange: (show: boolean) => void;
   onShowFocusChange: (show: boolean) => void;
+  onWeatherApiKeyChange: (key: string) => void;
 }
 
 export const OptionsModal: React.FC<OptionsModalProps> = ({
@@ -28,6 +30,7 @@ export const OptionsModal: React.FC<OptionsModalProps> = ({
   showWork,
   showNotifications,
   showFocus,
+  weatherApiKey,
   onClose,
   onSave,
   onUserNameChange,
@@ -36,6 +39,7 @@ export const OptionsModal: React.FC<OptionsModalProps> = ({
   onShowWorkChange,
   onShowNotificationsChange,
   onShowFocusChange,
+  onWeatherApiKeyChange,
 }) => {
   const { t } = useTranslation();
   const nameInputRef = useRef<HTMLInputElement>(null);
@@ -164,6 +168,29 @@ ${settingsSummary.length > 0 ? `\n⚙️ 설정:\n${settingsSummary.map((s) => `
           />
         </label>
         <div className="modal-hint">💡 {t.options.nameHint}</div>
+
+        {/* 날씨 API 키 설정 */}
+        <div style={{ marginTop: "1.5rem", borderTop: "1px solid rgba(255,255,255,0.2)", paddingTop: "1rem" }}>
+          <h3 style={{ fontSize: "0.95rem", marginBottom: "0.75rem", fontWeight: 600 }}>🌤️ 날씨 위젯 설정</h3>
+          <label className="modal-label">
+            OpenWeather API 키
+            <input
+              className="modal-input"
+              type="password"
+              value={weatherApiKey}
+              onChange={(e) => onWeatherApiKeyChange(e.target.value)}
+              placeholder="your_api_key_here"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") onSave();
+              }}
+            />
+          </label>
+          <div style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.6)", marginTop: "0.5rem" }}>
+            💡 무료 API 키는 <a href="https://openweathermap.org/api" target="_blank" rel="noopener noreferrer" style={{ color: "#60a5fa", textDecoration: "underline" }}>openweathermap.org</a>에서 발급받으세요.
+            <br />
+            ⚠️ API 키는 사용자의 브라우저에만 저장되며, 다른 곳으로 전송되지 않습니다.
+          </div>
+        </div>
 
         <div style={{ marginTop: "1.5rem", borderTop: "1px solid rgba(255,255,255,0.2)", paddingTop: "1rem" }}>
           <h3 style={{ fontSize: "0.95rem", marginBottom: "0.75rem", fontWeight: 600 }}>{t.options.panelSettings}</h3>

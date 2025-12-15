@@ -30,6 +30,17 @@ export type OvertimeInfo = {
   isOver: boolean;
 };
 
+export interface WeatherData {
+  temp: number; // 섭씨 온도
+  feelsLike: number; // 체감 온도
+  humidity: number; // 습도 (%)
+  windSpeed: number; // 풍속 (m/s)
+  condition: string; // 날씨 상태 설명
+  icon: string; // 날씨 아이콘 (이모지)
+  location: string; // 위치명
+  timestamp: number; // 캐시 타임스탬프
+}
+
 export interface StorageData {
   userName?: string | null;
   todayFocus?: string;
@@ -45,4 +56,5 @@ export interface StorageData {
   showWorkPanel?: boolean;
   showNotificationPanel?: boolean;
   showFocusSection?: boolean; // 핵심목표 표시 여부
+  weatherApiKey?: string; // OpenWeather API 키 (사용자 입력)
 }

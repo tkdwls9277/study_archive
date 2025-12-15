@@ -25,6 +25,8 @@
   - 체감 온도, 습도, 풍속
   - 섭씨/화씨 전환
   - 1시간 캐싱으로 API 호출 최적화
+  - **사용자별 API 키 관리** - 보안 강화 및 할당량 분산
+  - 직관적인 초기 설정 가이드
 
 ## 🚀 시작하기
 
@@ -56,19 +58,20 @@ npm install
 cp .env.example .env
 ```
 
-그리고 다음 API 키를 설정하세요:
+그리고 **Unsplash API Key**를 설정하세요:
 
 - **Unsplash API Key** (배경 이미지용)
   - https://unsplash.com/developers 에서 무료 계정 생성
   - Access Key 발급 후 `.env`에 입력
-- **OpenWeather API Key** (날씨 위젯용)
-  - https://openweathermap.org/api 에서 무료 계정 생성
-  - API Key 발급 후 `.env`에 입력
 
 ```env
 VITE_UNSPLASH_ACCESS_KEY=your_unsplash_key_here
-VITE_OPENWEATHER_API_KEY=your_openweather_key_here
 ```
+
+> 💡 **날씨 위젯 API 키는 설정에서 입력하세요!**
+>
+> 보안 강화를 위해 OpenWeather API 키는 더 이상 환경 변수를 사용하지 않습니다.
+> 각 사용자가 확장 프로그램 설정에서 자신의 API 키를 직접 입력하여 사용합니다.
 
 4. **빌드**
 
@@ -111,31 +114,82 @@ npm run type-check
 - [설계 문서 (한글)](./docs/DESIGN_KR.md) - 아키텍처 및 설계
 - [Design Document (English)](./docs/DESIGN_EN.md) - Architecture & Design
 
-## 🧪 날씨 위젯 테스트
+## 🧪 날씨 위젯 설정 및 사용
 
-날씨 위젯을 테스트하려면:
+### 🔐 보안 강화 설계
 
-1. **위치 권한 허용**
+날씨 위젯은 **사용자별 API 키 관리** 방식을 사용합니다:
 
-   - 브라우저에서 위치 정보 접근 허용 필요
+- ✅ 각 사용자가 자신의 OpenWeather API 키를 사용
+- ✅ API 할당량 분산 (무료 플랜: 1분 60회, 하루 1,000회)
+- ✅ 개발자의 API 키 노출 방지
+- ✅ API 키는 브라우저의 chrome.storage.sync에만 저장 (안전)
+
+### 📝 설정 방법
+
+1. **API 키 발급받기**
+
+   - [OpenWeatherMap](https://openweathermap.org/api)에서 무료 계정 가입
+   - "API keys" 메뉴에서 API 키 생성
+   - 무료 플랜: 하루 1,000회 호출 가능
+
+2. **초기 설정**
+
+   - 처음 확장 프로그램을 실행하면 날씨 위젯에 **"설정"** 버튼이 표시됩니다
+   - 위젯 클릭 → 안내 가이드 팝업
+   - **"설정 열기"** 버튼 클릭
+
+3. **API 키 입력**
+
+   - 설정 모달의 **"날씨 위젯 설정"** 섹션 찾기
+   - API 키 입력 필드에 발급받은 키 입력
+   - "저장" 버튼 클릭
+
+4. **위치 권한 허용**
+   - 브라우저에서 위치 정보 접근 권한 허용
    - 첫 로드 시 권한 요청 팝업이 표시됩니다
 
-2. **API 키 확인**
+### 🎯 사용 방법
 
-   - `.env` 파일에 `VITE_OPENWEATHER_API_KEY`가 설정되어 있는지 확인
-   - 빌드 후 확장 프로그램을 재로드하세요
+- **기본 표시**: 시계 옆에 현재 온도와 날씨 아이콘
+- **상세 정보**: 위젯 클릭 시 체감온도, 습도, 풍속 표시
+- **온도 단위 전환**: °C ↔ °F 버튼으로 변경
+- **수동 새로고침**: 🔄 버튼으로 최신 날씨 업데이트
+- **자동 갱신**: 1시간마다 자동으로 새로고침
 
-3. **동작 확인**
+### 🐛 문제 해결
 
-   - 시계 옆에 날씨 위젯이 표시됩니다
-   - 위젯 클릭 시 상세 정보 팝업이 나타납니다
-   - 새로고침 버튼으로 수동 업데이트 가능
-   - 온도 단위 전환 버튼으로 °C ↔ °F 변경
+**날씨가 표시되지 않을 때:**
 
-4. **디버깅**
-   - 개발자 도구 콘솔에서 `[Weather]` 로그 확인
-   - 위치 오류 또는 API 오류 메시지 확인
-   - 캐시는 localStorage에 `moment-jin-weather` 키로 저장됩니다
+1. 설정에서 API 키가 올바르게 입력되었는지 확인
+2. 위치 권한이 허용되었는지 확인
+3. 개발자 도구 콘솔에서 `[Weather]` 로그 확인
+4. API 키의 할당량이 남아있는지 확인
+
+**에러 메시지:**
+
+- `"날씨 API 키가 설정되지 않았습니다"` → 설정에서 API 키 입력
+- `"Location permission denied"` → 브라우저 설정에서 위치 권한 허용
+- `"Invalid API key"` 또는 **401 에러** → 아래 참조
+
+**401 에러 (Invalid API key) 해결 방법:**
+
+1. **API 키 확인**
+   - 설정에서 입력한 API 키가 정확한지 재확인
+   - 공백이나 특수문자가 포함되지 않았는지 확인
+
+2. **API 키 활성화 대기**
+   - 새로 발급받은 API 키는 활성화까지 **최대 2시간** 소요
+   - [OpenWeatherMap API Keys](https://home.openweathermap.org/api_keys)에서 상태 확인
+
+3. **할당량 확인**
+   - 무료 플랜: 1분당 60회, 하루 1,000회
+   - 한도 초과 시 429 에러 발생
+   - [Usage Statistics](https://home.openweathermap.org/statistics)에서 확인
+
+4. **API 키 재발급**
+   - 문제가 지속되면 새 API 키 발급 시도
+   - 이전 키는 비활성화 후 새 키 입력
 
 ## 🏗️ 기술 스택
 

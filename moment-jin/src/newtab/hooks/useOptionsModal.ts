@@ -8,12 +8,14 @@ interface UseOptionsModalProps {
   showWorkPanel: boolean;
   showNotificationPanel: boolean;
   showFocusSection: boolean;
+  weatherApiKey: string;
   setUserName: (value: string | null) => void;
   setShowFavoritesPanel: (value: boolean) => void;
   setShowTodosPanel: (value: boolean) => void;
   setShowWorkPanel: (value: boolean) => void;
   setShowNotificationPanel: (value: boolean) => void;
   setShowFocusSection: (value: boolean) => void;
+  setWeatherApiKey: (value: string) => void;
 }
 
 /**
@@ -27,12 +29,14 @@ export function useOptionsModal(props: UseOptionsModalProps) {
     showWorkPanel,
     showNotificationPanel,
     showFocusSection,
+    weatherApiKey,
     setUserName,
     setShowFavoritesPanel,
     setShowTodosPanel,
     setShowWorkPanel,
     setShowNotificationPanel,
     setShowFocusSection,
+    setWeatherApiKey,
   } = props;
 
   const [isOptionsModalOpen, setIsOptionsModalOpen] = useState(false);
@@ -42,6 +46,7 @@ export function useOptionsModal(props: UseOptionsModalProps) {
   const [optionsShowWork, setOptionsShowWork] = useState(true);
   const [optionsShowNotifications, setOptionsShowNotifications] = useState(true);
   const [optionsShowFocus, setOptionsShowFocus] = useState(true);
+  const [optionsWeatherApiKey, setOptionsWeatherApiKey] = useState("");
 
   const openOptionsModal = () => {
     setOptionsUserName(userName || "");
@@ -50,6 +55,7 @@ export function useOptionsModal(props: UseOptionsModalProps) {
     setOptionsShowWork(showWorkPanel);
     setOptionsShowNotifications(showNotificationPanel);
     setOptionsShowFocus(showFocusSection);
+    setOptionsWeatherApiKey(weatherApiKey);
     setIsOptionsModalOpen(true);
   };
 
@@ -67,12 +73,16 @@ export function useOptionsModal(props: UseOptionsModalProps) {
     setShowWorkPanel(optionsShowWork);
     setShowNotificationPanel(optionsShowNotifications);
     setShowFocusSection(optionsShowFocus);
+    setWeatherApiKey(optionsWeatherApiKey);
 
     StorageService.savePanelVisibility("showFavoritesPanel", optionsShowFavorites);
     StorageService.savePanelVisibility("showTodosPanel", optionsShowTodos);
     StorageService.savePanelVisibility("showWorkPanel", optionsShowWork);
     StorageService.savePanelVisibility("showNotificationPanel", optionsShowNotifications);
     StorageService.savePanelVisibility("showFocusSection", optionsShowFocus);
+
+    // 날씨 API 키 저장
+    chrome.storage.sync.set({ weatherApiKey: optionsWeatherApiKey });
 
     closeOptionsModal();
   };
@@ -91,6 +101,8 @@ export function useOptionsModal(props: UseOptionsModalProps) {
     setOptionsShowNotifications,
     optionsShowFocus,
     setOptionsShowFocus,
+    optionsWeatherApiKey,
+    setOptionsWeatherApiKey,
     openOptionsModal,
     closeOptionsModal,
     handleSaveOptions,

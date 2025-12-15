@@ -2094,3 +2094,201 @@ textarea.modal-input {
   min-height: 60px;
   font-family: inherit;
 }
+
+/* ========= Weather Widget ========= */
+
+/* 시간 + 날씨 위젯 행 */
+.time-weather-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+/* Weather Widget 기본 스타일 */
+.weather-widget {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 300ms ease;
+  font-size: 1rem;
+  min-height: 40px;
+}
+
+.weather-widget:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.weather-widget.loading,
+.weather-widget.error {
+  cursor: default;
+  opacity: 0.8;
+}
+
+.weather-widget.error {
+  cursor: pointer; /* 클릭하면 새로고침 */
+}
+
+.weather-widget.error:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* 날씨 아이콘 */
+.weather-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 온도 표시 */
+.weather-temp {
+  font-weight: 600;
+  font-size: 1.2rem;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.95);
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+}
+
+.weather-unit {
+  font-size: 0.85rem;
+  font-weight: 400;
+  opacity: 0.85;
+}
+
+/* 상세 정보 팝업 */
+.weather-details {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  min-width: 240px;
+  z-index: 1000;
+  animation: fadeInDown 200ms ease;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.weather-details-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 12px;
+}
+
+.weather-details-header strong {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.weather-refresh {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 200ms ease;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.weather-refresh:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: rotate(180deg);
+}
+
+.weather-details-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.weather-detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  padding: 4px 0;
+}
+
+.weather-detail-label {
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 400;
+}
+
+.weather-detail-value {
+  color: rgba(255, 255, 255, 0.95);
+  font-weight: 500;
+}
+
+.weather-unit-toggle {
+  width: 100%;
+  padding: 8px;
+  background: rgba(59, 130, 246, 0.2);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 200ms ease;
+  font-weight: 500;
+}
+
+.weather-unit-toggle:hover {
+  background: rgba(59, 130, 246, 0.3);
+  border-color: rgba(59, 130, 246, 0.5);
+}
+
+/* 반응형: 작은 화면에서는 Weather 상세 정보를 좌측 정렬 */
+@media (max-width: 600px) {
+  .weather-details {
+    right: auto;
+    left: 0;
+  }
+
+  .time-weather-row {
+    gap: 16px;
+  }
+
+  .weather-widget {
+    font-size: 0.9rem;
+  }
+
+  .weather-icon {
+    font-size: 1.3rem;
+  }
+
+  .weather-temp {
+    font-size: 1.1rem;
+  }
+}
+
