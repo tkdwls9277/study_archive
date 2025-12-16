@@ -37,8 +37,8 @@ interface ModalContainerProps {
   optionsShowNotifications: boolean;
   optionsShowFocus: boolean;
   weatherApiKey: string;
+  showWeeklyForecast: boolean;
   onOptionsClose: () => void;
-  onOptionsSave: () => void;
   onUserNameChange: (value: string) => void;
   onShowFavoritesChange: (value: boolean) => void;
   onShowTodosChange: (value: boolean) => void;
@@ -46,6 +46,7 @@ interface ModalContainerProps {
   onShowNotificationsChange: (value: boolean) => void;
   onShowFocusChange: (value: boolean) => void;
   onWeatherApiKeyChange: (value: string) => void;
+  onShowWeeklyForecastChange: (value: boolean) => void;
 }
 
 /**
@@ -85,8 +86,8 @@ export const ModalContainer: React.FC<ModalContainerProps> = ({
   optionsShowNotifications,
   optionsShowFocus,
   weatherApiKey,
+  showWeeklyForecast,
   onOptionsClose,
-  onOptionsSave,
   onUserNameChange,
   onShowFavoritesChange,
   onShowTodosChange,
@@ -94,6 +95,7 @@ export const ModalContainer: React.FC<ModalContainerProps> = ({
   onShowNotificationsChange,
   onShowFocusChange,
   onWeatherApiKeyChange,
+  onShowWeeklyForecastChange,
 }) => {
   return (
     <>
@@ -132,8 +134,8 @@ export const ModalContainer: React.FC<ModalContainerProps> = ({
         showNotifications={optionsShowNotifications}
         showFocus={optionsShowFocus}
         weatherApiKey={weatherApiKey}
+        showWeeklyForecast={showWeeklyForecast}
         onClose={onOptionsClose}
-        onSave={onOptionsSave}
         onUserNameChange={onUserNameChange}
         onShowFavoritesChange={onShowFavoritesChange}
         onShowTodosChange={onShowTodosChange}
@@ -141,6 +143,7 @@ export const ModalContainer: React.FC<ModalContainerProps> = ({
         onShowNotificationsChange={onShowNotificationsChange}
         onShowFocusChange={onShowFocusChange}
         onWeatherApiKeyChange={onWeatherApiKeyChange}
+        onShowWeeklyForecastChange={onShowWeeklyForecastChange}
       />
     </>
   );

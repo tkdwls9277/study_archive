@@ -15,6 +15,7 @@ interface AppHeaderProps {
   showNotificationPanel: boolean;
   showFocusSection: boolean;
   weatherApiKey: string;
+  showWeeklyForecast: boolean;
   onFocusInputChange: (value: string) => void;
   onFocusKeyDown: React.KeyboardEventHandler<HTMLInputElement>;
   onFocusBlur: () => void;
@@ -52,6 +53,7 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
   showNotificationPanel,
   showFocusSection,
   weatherApiKey,
+  showWeeklyForecast,
   onFocusInputChange,
   onFocusKeyDown,
   onFocusBlur,
@@ -67,7 +69,12 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
       {/* 시간 + 날씨 위젯 */}
       <div className="time-weather-row">
         <div className="app-time">{time}</div>
-        <Weather compact apiKey={weatherApiKey} onSettingsClick={onSettingsClick} />
+        <Weather
+          compact
+          apiKey={weatherApiKey}
+          showWeeklyForecast={showWeeklyForecast}
+          onSettingsClick={onSettingsClick}
+        />
       </div>
 
       <div className="app-greeting">{greeting}</div>

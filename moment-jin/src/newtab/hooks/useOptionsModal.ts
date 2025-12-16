@@ -9,6 +9,7 @@ interface UseOptionsModalProps {
   showNotificationPanel: boolean;
   showFocusSection: boolean;
   weatherApiKey: string;
+  showWeeklyForecast: boolean;
   setUserName: (value: string | null) => void;
   setShowFavoritesPanel: (value: boolean) => void;
   setShowTodosPanel: (value: boolean) => void;
@@ -16,6 +17,7 @@ interface UseOptionsModalProps {
   setShowNotificationPanel: (value: boolean) => void;
   setShowFocusSection: (value: boolean) => void;
   setWeatherApiKey: (value: string) => void;
+  setShowWeeklyForecast: (value: boolean) => void;
 }
 
 /**
@@ -30,6 +32,7 @@ export function useOptionsModal(props: UseOptionsModalProps) {
     showNotificationPanel,
     showFocusSection,
     weatherApiKey,
+    showWeeklyForecast,
     setUserName,
     setShowFavoritesPanel,
     setShowTodosPanel,
@@ -37,6 +40,7 @@ export function useOptionsModal(props: UseOptionsModalProps) {
     setShowNotificationPanel,
     setShowFocusSection,
     setWeatherApiKey,
+    setShowWeeklyForecast,
   } = props;
 
   const [isOptionsModalOpen, setIsOptionsModalOpen] = useState(false);
@@ -47,8 +51,10 @@ export function useOptionsModal(props: UseOptionsModalProps) {
   const [optionsShowNotifications, setOptionsShowNotifications] = useState(true);
   const [optionsShowFocus, setOptionsShowFocus] = useState(true);
   const [optionsWeatherApiKey, setOptionsWeatherApiKey] = useState("");
+  const [optionsShowWeeklyForecast, setOptionsShowWeeklyForecast] = useState(false);
 
   const openOptionsModal = () => {
+    console.log("[OptionsModal] Opening modal with showWeeklyForecast:", showWeeklyForecast);
     setOptionsUserName(userName || "");
     setOptionsShowFavorites(showFavoritesPanel);
     setOptionsShowTodos(showTodosPanel);
@@ -56,6 +62,7 @@ export function useOptionsModal(props: UseOptionsModalProps) {
     setOptionsShowNotifications(showNotificationPanel);
     setOptionsShowFocus(showFocusSection);
     setOptionsWeatherApiKey(weatherApiKey);
+    setOptionsShowWeeklyForecast(showWeeklyForecast);
     setIsOptionsModalOpen(true);
   };
 
@@ -63,48 +70,78 @@ export function useOptionsModal(props: UseOptionsModalProps) {
     setIsOptionsModalOpen(false);
   };
 
-  const handleSaveOptions = () => {
-    const newUserName = optionsUserName.trim() || null;
+  // 실시간 저장 핸들러들
+  const handleUserNameChange = (value: string) => {
+    setOptionsUserName(value);
+    const newUserName = value.trim() || null;
     setUserName(newUserName);
     StorageService.saveUserName(newUserName);
+  };
 
-    setShowFavoritesPanel(optionsShowFavorites);
-    setShowTodosPanel(optionsShowTodos);
-    setShowWorkPanel(optionsShowWork);
-    setShowNotificationPanel(optionsShowNotifications);
-    setShowFocusSection(optionsShowFocus);
-    setWeatherApiKey(optionsWeatherApiKey);
+  const handleShowFavoritesChange = (value: boolean) => {
+    setOptionsShowFavorites(value);
+    setShowFavoritesPanel(value);
+    StorageService.savePanelVisibility("showFavoritesPanel", value);
+  };
 
-    StorageService.savePanelVisibility("showFavoritesPanel", optionsShowFavorites);
-    StorageService.savePanelVisibility("showTodosPanel", optionsShowTodos);
-    StorageService.savePanelVisibility("showWorkPanel", optionsShowWork);
-    StorageService.savePanelVisibility("showNotificationPanel", optionsShowNotifications);
-    StorageService.savePanelVisibility("showFocusSection", optionsShowFocus);
+  const handleShowTodosChange = (value: boolean) => {
+    setOptionsShowTodos(value);
+    setShowTodosPanel(value);
+    StorageService.savePanelVisibility("showTodosPanel", value);
+  };
 
-    // 날씨 API 키 저장
-    chrome.storage.sync.set({ weatherApiKey: optionsWeatherApiKey });
+  const handleShowWorkChange = (value: boolean) => {
+    setOptionsShowWork(value);
+    setShowWorkPanel(value);
+    StorageService.savePanelVisibility("showWorkPanel", value);
+  };
 
-    closeOptionsModal();
+  const handleShowNotificationsChange = (value: boolean) => {
+    setOptionsShowNotifications(value);
+    setShowNotificationPanel(value);
+    StorageService.savePanelVisibility("showNotificationPanel", value);
+  };
+
+  const handleShowFocusChange = (value: boolean) => {
+    setOptionsShowFocus(value);
+    setShowFocusSection(value);
+    StorageService.savePanelVisibility("showFocusSection", value);
+  };
+
+  const handleWeatherApiKeyChange = (value: string) => {
+    setOptionsWeatherApiKey(value);
+    setWeatherApiKey(value);
+    chrome.storage.sync.set({ weatherApiKey: value });
+  };
+
+  const handleShowWeeklyForecastChange = (value: boolean) => {
+    setOptionsShowWeeklyForecast(value);
+    setShowWeeklyForecast(value);
+    console.log("[OptionsModal] Saving showWeeklyForecast:", value);
+    chrome.storage.sync.set({ showWeeklyForecast: value }, () => {
+      console.log("[OptionsModal] showWeeklyForecast saved successfully");
+    });
   };
 
   return {
     isOptionsModalOpen,
     optionsUserName,
-    setOptionsUserName,
     optionsShowFavorites,
-    setOptionsShowFavorites,
     optionsShowTodos,
-    setOptionsShowTodos,
     optionsShowWork,
-    setOptionsShowWork,
     optionsShowNotifications,
-    setOptionsShowNotifications,
     optionsShowFocus,
-    setOptionsShowFocus,
     optionsWeatherApiKey,
-    setOptionsWeatherApiKey,
+    optionsShowWeeklyForecast,
     openOptionsModal,
     closeOptionsModal,
-    handleSaveOptions,
+    handleUserNameChange,
+    handleShowFavoritesChange,
+    handleShowTodosChange,
+    handleShowWorkChange,
+    handleShowNotificationsChange,
+    handleShowFocusChange,
+    handleWeatherApiKeyChange,
+    handleShowWeeklyForecastChange,
   };
 }

@@ -3,11 +3,13 @@
  * OpenWeather API를 사용하여 날씨 정보를 가져오고 캐싱하는 서비스
  */
 
-import type { WeatherData } from "../types";
+import type { DailyForecast, WeatherData } from "../types";
 
 export class WeatherService {
   private static readonly API_URL = "https://api.openweathermap.org/data/2.5/weather";
+  private static readonly FORECAST_API_URL = "https://api.openweathermap.org/data/2.5/forecast";
   private static readonly CACHE_KEY = "moment-jin-weather";
+  private static readonly FORECAST_CACHE_KEY = "moment-jin-forecast";
   private static readonly CACHE_DURATION = 60 * 60 * 1000; // 1시간
 
   /**
@@ -145,5 +147,160 @@ export class WeatherService {
 
     // Default
     return "🌡️";
+  }
+
+  /**
+   * 7일 날씨 예보 가져오기
+   * @param lat 위도
+   * @param lon 경도
+   * @param apiKey 사용자의 OpenWeather API 키
+   * @returns 일일 예보 배열
+   */
+  static async getWeeklyForecast(lat: number, lon: number, apiKey: string): Promise<DailyForecast[]> {
+    if (!apiKey || apiKey.trim() === "") {
+      throw new Error("OpenWeather API key is required. Please set it in Settings.");
+    }
+
+    const url = `${this.FORECAST_API_URL}?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric&lang=kr`;
+
+    try {
+      console.log("[WeatherService] Fetching weekly forecast...");
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error("Invalid API key. Please check your OpenWeather API key in Settings.");
+        }
+        throw new Error(`Forecast API request failed: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      // 5일 예보를 일별로 그룹화
+      const dailyData = this.processForecastData(data.list);
+
+      return dailyData;
+    } catch (error) {
+      console.error("[WeatherService] Failed to fetch forecast:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * 예보 데이터를 일별로 처리
+   */
+  private static processForecastData(list: any[]): DailyForecast[] {
+    const dailyMap = new Map<string, any[]>();
+
+    // 날짜별로 그룹화
+    list.forEach((item) => {
+      const date = new Date(item.dt * 1000);
+      const dateKey = date.toISOString().split("T")[0]; // YYYY-MM-DD
+
+      if (!dailyMap.has(dateKey)) {
+        dailyMap.set(dateKey, []);
+      }
+      dailyMap.get(dateKey)!.push(item);
+    });
+
+    // 각 날짜의 최고/최저 온도 계산
+    const forecasts: DailyForecast[] = [];
+    const dayNames = ["일", "월", "화", "수", "목", "금", "토"];
+
+    dailyMap.forEach((items, dateKey) => {
+      const temps = items.map((item) => item.main.temp);
+      const weatherIds = items.map((item) => item.weather[0].id);
+      const conditions = items.map((item) => item.weather[0].description);
+
+      // 가장 많이 나타나는 날씨 상태 선택
+      const mostCommonWeatherId = this.getMostCommon(weatherIds);
+      const mostCommonCondition = this.getMostCommon(conditions);
+
+      const date = new Date(dateKey);
+      const dayOfWeek = dayNames[date.getDay()];
+      const formattedDate = `${date.getMonth() + 1}/${date.getDate()}`;
+
+      forecasts.push({
+        date: formattedDate,
+        dayOfWeek,
+        tempMax: Math.round(Math.max(...temps)),
+        tempMin: Math.round(Math.min(...temps)),
+        icon: this.getWeatherIcon(mostCommonWeatherId),
+        condition: mostCommonCondition,
+      });
+    });
+
+    // 최대 7일만 반환 (오늘 포함)
+    return forecasts.slice(0, 7);
+  }
+
+  /**
+   * 배열에서 가장 많이 나타나는 값 찾기
+   */
+  private static getMostCommon<T>(arr: T[]): T {
+    const counts = new Map<T, number>();
+    arr.forEach((item) => {
+      counts.set(item, (counts.get(item) || 0) + 1);
+    });
+
+    let maxCount = 0;
+    let mostCommon = arr[0];
+    counts.forEach((count, item) => {
+      if (count > maxCount) {
+        maxCount = count;
+        mostCommon = item;
+      }
+    });
+
+    return mostCommon;
+  }
+
+  /**
+   * 캐시된 예보 정보 가져오기
+   */
+  static getCachedForecast(): DailyForecast[] | null {
+    try {
+      const cached = localStorage.getItem(this.FORECAST_CACHE_KEY);
+      if (!cached) return null;
+
+      const data: { forecasts: DailyForecast[]; timestamp: number } = JSON.parse(cached);
+      const age = Date.now() - data.timestamp;
+
+      if (age > this.CACHE_DURATION) {
+        this.clearForecastCache();
+        return null;
+      }
+
+      return data.forecasts;
+    } catch (error) {
+      console.error("[WeatherService] Failed to read forecast cache:", error);
+      return null;
+    }
+  }
+
+  /**
+   * 예보 정보 캐시
+   */
+  static cacheForecast(forecasts: DailyForecast[]): void {
+    try {
+      const data = {
+        forecasts,
+        timestamp: Date.now(),
+      };
+      localStorage.setItem(this.FORECAST_CACHE_KEY, JSON.stringify(data));
+    } catch (error) {
+      console.error("[WeatherService] Failed to cache forecast:", error);
+    }
+  }
+
+  /**
+   * 예보 캐시 삭제
+   */
+  static clearForecastCache(): void {
+    try {
+      localStorage.removeItem(this.FORECAST_CACHE_KEY);
+    } catch (error) {
+      console.error("[WeatherService] Failed to clear forecast cache:", error);
+    }
   }
 }

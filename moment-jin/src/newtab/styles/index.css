@@ -538,6 +538,8 @@ body,
   width: 100%;
   max-width: 900px;
   margin: 0 auto;
+  position: relative;
+  z-index: 10; /* 다른 요소들과의 계층 구조 설정 */
 }
 
 .app-time {
@@ -555,6 +557,8 @@ body,
   opacity: 0.95;
   margin-bottom: 16px;
   text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4), 0 1px 4px rgba(0, 0, 0, 0.3);
+  position: relative;
+  z-index: 1; /* 날씨 팝업보다 낮게 */
 }
 
 /* 핵심 목표 */
@@ -567,6 +571,8 @@ body,
   width: 100%;
   max-width: 900px;
   margin-top: 40px;
+  position: relative;
+  z-index: 1; /* 날씨 팝업보다 낮게 */
 }
 
 .app-focus-label {
@@ -935,12 +941,34 @@ body,
 .modal {
   width: 400px;
   max-width: calc(100% - 40px);
+  max-height: calc(100vh - 80px); /* 화면 높이에 맞춤 */
   background: rgba(20, 20, 30, 0.95);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
   padding: 24px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  overflow-y: auto; /* 세로 스크롤 활성화 */
+  overflow-x: hidden;
+}
+
+/* 모달 스크롤바 스타일 */
+.modal::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+.modal::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.modal::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .modal-title {
@@ -1068,6 +1096,60 @@ body,
 
 .modal-btn.primary:hover {
   background: #ffffff;
+}
+
+/* Toggle Switch 스타일 */
+.toggle-switch-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 1rem;
+}
+
+.toggle-switch-container:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.toggle-switch-label {
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0.9;
+  user-select: none;
+}
+
+.toggle-switch {
+  position: relative;
+  width: 48px;
+  height: 26px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 13px;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+
+.toggle-switch.active {
+  background: rgba(34, 197, 94, 0.6);
+}
+
+.toggle-switch-slider {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-switch.active .toggle-switch-slider {
+  transform: translateX(22px);
 }
 
 /* ========= 출퇴근 체크 ========= */
@@ -2138,6 +2220,8 @@ textarea.modal-input {
   justify-content: center;
   gap: 24px;
   flex-wrap: wrap;
+  position: relative;
+  z-index: 100; /* 날씨 위젯이 다른 요소 위에 표시되도록 */
 }
 
 /* Weather Widget 기본 스타일 */
@@ -2154,6 +2238,7 @@ textarea.modal-input {
   transition: all 300ms ease;
   font-size: 1rem;
   min-height: 40px;
+  z-index: 9999; /* 상세 팝업이 다른 요소 위에 표시되도록 */
 }
 
 .weather-widget:hover {
@@ -2208,14 +2293,15 @@ textarea.modal-input {
   top: calc(100% + 12px);
   right: 0;
   padding: 16px;
-  background: rgba(0, 0, 0, 0.9);
+  background: rgba(0, 0, 0, 0.95); /* 더 불투명하게 */
   backdrop-filter: blur(15px);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 12px;
   min-width: 240px;
-  z-index: 1000;
+  max-width: 320px;
+  z-index: 10000;
   animation: fadeInDown 200ms ease;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6); /* 더 강한 그림자 */
 }
 
 @keyframes fadeInDown {
@@ -2300,6 +2386,76 @@ textarea.modal-input {
 .weather-unit-toggle:hover {
   background: rgba(59, 130, 246, 0.3);
   border-color: rgba(59, 130, 246, 0.5);
+}
+
+/* 일주일 날씨 예보 */
+.weather-forecast-section {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.weather-forecast-header {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 8px;
+}
+
+.weather-forecast-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.forecast-day {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  font-size: 0.85rem;
+}
+
+.forecast-date {
+  flex: 1;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 500;
+  min-width: 70px;
+}
+
+.forecast-dow {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-left: 4px;
+}
+
+.forecast-icon {
+  font-size: 1.2rem;
+  margin: 0 8px;
+}
+
+.forecast-temps {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 70px;
+  justify-content: flex-end;
+}
+
+.forecast-temp-max {
+  color: rgba(255, 100, 100, 0.9);
+  font-weight: 600;
+}
+
+.forecast-temp-divider {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.forecast-temp-min {
+  color: rgba(100, 150, 255, 0.9);
+  font-weight: 500;
 }
 
 /* 반응형: 작은 화면에서는 Weather 상세 정보를 좌측 정렬 */

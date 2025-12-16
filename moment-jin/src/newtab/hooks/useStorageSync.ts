@@ -20,6 +20,7 @@ interface StorageSyncProps {
   setShowFocusSection: (value: boolean) => void;
   setCurrentDate: (value: string) => void;
   setWeatherApiKey: (value: string) => void;
+  setShowWeeklyForecast: (value: boolean) => void;
 }
 
 /**
@@ -45,6 +46,7 @@ export function useStorageSync(props: StorageSyncProps) {
     setShowFocusSection,
     setCurrentDate,
     setWeatherApiKey,
+    setShowWeeklyForecast,
   } = props;
 
   const lastCheckedDateRef = useRef<string>(formatDate(new Date()));
@@ -143,6 +145,12 @@ export function useStorageSync(props: StorageSyncProps) {
         const newValue = changes.weatherApiKey.newValue as string | undefined;
         setWeatherApiKey(newValue ?? "");
       }
+
+      // 일주일 예보 표시 변경
+      if (changes.showWeeklyForecast !== undefined) {
+        const newValue = changes.showWeeklyForecast.newValue as boolean | undefined;
+        setShowWeeklyForecast(newValue ?? false);
+      }
     };
 
     // Storage 변경 리스너 등록
@@ -176,5 +184,6 @@ export function useStorageSync(props: StorageSyncProps) {
     setShowFocusSection,
     setCurrentDate,
     setWeatherApiKey,
+    setShowWeeklyForecast,
   ]);
 }

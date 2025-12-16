@@ -30,6 +30,7 @@ export class StorageService {
           "showNotificationPanel",
           "showFocusSection",
           "weatherApiKey",
+          "showWeeklyForecast",
         ],
         (res) => {
           resolve(res as StorageData);

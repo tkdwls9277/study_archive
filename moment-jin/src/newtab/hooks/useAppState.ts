@@ -10,6 +10,7 @@ export function useAppState() {
   const [focus, setFocus] = useState("");
   const [focusInputValue, setFocusInputValue] = useState("");
   const [weatherApiKey, setWeatherApiKey] = useState<string>("");
+  const [showWeeklyForecast, setShowWeeklyForecast] = useState(false);
 
   // ===== 데이터 =====
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -53,6 +54,8 @@ export function useAppState() {
     setFocusInputValue,
     weatherApiKey,
     setWeatherApiKey,
+    showWeeklyForecast,
+    setShowWeeklyForecast,
 
     // 데이터
     todos,

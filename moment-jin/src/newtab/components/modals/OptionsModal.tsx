@@ -11,8 +11,8 @@ interface OptionsModalProps {
   showNotifications: boolean;
   showFocus: boolean;
   weatherApiKey: string;
+  showWeeklyForecast: boolean;
   onClose: () => void;
-  onSave: () => void;
   onUserNameChange: (userName: string) => void;
   onShowFavoritesChange: (show: boolean) => void;
   onShowTodosChange: (show: boolean) => void;
@@ -20,6 +20,7 @@ interface OptionsModalProps {
   onShowNotificationsChange: (show: boolean) => void;
   onShowFocusChange: (show: boolean) => void;
   onWeatherApiKeyChange: (key: string) => void;
+  onShowWeeklyForecastChange: (show: boolean) => void;
 }
 
 export const OptionsModal: React.FC<OptionsModalProps> = ({
@@ -31,8 +32,8 @@ export const OptionsModal: React.FC<OptionsModalProps> = ({
   showNotifications,
   showFocus,
   weatherApiKey,
+  showWeeklyForecast,
   onClose,
-  onSave,
   onUserNameChange,
   onShowFavoritesChange,
   onShowTodosChange,
@@ -40,6 +41,7 @@ export const OptionsModal: React.FC<OptionsModalProps> = ({
   onShowNotificationsChange,
   onShowFocusChange,
   onWeatherApiKeyChange,
+  onShowWeeklyForecastChange,
 }) => {
   const { t } = useTranslation();
   const nameInputRef = useRef<HTMLInputElement>(null);
@@ -126,21 +128,19 @@ ${settingsSummary.length > 0 ? `\n⚙️ 설정:\n${settingsSummary.map((s) => `
     }
   }, [isOpen]);
 
-  // ESC 키로 닫기, Ctrl+Enter로 저장
+  // ESC 키로 닫기
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!isOpen) return;
 
       if (e.key === "Escape") {
         onClose();
-      } else if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
-        onSave();
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, onClose, onSave]);
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -162,9 +162,6 @@ ${settingsSummary.length > 0 ? `\n⚙️ 설정:\n${settingsSummary.map((s) => `
             value={userName}
             onChange={(e) => onUserNameChange(e.target.value)}
             placeholder={t.options.namePlaceholder}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") onSave();
-            }}
           />
         </label>
         <div className="modal-hint">💡 {t.options.nameHint}</div>
@@ -180,9 +177,6 @@ ${settingsSummary.length > 0 ? `\n⚙️ 설정:\n${settingsSummary.map((s) => `
               value={weatherApiKey}
               onChange={(e) => onWeatherApiKeyChange(e.target.value)}
               placeholder="your_api_key_here"
-              onKeyDown={(e) => {
-                if (e.key === "Enter") onSave();
-              }}
             />
           </label>
           <div style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.6)", marginTop: "0.5rem" }}>
@@ -199,66 +193,74 @@ ${settingsSummary.length > 0 ? `\n⚙️ 설정:\n${settingsSummary.map((s) => `
             <br />
             ⚠️ API 키는 사용자의 브라우저에만 저장되며, 다른 곳으로 전송되지 않습니다.
           </div>
+
+          {/* 일주일 날씨 예보 토글 스위치 */}
+          <div className="toggle-switch-container" onClick={() => onShowWeeklyForecastChange(!showWeeklyForecast)}>
+            <span className="toggle-switch-label">일주일 날씨 예보 표시</span>
+            <div className={`toggle-switch ${showWeeklyForecast ? "active" : ""}`}>
+              <div className="toggle-switch-slider" />
+            </div>
+          </div>
         </div>
 
         <div style={{ marginTop: "1.5rem", borderTop: "1px solid rgba(255,255,255,0.2)", paddingTop: "1rem" }}>
           <h3 style={{ fontSize: "0.95rem", marginBottom: "0.75rem", fontWeight: 600 }}>{t.options.panelSettings}</h3>
-          <label
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0.5rem",
-              marginBottom: "0.5rem",
-              cursor: "pointer",
-            }}
+
+          {/* 즐겨찾기 토글 */}
+          <div
+            className="toggle-switch-container"
+            onClick={() => onShowFavoritesChange(!showFavorites)}
+            style={{ marginBottom: "0.5rem" }}
           >
-            <input type="checkbox" checked={showFavorites} onChange={(e) => onShowFavoritesChange(e.target.checked)} />
-            <span>{t.options.showFavorites}</span>
-          </label>
-          <label
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0.5rem",
-              marginBottom: "0.5rem",
-              cursor: "pointer",
-            }}
+            <span className="toggle-switch-label">{t.options.showFavorites}</span>
+            <div className={`toggle-switch ${showFavorites ? "active" : ""}`}>
+              <div className="toggle-switch-slider" />
+            </div>
+          </div>
+
+          {/* 할 일 토글 */}
+          <div
+            className="toggle-switch-container"
+            onClick={() => onShowTodosChange(!showTodos)}
+            style={{ marginBottom: "0.5rem" }}
           >
-            <input type="checkbox" checked={showTodos} onChange={(e) => onShowTodosChange(e.target.checked)} />
-            <span>{t.options.showTodos}</span>
-          </label>
-          <label
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0.5rem",
-              marginBottom: "0.5rem",
-              cursor: "pointer",
-            }}
+            <span className="toggle-switch-label">{t.options.showTodos}</span>
+            <div className={`toggle-switch ${showTodos ? "active" : ""}`}>
+              <div className="toggle-switch-slider" />
+            </div>
+          </div>
+
+          {/* 출퇴근 토글 */}
+          <div
+            className="toggle-switch-container"
+            onClick={() => onShowWorkChange(!showWork)}
+            style={{ marginBottom: "0.5rem" }}
           >
-            <input type="checkbox" checked={showWork} onChange={(e) => onShowWorkChange(e.target.checked)} />
-            <span>{t.options.showWork}</span>
-          </label>
-          <label style={{ display: "flex", alignItems: "center", gap: "0.5rem", cursor: "pointer" }}>
-            <input
-              type="checkbox"
-              checked={showNotifications}
-              onChange={(e) => onShowNotificationsChange(e.target.checked)}
-            />
-            <span>{t.options.showNotifications}</span>
-          </label>
-          <label
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0.5rem",
-              marginTop: "0.5rem",
-              cursor: "pointer",
-            }}
+            <span className="toggle-switch-label">{t.options.showWork}</span>
+            <div className={`toggle-switch ${showWork ? "active" : ""}`}>
+              <div className="toggle-switch-slider" />
+            </div>
+          </div>
+
+          {/* 알림 토글 */}
+          <div
+            className="toggle-switch-container"
+            onClick={() => onShowNotificationsChange(!showNotifications)}
+            style={{ marginBottom: "0.5rem" }}
           >
-            <input type="checkbox" checked={showFocus} onChange={(e) => onShowFocusChange(e.target.checked)} />
-            <span>{t.options.showFocus}</span>
-          </label>
+            <span className="toggle-switch-label">{t.options.showNotifications}</span>
+            <div className={`toggle-switch ${showNotifications ? "active" : ""}`}>
+              <div className="toggle-switch-slider" />
+            </div>
+          </div>
+
+          {/* 핵심 목표 토글 */}
+          <div className="toggle-switch-container" onClick={() => onShowFocusChange(!showFocus)}>
+            <span className="toggle-switch-label">{t.options.showFocus}</span>
+            <div className={`toggle-switch ${showFocus ? "active" : ""}`}>
+              <div className="toggle-switch-slider" />
+            </div>
+          </div>
         </div>
 
         {/* 데이터 백업/복원 섹션 */}
@@ -288,12 +290,10 @@ ${settingsSummary.length > 0 ? `\n⚙️ 설정:\n${settingsSummary.map((s) => `
           </div>
         </div>
 
-        <div className="modal-actions">
+        {/* 닫기 버튼 */}
+        <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "20px" }}>
           <button className="modal-btn secondary" onClick={onClose}>
-            {t.common.cancel} (ESC)
-          </button>
-          <button className="modal-btn primary" onClick={onSave}>
-            {t.common.save} (Ctrl+Enter)
+            {t.common.close || "닫기"} (ESC)
           </button>
         </div>
       </div>

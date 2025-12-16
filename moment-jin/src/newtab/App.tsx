@@ -55,6 +55,8 @@ export const App: React.FC = () => {
       state.setShowNotificationPanel(storageData.showNotificationPanel);
     if (typeof storageData.showFocusSection === "boolean") state.setShowFocusSection(storageData.showFocusSection);
     if (typeof storageData.weatherApiKey === "string") state.setWeatherApiKey(storageData.weatherApiKey);
+    if (typeof storageData.showWeeklyForecast === "boolean")
+      state.setShowWeeklyForecast(storageData.showWeeklyForecast);
   }, [storageData]);
 
   // ===== Storage 동기화 (다른 탭) =====
@@ -76,6 +78,7 @@ export const App: React.FC = () => {
     setShowFocusSection: state.setShowFocusSection,
     setCurrentDate: state.setCurrentDate,
     setWeatherApiKey: state.setWeatherApiKey,
+    setShowWeeklyForecast: state.setShowWeeklyForecast,
   });
 
   // ===== 시간 & 인사 업데이트 =====
@@ -154,6 +157,7 @@ export const App: React.FC = () => {
     showNotificationPanel: state.showNotificationPanel,
     showFocusSection: state.showFocusSection,
     weatherApiKey: state.weatherApiKey,
+    showWeeklyForecast: state.showWeeklyForecast,
     setUserName: state.setUserName,
     setShowFavoritesPanel: state.setShowFavoritesPanel,
     setShowTodosPanel: state.setShowTodosPanel,
@@ -161,6 +165,7 @@ export const App: React.FC = () => {
     setShowNotificationPanel: state.setShowNotificationPanel,
     setShowFocusSection: state.setShowFocusSection,
     setWeatherApiKey: state.setWeatherApiKey,
+    setShowWeeklyForecast: state.setShowWeeklyForecast,
   });
 
   const panelToggle = usePanelToggle({
@@ -241,6 +246,7 @@ export const App: React.FC = () => {
             showNotificationPanel={state.showNotificationPanel}
             showFocusSection={state.showFocusSection}
             weatherApiKey={state.weatherApiKey}
+            showWeeklyForecast={state.showWeeklyForecast}
             workTranslations={t.work}
             onFocusInputChange={state.setFocusInputValue}
             onFocusKeyDown={focusHandler.handleFocusKeyDown}
@@ -339,15 +345,16 @@ export const App: React.FC = () => {
         optionsShowNotifications={optionsModal.optionsShowNotifications}
         optionsShowFocus={optionsModal.optionsShowFocus}
         weatherApiKey={optionsModal.optionsWeatherApiKey}
+        showWeeklyForecast={optionsModal.optionsShowWeeklyForecast}
         onOptionsClose={optionsModal.closeOptionsModal}
-        onOptionsSave={optionsModal.handleSaveOptions}
-        onUserNameChange={optionsModal.setOptionsUserName}
-        onShowFavoritesChange={optionsModal.setOptionsShowFavorites}
-        onShowTodosChange={optionsModal.setOptionsShowTodos}
-        onShowWorkChange={optionsModal.setOptionsShowWork}
-        onShowNotificationsChange={optionsModal.setOptionsShowNotifications}
-        onShowFocusChange={optionsModal.setOptionsShowFocus}
-        onWeatherApiKeyChange={optionsModal.setOptionsWeatherApiKey}
+        onUserNameChange={optionsModal.handleUserNameChange}
+        onShowFavoritesChange={optionsModal.handleShowFavoritesChange}
+        onShowTodosChange={optionsModal.handleShowTodosChange}
+        onShowWorkChange={optionsModal.handleShowWorkChange}
+        onShowNotificationsChange={optionsModal.handleShowNotificationsChange}
+        onShowFocusChange={optionsModal.handleShowFocusChange}
+        onWeatherApiKeyChange={optionsModal.handleWeatherApiKeyChange}
+        onShowWeeklyForecastChange={optionsModal.handleShowWeeklyForecastChange}
       />
 
       {/* 설정 버튼 */}

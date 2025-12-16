@@ -41,6 +41,15 @@ export interface WeatherData {
   timestamp: number; // 캐시 타임스탬프
 }
 
+export interface DailyForecast {
+  date: string; // 날짜 (MM/DD)
+  dayOfWeek: string; // 요일
+  tempMax: number; // 최고 온도
+  tempMin: number; // 최저 온도
+  icon: string; // 날씨 아이콘
+  condition: string; // 날씨 상태
+}
+
 export interface StorageData {
   userName?: string | null;
   todayFocus?: string;
@@ -57,4 +66,5 @@ export interface StorageData {
   showNotificationPanel?: boolean;
   showFocusSection?: boolean; // 핵심목표 표시 여부
   weatherApiKey?: string; // OpenWeather API 키 (사용자 입력)
+  showWeeklyForecast?: boolean; // 일주일 날씨 예보 표시 여부
 }
