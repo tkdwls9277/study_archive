@@ -12,6 +12,8 @@ interface OptionsModalProps {
   showFocus: boolean;
   weatherApiKey: string;
   showWeeklyForecast: boolean;
+  showHourlyForecast: boolean;
+  weatherDraggable: boolean;
   onClose: () => void;
   onUserNameChange: (userName: string) => void;
   onShowFavoritesChange: (show: boolean) => void;
@@ -21,6 +23,8 @@ interface OptionsModalProps {
   onShowFocusChange: (show: boolean) => void;
   onWeatherApiKeyChange: (key: string) => void;
   onShowWeeklyForecastChange: (show: boolean) => void;
+  onShowHourlyForecastChange: (show: boolean) => void;
+  onWeatherDraggableChange: (draggable: boolean) => void;
 }
 
 export const OptionsModal: React.FC<OptionsModalProps> = ({
@@ -33,6 +37,8 @@ export const OptionsModal: React.FC<OptionsModalProps> = ({
   showFocus,
   weatherApiKey,
   showWeeklyForecast,
+  showHourlyForecast,
+  weatherDraggable,
   onClose,
   onUserNameChange,
   onShowFavoritesChange,
@@ -42,6 +48,8 @@ export const OptionsModal: React.FC<OptionsModalProps> = ({
   onShowFocusChange,
   onWeatherApiKeyChange,
   onShowWeeklyForecastChange,
+  onShowHourlyForecastChange,
+  onWeatherDraggableChange,
 }) => {
   const { t } = useTranslation();
   const nameInputRef = useRef<HTMLInputElement>(null);
@@ -198,6 +206,22 @@ ${settingsSummary.length > 0 ? `\n⚙️ 설정:\n${settingsSummary.map((s) => `
           <div className="toggle-switch-container" onClick={() => onShowWeeklyForecastChange(!showWeeklyForecast)}>
             <span className="toggle-switch-label">일주일 날씨 예보 표시</span>
             <div className={`toggle-switch ${showWeeklyForecast ? "active" : ""}`}>
+              <div className="toggle-switch-slider" />
+            </div>
+          </div>
+
+          {/* 시간별 날씨 예보 토글 스위치 */}
+          <div className="toggle-switch-container" onClick={() => onShowHourlyForecastChange(!showHourlyForecast)}>
+            <span className="toggle-switch-label">시간별 날씨 예보 표시</span>
+            <div className={`toggle-switch ${showHourlyForecast ? "active" : ""}`}>
+              <div className="toggle-switch-slider" />
+            </div>
+          </div>
+
+          {/* 날씨 위젯 드래그 토글 스위치 */}
+          <div className="toggle-switch-container" onClick={() => onWeatherDraggableChange(!weatherDraggable)}>
+            <span className="toggle-switch-label">날씨 위젯 드래그 가능</span>
+            <div className={`toggle-switch ${weatherDraggable ? "active" : ""}`}>
               <div className="toggle-switch-slider" />
             </div>
           </div>

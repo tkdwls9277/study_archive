@@ -50,6 +50,14 @@ export interface DailyForecast {
   condition: string; // 날씨 상태
 }
 
+export interface HourlyForecast {
+  time: string; // 시간 (HH:MM)
+  temp: number; // 온도
+  icon: string; // 날씨 아이콘
+  condition: string; // 날씨 상태
+  timestamp: number; // Unix timestamp
+}
+
 export interface StorageData {
   userName?: string | null;
   todayFocus?: string;
@@ -60,6 +68,7 @@ export interface StorageData {
   workRecords?: WorkRecord[];
   workPanelOpen?: boolean;
   notificationPanelOpen?: boolean;
+  weatherPanelOpen?: boolean;
   showFavoritesPanel?: boolean;
   showTodosPanel?: boolean;
   showWorkPanel?: boolean;
@@ -67,4 +76,6 @@ export interface StorageData {
   showFocusSection?: boolean; // 핵심목표 표시 여부
   weatherApiKey?: string; // OpenWeather API 키 (사용자 입력)
   showWeeklyForecast?: boolean; // 일주일 날씨 예보 표시 여부
+  showHourlyForecast?: boolean; // 시간별 날씨 예보 표시 여부
+  weatherDraggable?: boolean; // 날씨 위젯 드래그 가능 여부
 }

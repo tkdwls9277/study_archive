@@ -3,13 +3,14 @@
  * OpenWeather API를 사용하여 날씨 정보를 가져오고 캐싱하는 서비스
  */
 
-import type { DailyForecast, WeatherData } from "../types";
+import type { DailyForecast, HourlyForecast, WeatherData } from "../types";
 
 export class WeatherService {
   private static readonly API_URL = "https://api.openweathermap.org/data/2.5/weather";
   private static readonly FORECAST_API_URL = "https://api.openweathermap.org/data/2.5/forecast";
   private static readonly CACHE_KEY = "moment-jin-weather";
   private static readonly FORECAST_CACHE_KEY = "moment-jin-forecast";
+  private static readonly HOURLY_CACHE_KEY = "moment-jin-hourly";
   private static readonly CACHE_DURATION = 60 * 60 * 1000; // 1시간
 
   /**
@@ -301,6 +302,127 @@ export class WeatherService {
       localStorage.removeItem(this.FORECAST_CACHE_KEY);
     } catch (error) {
       console.error("[WeatherService] Failed to clear forecast cache:", error);
+    }
+  }
+
+  /**
+   * 시간별 날씨 예보 가져오기 (최대 24시간)
+   */
+  static async getHourlyForecast(lat: number, lon: number, apiKey: string): Promise<HourlyForecast[]> {
+    if (!apiKey || apiKey.trim() === "") {
+      throw new Error("OpenWeather API key is required. Please set it in Settings.");
+    }
+
+    const url = `${this.FORECAST_API_URL}?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric&lang=kr`;
+
+    try {
+      console.log("[WeatherService] Fetching hourly forecast data...");
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        let errorMessage = `Hourly Forecast API request failed: ${response.status}`;
+        try {
+          const errorData = await response.json();
+          if (errorData.message) {
+            errorMessage += ` - ${errorData.message}`;
+          }
+        } catch (e) {
+          // JSON 파싱 실패 시 무시
+        }
+
+        if (response.status === 401) {
+          throw new Error("Invalid API key. Please check your OpenWeather API key in Settings.");
+        }
+
+        throw new Error(errorMessage);
+      }
+
+      const data = await response.json();
+      return this.processHourlyData(data.list);
+    } catch (error) {
+      console.error("[WeatherService] Failed to fetch hourly forecast:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * 시간별 데이터 처리 (최대 8개 = 24시간)
+   */
+  private static processHourlyData(list: any[]): HourlyForecast[] {
+    const hourlyForecasts: HourlyForecast[] = [];
+    const now = Date.now();
+
+    // 현재 시간 이후의 예보만 최대 8개 (24시간) 가져오기
+    for (let i = 0; i < Math.min(list.length, 8); i++) {
+      const item = list[i];
+      const timestamp = item.dt * 1000;
+
+      // 현재 시간 이후의 데이터만
+      if (timestamp < now) continue;
+
+      const date = new Date(timestamp);
+      const hours = date.getHours();
+      const minutes = date.getMinutes();
+      const timeStr = `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
+
+      hourlyForecasts.push({
+        time: timeStr,
+        temp: Math.round(item.main.temp),
+        icon: this.getWeatherIcon(item.weather[0].id),
+        condition: item.weather[0].description,
+        timestamp: timestamp,
+      });
+    }
+
+    return hourlyForecasts;
+  }
+
+  /**
+   * 캐시된 시간별 예보 가져오기
+   */
+  static getCachedHourlyForecast(): HourlyForecast[] | null {
+    try {
+      const cached = localStorage.getItem(this.HOURLY_CACHE_KEY);
+      if (!cached) return null;
+
+      const data: { forecasts: HourlyForecast[]; timestamp: number } = JSON.parse(cached);
+      const age = Date.now() - data.timestamp;
+
+      if (age > this.CACHE_DURATION) {
+        this.clearHourlyCache();
+        return null;
+      }
+
+      return data.forecasts;
+    } catch (error) {
+      console.error("[WeatherService] Failed to read hourly cache:", error);
+      return null;
+    }
+  }
+
+  /**
+   * 시간별 예보 캐시
+   */
+  static cacheHourlyForecast(forecasts: HourlyForecast[]): void {
+    try {
+      const data = {
+        forecasts,
+        timestamp: Date.now(),
+      };
+      localStorage.setItem(this.HOURLY_CACHE_KEY, JSON.stringify(data));
+    } catch (error) {
+      console.error("[WeatherService] Failed to cache hourly forecast:", error);
+    }
+  }
+
+  /**
+   * 시간별 예보 캐시 삭제
+   */
+  static clearHourlyCache(): void {
+    try {
+      localStorage.removeItem(this.HOURLY_CACHE_KEY);
+    } catch (error) {
+      console.error("[WeatherService] Failed to clear hourly cache:", error);
     }
   }
 }

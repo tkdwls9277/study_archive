@@ -2,7 +2,6 @@ import React from "react";
 import type { WorkRecord } from "../types/index";
 import { FocusInput } from "./FocusInput";
 import { NextNotification } from "./NextNotification";
-import { Weather } from "./Weather";
 import { WorkCheckButtons } from "./WorkCheckButtons";
 
 interface AppHeaderProps {
@@ -14,8 +13,6 @@ interface AppHeaderProps {
   showWorkPanel: boolean;
   showNotificationPanel: boolean;
   showFocusSection: boolean;
-  weatherApiKey: string;
-  showWeeklyForecast: boolean;
   onFocusInputChange: (value: string) => void;
   onFocusKeyDown: React.KeyboardEventHandler<HTMLInputElement>;
   onFocusBlur: () => void;
@@ -23,7 +20,6 @@ interface AppHeaderProps {
   onCheckOut: () => void;
   onCheckInEdit: () => void;
   onCheckOutEdit: () => void;
-  onSettingsClick: () => void;
   workTranslations: {
     clickToEdit: string;
     rightClickToEdit: string;
@@ -52,8 +48,6 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
   showWorkPanel,
   showNotificationPanel,
   showFocusSection,
-  weatherApiKey,
-  showWeeklyForecast,
   onFocusInputChange,
   onFocusKeyDown,
   onFocusBlur,
@@ -61,20 +55,13 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
   onCheckOut,
   onCheckInEdit,
   onCheckOutEdit,
-  onSettingsClick,
   workTranslations,
 }) => {
   return (
     <div className="app-top">
-      {/* 시간 + 날씨 위젯 */}
+      {/* 시간 */}
       <div className="time-weather-row">
         <div className="app-time">{time}</div>
-        <Weather
-          compact
-          apiKey={weatherApiKey}
-          showWeeklyForecast={showWeeklyForecast}
-          onSettingsClick={onSettingsClick}
-        />
       </div>
 
       <div className="app-greeting">{greeting}</div>

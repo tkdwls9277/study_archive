@@ -4,6 +4,7 @@ import { FavoritesPanel } from "./components/FavoritesPanel";
 import { ModalContainer } from "./components/ModalContainer";
 import { NotificationPanel } from "./components/NotificationPanel";
 import { TodoPanel } from "./components/TodoPanel";
+import { WeatherPanel } from "./components/WeatherPanel";
 import { WorkPanel } from "./components/WorkPanel";
 import { GRADIENTS } from "./constants/index";
 import { useAppState } from "./hooks/useAppState";
@@ -47,6 +48,7 @@ export const App: React.FC = () => {
     if (typeof storageData.workPanelOpen === "boolean") state.setWorkPanelOpen(storageData.workPanelOpen);
     if (typeof storageData.notificationPanelOpen === "boolean")
       state.setNotificationPanelOpen(storageData.notificationPanelOpen);
+    if (typeof storageData.weatherPanelOpen === "boolean") state.setWeatherPanelOpen(storageData.weatherPanelOpen);
     if (typeof storageData.showFavoritesPanel === "boolean")
       state.setShowFavoritesPanel(storageData.showFavoritesPanel);
     if (typeof storageData.showTodosPanel === "boolean") state.setShowTodosPanel(storageData.showTodosPanel);
@@ -57,6 +59,9 @@ export const App: React.FC = () => {
     if (typeof storageData.weatherApiKey === "string") state.setWeatherApiKey(storageData.weatherApiKey);
     if (typeof storageData.showWeeklyForecast === "boolean")
       state.setShowWeeklyForecast(storageData.showWeeklyForecast);
+    if (typeof storageData.showHourlyForecast === "boolean")
+      state.setShowHourlyForecast(storageData.showHourlyForecast);
+    if (typeof storageData.weatherDraggable === "boolean") state.setWeatherDraggable(storageData.weatherDraggable);
   }, [storageData]);
 
   // ===== Storage 동기화 (다른 탭) =====
@@ -79,6 +84,8 @@ export const App: React.FC = () => {
     setCurrentDate: state.setCurrentDate,
     setWeatherApiKey: state.setWeatherApiKey,
     setShowWeeklyForecast: state.setShowWeeklyForecast,
+    setShowHourlyForecast: state.setShowHourlyForecast,
+    setWeatherDraggable: state.setWeatherDraggable,
   });
 
   // ===== 시간 & 인사 업데이트 =====
@@ -158,6 +165,8 @@ export const App: React.FC = () => {
     showFocusSection: state.showFocusSection,
     weatherApiKey: state.weatherApiKey,
     showWeeklyForecast: state.showWeeklyForecast,
+    showHourlyForecast: state.showHourlyForecast,
+    weatherDraggable: state.weatherDraggable,
     setUserName: state.setUserName,
     setShowFavoritesPanel: state.setShowFavoritesPanel,
     setShowTodosPanel: state.setShowTodosPanel,
@@ -166,6 +175,8 @@ export const App: React.FC = () => {
     setShowFocusSection: state.setShowFocusSection,
     setWeatherApiKey: state.setWeatherApiKey,
     setShowWeeklyForecast: state.setShowWeeklyForecast,
+    setShowHourlyForecast: state.setShowHourlyForecast,
+    setWeatherDraggable: state.setWeatherDraggable,
   });
 
   const panelToggle = usePanelToggle({
@@ -177,6 +188,8 @@ export const App: React.FC = () => {
     setWorkPanelOpen: state.setWorkPanelOpen,
     notificationPanelOpen: state.notificationPanelOpen,
     setNotificationPanelOpen: state.setNotificationPanelOpen,
+    weatherPanelOpen: state.weatherPanelOpen,
+    setWeatherPanelOpen: state.setWeatherPanelOpen,
   });
 
   // ===== 계산된 값들 (메모이제이션) =====
@@ -220,7 +233,7 @@ export const App: React.FC = () => {
       <div className="app-bg" style={backgroundStyle} />
 
       <div className="app-content">
-        {/* 좌측 즐겨찾기 패널 */}
+        {/* 좌측 패널 영역 (즐겨찾기 + 날씨) */}
         {state.showFavoritesPanel && (
           <FavoritesPanel
             isOpen={state.favoritesOpen}
@@ -234,6 +247,17 @@ export const App: React.FC = () => {
           />
         )}
 
+        {/* 날씨 패널 */}
+        <WeatherPanel
+          isCollapsed={!state.weatherPanelOpen}
+          weatherApiKey={state.weatherApiKey}
+          showWeeklyForecast={state.showWeeklyForecast}
+          showHourlyForecast={state.showHourlyForecast}
+          weatherDraggable={state.weatherDraggable}
+          onToggle={panelToggle.toggleWeatherPanelOpen}
+          onSettingsClick={optionsModal.openOptionsModal}
+        />
+
         {/* 중앙 메인 영역 */}
         <main className="app-main">
           <AppHeader
@@ -245,8 +269,6 @@ export const App: React.FC = () => {
             showWorkPanel={state.showWorkPanel}
             showNotificationPanel={state.showNotificationPanel}
             showFocusSection={state.showFocusSection}
-            weatherApiKey={state.weatherApiKey}
-            showWeeklyForecast={state.showWeeklyForecast}
             workTranslations={t.work}
             onFocusInputChange={state.setFocusInputValue}
             onFocusKeyDown={focusHandler.handleFocusKeyDown}
@@ -255,7 +277,6 @@ export const App: React.FC = () => {
             onCheckOut={workHandler.handleCheckOut}
             onCheckInEdit={workHandler.handleCheckInEdit}
             onCheckOutEdit={workHandler.handleCheckOutEdit}
-            onSettingsClick={optionsModal.openOptionsModal}
           />
         </main>
 
@@ -346,6 +367,8 @@ export const App: React.FC = () => {
         optionsShowFocus={optionsModal.optionsShowFocus}
         weatherApiKey={optionsModal.optionsWeatherApiKey}
         showWeeklyForecast={optionsModal.optionsShowWeeklyForecast}
+        showHourlyForecast={optionsModal.optionsShowHourlyForecast}
+        weatherDraggable={optionsModal.optionsWeatherDraggable}
         onOptionsClose={optionsModal.closeOptionsModal}
         onUserNameChange={optionsModal.handleUserNameChange}
         onShowFavoritesChange={optionsModal.handleShowFavoritesChange}
@@ -355,6 +378,8 @@ export const App: React.FC = () => {
         onShowFocusChange={optionsModal.handleShowFocusChange}
         onWeatherApiKeyChange={optionsModal.handleWeatherApiKeyChange}
         onShowWeeklyForecastChange={optionsModal.handleShowWeeklyForecastChange}
+        onShowHourlyForecastChange={optionsModal.handleShowHourlyForecastChange}
+        onWeatherDraggableChange={optionsModal.handleWeatherDraggableChange}
       />
 
       {/* 설정 버튼 */}

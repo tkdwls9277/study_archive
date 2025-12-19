@@ -11,6 +11,8 @@ export function useAppState() {
   const [focusInputValue, setFocusInputValue] = useState("");
   const [weatherApiKey, setWeatherApiKey] = useState<string>("");
   const [showWeeklyForecast, setShowWeeklyForecast] = useState(false);
+  const [showHourlyForecast, setShowHourlyForecast] = useState(false);
+  const [weatherDraggable, setWeatherDraggable] = useState(true);
 
   // ===== 데이터 =====
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -22,6 +24,7 @@ export function useAppState() {
   const [todosOpen, setTodosOpen] = useState(true);
   const [workPanelOpen, setWorkPanelOpen] = useState(true);
   const [notificationPanelOpen, setNotificationPanelOpen] = useState(true);
+  const [weatherPanelOpen, setWeatherPanelOpen] = useState(true);
 
   // ===== 패널 표시/숨김 설정 =====
   const [showFavoritesPanel, setShowFavoritesPanel] = useState(true);
@@ -56,6 +59,10 @@ export function useAppState() {
     setWeatherApiKey,
     showWeeklyForecast,
     setShowWeeklyForecast,
+    showHourlyForecast,
+    setShowHourlyForecast,
+    weatherDraggable,
+    setWeatherDraggable,
 
     // 데이터
     todos,
@@ -74,6 +81,8 @@ export function useAppState() {
     setWorkPanelOpen,
     notificationPanelOpen,
     setNotificationPanelOpen,
+    weatherPanelOpen,
+    setWeatherPanelOpen,
 
     // 패널 표시 설정
     showFavoritesPanel,

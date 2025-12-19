@@ -24,6 +24,7 @@ export class StorageService {
           "workRecords",
           "workPanelOpen",
           "notificationPanelOpen",
+          "weatherPanelOpen",
           "showFavoritesPanel",
           "showTodosPanel",
           "showWorkPanel",
@@ -31,6 +32,8 @@ export class StorageService {
           "showFocusSection",
           "weatherApiKey",
           "showWeeklyForecast",
+          "showHourlyForecast",
+          "weatherDraggable",
         ],
         (res) => {
           resolve(res as StorageData);
@@ -43,7 +46,7 @@ export class StorageService {
    * 패널 상태 저장
    */
   static savePanelState(
-    key: "favoritesOpen" | "todosOpen" | "workPanelOpen" | "notificationPanelOpen",
+    key: "favoritesOpen" | "todosOpen" | "workPanelOpen" | "notificationPanelOpen" | "weatherPanelOpen",
     value: boolean
   ): void {
     if (typeof chrome !== "undefined" && chrome.storage) {

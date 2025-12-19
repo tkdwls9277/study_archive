@@ -9,6 +9,8 @@ interface UsePanelToggleProps {
   setWorkPanelOpen: (value: boolean) => void;
   notificationPanelOpen: boolean;
   setNotificationPanelOpen: (value: boolean) => void;
+  weatherPanelOpen: boolean;
+  setWeatherPanelOpen: (value: boolean) => void;
 }
 
 /**
@@ -24,6 +26,8 @@ export function usePanelToggle(props: UsePanelToggleProps) {
     setWorkPanelOpen,
     notificationPanelOpen,
     setNotificationPanelOpen,
+    weatherPanelOpen,
+    setWeatherPanelOpen,
   } = props;
 
   const toggleFavoritesOpen = () => {
@@ -50,10 +54,17 @@ export function usePanelToggle(props: UsePanelToggleProps) {
     StorageService.savePanelState("notificationPanelOpen", next);
   };
 
+  const toggleWeatherPanelOpen = () => {
+    const next = !weatherPanelOpen;
+    setWeatherPanelOpen(next);
+    StorageService.savePanelState("weatherPanelOpen", next);
+  };
+
   return {
     toggleFavoritesOpen,
     toggleTodosOpen,
     toggleWorkPanelOpen,
     toggleNotificationPanelOpen,
+    toggleWeatherPanelOpen,
   };
 }

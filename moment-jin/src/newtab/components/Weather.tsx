@@ -1,26 +1,20 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { WeatherService } from "../services/weatherService";
-import type { DailyForecast, WeatherData } from "../types";
+import type { WeatherData } from "../types";
 
 interface WeatherProps {
   compact?: boolean; // 미니 모드 (기본값: true)
   apiKey?: string; // 사용자의 OpenWeather API 키
   onSettingsClick?: () => void; // 설정 버튼 클릭 핸들러
-  showWeeklyForecast?: boolean; // 일주일 예보 표시 여부
+  draggable?: boolean; // 드래그 가능 여부
 }
 
 /**
  * Weather 컴포넌트
  * 사용자 위치 기반 날씨 정보를 표시하는 위젯
  */
-export const Weather: React.FC<WeatherProps> = ({
-  compact = true,
-  apiKey,
-  onSettingsClick,
-  showWeeklyForecast = false,
-}) => {
+export const Weather: React.FC<WeatherProps> = ({ compact = true, apiKey, onSettingsClick, draggable = true }) => {
   const [weather, setWeather] = useState<WeatherData | null>(null);
-  const [forecast, setForecast] = useState<DailyForecast[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [unit, setUnit] = useState<"C" | "F">("C");
@@ -43,16 +37,10 @@ export const Weather: React.FC<WeatherProps> = ({
         // 1. 캐시 확인 (1시간 이내) - forceRefresh가 true면 캐시 무시
         if (!forceRefresh) {
           const cached = WeatherService.getCachedWeather();
-          const cachedForecast = showWeeklyForecast ? WeatherService.getCachedForecast() : null;
 
           if (cached && Date.now() - cached.timestamp < 60 * 60 * 1000) {
             console.log("[Weather] Using cached data");
             setWeather(cached);
-
-            if (showWeeklyForecast && cachedForecast) {
-              setForecast(cachedForecast);
-            }
-
             setLoading(false);
             return;
           }
@@ -74,26 +62,6 @@ export const Weather: React.FC<WeatherProps> = ({
         setWeather(data);
         WeatherService.cacheWeather(data);
 
-        // 4. 일주일 예보 로드 (설정된 경우)
-        if (showWeeklyForecast) {
-          try {
-            const forecastData = await WeatherService.getWeeklyForecast(
-              position.coords.latitude,
-              position.coords.longitude,
-              apiKey
-            );
-            console.log("[Weather] Forecast data loaded:", forecastData);
-            setForecast(forecastData);
-            WeatherService.cacheForecast(forecastData);
-          } catch (forecastErr) {
-            console.error("[Weather] Failed to load forecast:", forecastErr);
-            // 예보 로드 실패는 전체 에러로 처리하지 않음
-          }
-        } else {
-          // 일주일 예보가 비활성화되면 예보 데이터 제거
-          setForecast(null);
-        }
-
         setError(null);
       } catch (err) {
         console.error("[Weather] Failed to load weather:", err);
@@ -102,7 +70,7 @@ export const Weather: React.FC<WeatherProps> = ({
         setLoading(false);
       }
     },
-    [apiKey, showWeeklyForecast]
+    [apiKey]
   );
 
   /**
@@ -183,15 +151,6 @@ export const Weather: React.FC<WeatherProps> = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [apiKey]);
-
-  // showWeeklyForecast 변경 시 강제 새로고침
-  useEffect(() => {
-    if (apiKey && apiKey.trim() !== "") {
-      setLoading(true);
-      loadWeather(true);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showWeeklyForecast]);
 
   // 초기 로드
   useEffect(() => {
@@ -351,9 +310,10 @@ export const Weather: React.FC<WeatherProps> = ({
   if (compact) {
     return (
       <div
-        className="weather-widget compact"
+        className={`weather-widget compact ${draggable ? "" : "no-drag"}`}
         onClick={() => setExpanded(!expanded)}
         title={`${weather.location}: ${weather.condition}`}
+        style={{ cursor: draggable ? "pointer" : "default" }}
       >
         <span className="weather-icon">{weather.icon}</span>
         <span className="weather-temp">
@@ -388,28 +348,6 @@ export const Weather: React.FC<WeatherProps> = ({
                 <span className="weather-detail-value">{weather.windSpeed.toFixed(1)}m/s</span>
               </div>
             </div>
-
-            {showWeeklyForecast && forecast && forecast.length > 0 && (
-              <div className="weather-forecast-section">
-                <div className="weather-forecast-header">일주일 날씨</div>
-                <div className="weather-forecast-list">
-                  {forecast.map((day, index) => (
-                    <div key={index} className="forecast-day">
-                      <div className="forecast-date">
-                        {day.date}
-                        <span className="forecast-dow">({day.dayOfWeek})</span>
-                      </div>
-                      <div className="forecast-icon">{day.icon}</div>
-                      <div className="forecast-temps">
-                        <span className="forecast-temp-max">{Math.round(getTemperature(day.tempMax))}°</span>
-                        <span className="forecast-temp-divider">/</span>
-                        <span className="forecast-temp-min">{Math.round(getTemperature(day.tempMin))}°</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
 
             <button className="weather-unit-toggle" onClick={toggleUnit}>
               °{unit} ⇄ °{unit === "C" ? "F" : "C"}

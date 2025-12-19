@@ -21,6 +21,8 @@ interface StorageSyncProps {
   setCurrentDate: (value: string) => void;
   setWeatherApiKey: (value: string) => void;
   setShowWeeklyForecast: (value: boolean) => void;
+  setShowHourlyForecast: (value: boolean) => void;
+  setWeatherDraggable: (value: boolean) => void;
 }
 
 /**
@@ -47,6 +49,8 @@ export function useStorageSync(props: StorageSyncProps) {
     setCurrentDate,
     setWeatherApiKey,
     setShowWeeklyForecast,
+    setShowHourlyForecast,
+    setWeatherDraggable,
   } = props;
 
   const lastCheckedDateRef = useRef<string>(formatDate(new Date()));
@@ -151,6 +155,18 @@ export function useStorageSync(props: StorageSyncProps) {
         const newValue = changes.showWeeklyForecast.newValue as boolean | undefined;
         setShowWeeklyForecast(newValue ?? false);
       }
+
+      // 시간별 예보 표시 변경
+      if (changes.showHourlyForecast !== undefined) {
+        const newValue = changes.showHourlyForecast.newValue as boolean | undefined;
+        setShowHourlyForecast(newValue ?? false);
+      }
+
+      // 날씨 드래그 가능 여부 변경
+      if (changes.weatherDraggable !== undefined) {
+        const newValue = changes.weatherDraggable.newValue as boolean | undefined;
+        setWeatherDraggable(newValue ?? true);
+      }
     };
 
     // Storage 변경 리스너 등록
@@ -185,5 +201,7 @@ export function useStorageSync(props: StorageSyncProps) {
     setCurrentDate,
     setWeatherApiKey,
     setShowWeeklyForecast,
+    setShowHourlyForecast,
+    setWeatherDraggable,
   ]);
 }

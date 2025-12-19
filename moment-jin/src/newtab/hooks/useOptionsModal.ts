@@ -10,6 +10,8 @@ interface UseOptionsModalProps {
   showFocusSection: boolean;
   weatherApiKey: string;
   showWeeklyForecast: boolean;
+  showHourlyForecast: boolean;
+  weatherDraggable: boolean;
   setUserName: (value: string | null) => void;
   setShowFavoritesPanel: (value: boolean) => void;
   setShowTodosPanel: (value: boolean) => void;
@@ -18,6 +20,8 @@ interface UseOptionsModalProps {
   setShowFocusSection: (value: boolean) => void;
   setWeatherApiKey: (value: string) => void;
   setShowWeeklyForecast: (value: boolean) => void;
+  setShowHourlyForecast: (value: boolean) => void;
+  setWeatherDraggable: (value: boolean) => void;
 }
 
 /**
@@ -33,6 +37,8 @@ export function useOptionsModal(props: UseOptionsModalProps) {
     showFocusSection,
     weatherApiKey,
     showWeeklyForecast,
+    showHourlyForecast,
+    weatherDraggable,
     setUserName,
     setShowFavoritesPanel,
     setShowTodosPanel,
@@ -41,6 +47,8 @@ export function useOptionsModal(props: UseOptionsModalProps) {
     setShowFocusSection,
     setWeatherApiKey,
     setShowWeeklyForecast,
+    setShowHourlyForecast,
+    setWeatherDraggable,
   } = props;
 
   const [isOptionsModalOpen, setIsOptionsModalOpen] = useState(false);
@@ -52,6 +60,8 @@ export function useOptionsModal(props: UseOptionsModalProps) {
   const [optionsShowFocus, setOptionsShowFocus] = useState(true);
   const [optionsWeatherApiKey, setOptionsWeatherApiKey] = useState("");
   const [optionsShowWeeklyForecast, setOptionsShowWeeklyForecast] = useState(false);
+  const [optionsShowHourlyForecast, setOptionsShowHourlyForecast] = useState(false);
+  const [optionsWeatherDraggable, setOptionsWeatherDraggable] = useState(true);
 
   const openOptionsModal = () => {
     console.log("[OptionsModal] Opening modal with showWeeklyForecast:", showWeeklyForecast);
@@ -63,6 +73,8 @@ export function useOptionsModal(props: UseOptionsModalProps) {
     setOptionsShowFocus(showFocusSection);
     setOptionsWeatherApiKey(weatherApiKey);
     setOptionsShowWeeklyForecast(showWeeklyForecast);
+    setOptionsShowHourlyForecast(showHourlyForecast);
+    setOptionsWeatherDraggable(weatherDraggable);
     setIsOptionsModalOpen(true);
   };
 
@@ -123,6 +135,24 @@ export function useOptionsModal(props: UseOptionsModalProps) {
     });
   };
 
+  const handleShowHourlyForecastChange = (value: boolean) => {
+    setOptionsShowHourlyForecast(value);
+    setShowHourlyForecast(value);
+    console.log("[OptionsModal] Saving showHourlyForecast:", value);
+    chrome.storage.sync.set({ showHourlyForecast: value }, () => {
+      console.log("[OptionsModal] showHourlyForecast saved successfully");
+    });
+  };
+
+  const handleWeatherDraggableChange = (value: boolean) => {
+    setOptionsWeatherDraggable(value);
+    setWeatherDraggable(value);
+    console.log("[OptionsModal] Saving weatherDraggable:", value);
+    chrome.storage.sync.set({ weatherDraggable: value }, () => {
+      console.log("[OptionsModal] weatherDraggable saved successfully");
+    });
+  };
+
   return {
     isOptionsModalOpen,
     optionsUserName,
@@ -133,6 +163,8 @@ export function useOptionsModal(props: UseOptionsModalProps) {
     optionsShowFocus,
     optionsWeatherApiKey,
     optionsShowWeeklyForecast,
+    optionsShowHourlyForecast,
+    optionsWeatherDraggable,
     openOptionsModal,
     closeOptionsModal,
     handleUserNameChange,
@@ -143,5 +175,7 @@ export function useOptionsModal(props: UseOptionsModalProps) {
     handleShowFocusChange,
     handleWeatherApiKeyChange,
     handleShowWeeklyForecastChange,
+    handleShowHourlyForecastChange,
+    handleWeatherDraggableChange,
   };
 }

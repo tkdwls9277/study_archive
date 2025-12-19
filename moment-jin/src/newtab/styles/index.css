@@ -249,6 +249,7 @@ body,
 
 /* 접힌 상태의 패널 헤더 */
 .favorites-panel.collapsed .panel-header,
+.weather-panel.collapsed .panel-header,
 .notification-panel.collapsed .panel-header {
   margin-bottom: 8px;
   justify-content: center;
@@ -256,6 +257,7 @@ body,
 
 /* 데스크톱에서 접힌 상태일 때 타이틀 숨김 */
 .favorites-panel.collapsed .panel-title,
+.weather-panel.collapsed .panel-title,
 .todo-panel.collapsed .panel-title,
 .work-panel.collapsed .panel-title,
 .notification-panel.collapsed .panel-title {
@@ -306,13 +308,15 @@ body,
 }
 
 /* 접힌 상태의 토글 버튼 */
-.favorites-panel.collapsed .panel-toggle-btn {
+.favorites-panel.collapsed .panel-toggle-btn,
+.weather-panel.collapsed .panel-toggle-btn {
   background: transparent;
   padding: 4px 8px;
   font-size: 14px;
 }
 
-.favorites-panel.collapsed .panel-toggle-btn:hover {
+.favorites-panel.collapsed .panel-toggle-btn:hover,
+.weather-panel.collapsed .panel-toggle-btn:hover {
   background: rgba(255, 255, 255, 0.1);
 }
 
@@ -1636,6 +1640,119 @@ body,
     min-height: 0;
   }
 
+  /* 세로 화면에서 즐겨찾기 패널 스타일 */
+  .favorites-panel {
+    width: 100% !important;
+    max-width: 100%;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .favorites-panel.open {
+    width: 100% !important;
+    height: auto;
+    max-height: 200px;
+  }
+
+  /* 세로 화면에서 날씨 패널 스타일 */
+  .weather-panel {
+    width: 100% !important;
+    padding: 12px;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-right: none;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+  }
+
+  .weather-panel.open {
+    width: 100% !important;
+    max-height: 300px;
+  }
+
+  .weather-panel.collapsed {
+    width: 100% !important;
+    max-height: 60px;
+  }
+
+  /* 세로 화면에서 날씨 패널: 시간별/주간 날씨를 가로로 스크롤 (기본 유지) */
+  .weather-panel-content {
+    display: flex !important;
+    flex-direction: column !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+
+  .weather-panel-section {
+    width: 100%;
+  }
+
+  /* 세로 화면에서 시간별/주간 날씨 컨테이너 */
+  .weather-panel .hourly-weather-container,
+  .weather-panel .weekly-weather-container {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+  }
+
+  .weather-panel .hourly-weather-scroll,
+  .weather-panel .weekly-weather-scroll {
+    width: auto !important;
+    display: inline-flex !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    max-width: 100%;
+    max-height: none !important;
+    padding: 12px 8px !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    gap: 12px !important;
+  }
+
+  .weather-panel .hourly-weather-scroll::-webkit-scrollbar,
+  .weather-panel .weekly-weather-scroll::-webkit-scrollbar {
+    height: 6px;
+    width: auto;
+  }
+
+  /* 세로 화면에서 아이템 크기 축소 */
+  .weather-panel .hourly-item,
+  .weather-panel .weekly-item {
+    flex-direction: column !important;
+    justify-content: center !important;
+    min-width: 60px !important;
+    max-width: 60px !important;
+    width: 60px !important;
+    padding: 8px 6px !important;
+    gap: 6px !important;
+    font-size: 0.85rem !important;
+    flex-shrink: 0 !important;
+  }
+
+  .weather-panel .hourly-time,
+  .weather-panel .weekly-day {
+    font-size: 0.7rem !important;
+    white-space: nowrap;
+  }
+
+  .weather-panel .weekly-date {
+    font-size: 0.65rem !important;
+  }
+
+  .weather-panel .hourly-icon,
+  .weather-panel .weekly-icon {
+    font-size: 1.3rem !important;
+    margin: 2px 0 !important;
+  }
+
+  .weather-panel .hourly-temp,
+  .weather-panel .weekly-temp-max,
+  .weather-panel .weekly-temp-min {
+    font-size: 0.85rem !important;
+  }
+
   /* 하단 패널 영역 (알림 + 할일 + 근무기록) */
   .bottom-panels {
     display: flex;
@@ -1652,6 +1769,40 @@ body,
     flex: 0 0 auto;
     min-height: 0;
     gap: 0;
+  }
+
+  /* 날씨 패널 */
+  .weather-panel {
+    width: 100% !important;
+    padding: 12px;
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+  }
+
+  /* 날씨 패널이 열렸을 때 */
+  .weather-panel.open {
+    flex: 0 1 auto;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+
+  /* 날씨 패널이 닫혔을 때 */
+  .weather-panel.collapsed {
+    flex: 0 0 auto;
+    max-height: 60px;
+    overflow: visible;
+    background: rgba(0, 0, 0, 0.15);
+  }
+
+  /* 세로 화면에서 날씨 패널 접힌 상태 헤더 */
+  .weather-panel.collapsed .panel-header {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 0;
   }
 
   /* 알림 패널 */
@@ -1797,6 +1948,8 @@ body,
 
   /* 접힌 상태에서 패널 헤더를 한 줄로 정렬하고 타이틀 표시 */
   .favorites-panel.collapsed .panel-header,
+  .weather-panel.collapsed .panel-header,
+  .notification-panel.collapsed .panel-header,
   .todo-panel.collapsed .panel-header,
   .work-panel.collapsed .panel-header {
     justify-content: flex-start !important;
@@ -1807,6 +1960,8 @@ body,
 
   /* 접힌 상태에서 타이틀을 가로로 표시 */
   .favorites-panel.collapsed .panel-title,
+  .weather-panel.collapsed .panel-title,
+  .notification-panel.collapsed .panel-title,
   .todo-panel.collapsed .panel-title,
   .work-panel.collapsed .panel-title {
     display: block !important;
@@ -2224,6 +2379,102 @@ textarea.modal-input {
   z-index: 100; /* 날씨 위젯이 다른 요소 위에 표시되도록 */
 }
 
+/* ========= 날씨 패널 ========= */
+
+/* 기본: 좌측 세로 배치 */
+.weather-panel {
+  display: flex;
+  flex-direction: column;
+  padding: 14px;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(16px);
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  transition: width 0.25s ease, padding 0.25s ease;
+  overflow: hidden;
+}
+
+.weather-panel.open {
+  width: 240px;
+  flex-shrink: 0;
+}
+
+.weather-panel.collapsed {
+  width: 50px;
+  flex-shrink: 0;
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+.weather-panel-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
+  padding: 0 4px;
+}
+
+.weather-section-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 8px 0 4px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* 가로형 모니터(기본): 날씨 패널 내부를 세로로 배치 */
+.weather-panel-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
+  padding: 0 4px;
+}
+
+.weather-panel .hourly-weather-scroll,
+.weather-panel .weekly-weather-scroll {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 250px;
+  gap: 6px;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+}
+
+.weather-panel .hourly-weather-scroll::-webkit-scrollbar,
+.weather-panel .weekly-weather-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.weather-panel .hourly-item,
+.weather-panel .weekly-item {
+  width: 100%;
+  min-width: auto;
+  flex-shrink: 0;
+  padding: 8px;
+  min-height: auto;
+}
+
+.weather-panel .hourly-item {
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.weather-panel .weekly-item {
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 8px;
+}
+
 /* Weather Widget 기본 스타일 */
 .weather-widget {
   position: relative;
@@ -2245,6 +2496,15 @@ textarea.modal-input {
   background: rgba(255, 255, 255, 0.15);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* 드래그 불가 옵션 */
+.weather-widget.no-drag {
+  cursor: default !important;
+}
+
+.weather-widget.no-drag:hover {
+  transform: none !important;
 }
 
 .weather-widget.loading,
@@ -2456,6 +2716,188 @@ textarea.modal-input {
 .forecast-temp-min {
   color: rgba(100, 150, 255, 0.9);
   font-weight: 500;
+}
+
+/* ========= 시간별 날씨 ========= */
+
+.hourly-weather-container {
+  width: 100%;
+  margin: 20px 0;
+  padding: 0 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.hourly-weather-scroll {
+  display: inline-flex;
+  gap: 16px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 16px 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  max-width: 100%;
+}
+
+/* 스크롤바 스타일 */
+.hourly-weather-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.hourly-weather-scroll::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+}
+
+.hourly-weather-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.hourly-weather-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.hourly-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 70px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.hourly-item:hover {
+  background: rgba(255, 255, 255, 0.12);
+  transform: translateY(-2px);
+}
+
+.hourly-time {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.hourly-icon {
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.hourly-temp {
+  font-size: 1rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.hourly-weather-loading {
+  text-align: center;
+  padding: 20px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+}
+
+/* ========= 일주일 날씨 (메인 화면) ========= */
+
+.weekly-weather-container {
+  width: 100%;
+  margin: 20px 0;
+  padding: 0 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.weekly-weather-scroll {
+  display: inline-flex;
+  gap: 16px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 16px 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  max-width: 100%;
+}
+
+/* 스크롤바 스타일 */
+.weekly-weather-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.weekly-weather-scroll::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+}
+
+.weekly-weather-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.weekly-weather-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.weekly-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 80px;
+  padding: 14px 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.weekly-item:hover {
+  background: rgba(255, 255, 255, 0.12);
+  transform: translateY(-2px);
+}
+
+.weekly-day {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.weekly-date {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.weekly-icon {
+  font-size: 2rem;
+  line-height: 1;
+  margin: 4px 0;
+}
+
+.weekly-temp-max {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: rgba(255, 100, 100, 0.9);
+}
+
+.weekly-temp-min {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: rgba(100, 150, 255, 0.9);
+}
+
+.weekly-weather-loading {
+  text-align: center;
+  padding: 20px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
 }
 
 /* 반응형: 작은 화면에서는 Weather 상세 정보를 좌측 정렬 */
