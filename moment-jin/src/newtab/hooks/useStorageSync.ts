@@ -13,6 +13,7 @@ interface StorageSyncProps {
   setTodosOpen: (value: boolean) => void;
   setWorkPanelOpen: (value: boolean) => void;
   setNotificationPanelOpen: (value: boolean) => void;
+  setWeatherPanelOpen: (value: boolean) => void;
   setShowFavoritesPanel: (value: boolean) => void;
   setShowTodosPanel: (value: boolean) => void;
   setShowWorkPanel: (value: boolean) => void;
@@ -41,6 +42,7 @@ export function useStorageSync(props: StorageSyncProps) {
     setTodosOpen,
     setWorkPanelOpen,
     setNotificationPanelOpen,
+    setWeatherPanelOpen,
     setShowFavoritesPanel,
     setShowTodosPanel,
     setShowWorkPanel,
@@ -121,6 +123,10 @@ export function useStorageSync(props: StorageSyncProps) {
         const newValue = changes.notificationPanelOpen.newValue as boolean | undefined;
         setNotificationPanelOpen(newValue ?? true);
       }
+      if (changes.weatherPanelOpen !== undefined) {
+        const newValue = changes.weatherPanelOpen.newValue as boolean | undefined;
+        setWeatherPanelOpen(newValue ?? true);
+      }
 
       // 패널 표시/숨김 상태 변경
       if (changes.showFavoritesPanel !== undefined) {
@@ -193,6 +199,7 @@ export function useStorageSync(props: StorageSyncProps) {
     setTodosOpen,
     setWorkPanelOpen,
     setNotificationPanelOpen,
+    setWeatherPanelOpen,
     setShowFavoritesPanel,
     setShowTodosPanel,
     setShowWorkPanel,

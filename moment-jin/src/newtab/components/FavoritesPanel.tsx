@@ -144,6 +144,7 @@ export const FavoritesPanel: React.FC<FavoritesPanelProps> = ({
   return (
     <aside className={`favorites-panel ${isOpen ? "open" : "collapsed"}`}>
       <div className="panel-header" onClick={onToggle} style={{ cursor: "pointer" }}>
+        <span className="panel-title">{t.favorites.title}</span>
         <button
           className="panel-toggle-btn"
           onClick={(e) => {
@@ -154,7 +155,6 @@ export const FavoritesPanel: React.FC<FavoritesPanelProps> = ({
         >
           {isOpen ? "◀" : "▶"}
         </button>
-        <span className="panel-title">{t.favorites.title}</span>
         {isOpen && (
           <button
             className="panel-icon-btn"

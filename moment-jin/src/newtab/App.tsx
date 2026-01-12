@@ -76,6 +76,7 @@ export const App: React.FC = () => {
     setTodosOpen: state.setTodosOpen,
     setWorkPanelOpen: state.setWorkPanelOpen,
     setNotificationPanelOpen: state.setNotificationPanelOpen,
+    setWeatherPanelOpen: state.setWeatherPanelOpen,
     setShowFavoritesPanel: state.setShowFavoritesPanel,
     setShowTodosPanel: state.setShowTodosPanel,
     setShowWorkPanel: state.setShowWorkPanel,

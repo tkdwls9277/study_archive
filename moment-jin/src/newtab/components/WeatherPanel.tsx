@@ -29,8 +29,8 @@ export const WeatherPanel: React.FC<WeatherPanelProps> = ({
   return (
     <div className={`weather-panel panel ${isCollapsed ? "collapsed" : "open"}`}>
       <div className="panel-header" onClick={onToggle}>
-        <button className="panel-toggle-btn">{isCollapsed ? "▼" : "▲"}</button>
         <h3 className="panel-title">🌤️ 날씨</h3>
+        <button className="panel-toggle-btn">{isCollapsed ? "▶" : "◀"}</button>
       </div>
 
       {isCollapsed && (

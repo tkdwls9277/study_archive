@@ -31,6 +31,6 @@ export class FavoriteService {
 
   // Favorite 열기
   static openFavorite(favorite: Favorite): void {
-    window.location.href = favorite.url;
+    window.open(favorite.url, "_self");
   }
 }
