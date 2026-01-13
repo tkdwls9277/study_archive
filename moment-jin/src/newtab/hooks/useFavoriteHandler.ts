@@ -70,7 +70,7 @@ export function useFavoriteHandler(props: UseFavoriteHandlerProps) {
   };
 
   const handleOpenFavorite = (fav: Favorite) => {
-    window.open(fav.url, "_blank");
+    window.location.href = fav.url;
   };
 
   const handleReorderFavorites = (reorderedFavorites: Favorite[]) => {
