@@ -2379,6 +2379,33 @@ textarea.modal-input {
   z-index: 100; /* 날씨 위젯이 다른 요소 위에 표시되도록 */
 }
 
+/* 헤더 날씨 간단 표시 */
+.header-weather {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  font-size: 1.2rem;
+  transition: all 0.3s ease;
+}
+
+.header-weather:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.header-weather-icon {
+  font-size: 1.5rem;
+}
+
+.header-weather-temp {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
 /* ========= 날씨 패널 ========= */
 
 /* 기본: 좌측 세로 배치 */

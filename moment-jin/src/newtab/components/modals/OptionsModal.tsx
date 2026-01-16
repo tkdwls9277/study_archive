@@ -14,6 +14,7 @@ interface OptionsModalProps {
   showWeeklyForecast: boolean;
   showHourlyForecast: boolean;
   weatherDraggable: boolean;
+  showWeatherPanel: boolean;
   onClose: () => void;
   onUserNameChange: (userName: string) => void;
   onShowFavoritesChange: (show: boolean) => void;
@@ -25,6 +26,7 @@ interface OptionsModalProps {
   onShowWeeklyForecastChange: (show: boolean) => void;
   onShowHourlyForecastChange: (show: boolean) => void;
   onWeatherDraggableChange: (draggable: boolean) => void;
+  onShowWeatherPanelChange: (show: boolean) => void;
 }
 
 export const OptionsModal: React.FC<OptionsModalProps> = ({
@@ -39,6 +41,7 @@ export const OptionsModal: React.FC<OptionsModalProps> = ({
   showWeeklyForecast,
   showHourlyForecast,
   weatherDraggable,
+  showWeatherPanel,
   onClose,
   onUserNameChange,
   onShowFavoritesChange,
@@ -50,6 +53,7 @@ export const OptionsModal: React.FC<OptionsModalProps> = ({
   onShowWeeklyForecastChange,
   onShowHourlyForecastChange,
   onWeatherDraggableChange,
+  onShowWeatherPanelChange,
 }) => {
   const { t } = useTranslation();
   const nameInputRef = useRef<HTMLInputElement>(null);
@@ -279,9 +283,17 @@ ${settingsSummary.length > 0 ? `\n⚙️ 설정:\n${settingsSummary.map((s) => `
           </div>
 
           {/* 핵심 목표 토글 */}
-          <div className="toggle-switch-container" onClick={() => onShowFocusChange(!showFocus)}>
+          <div className="toggle-switch-container" onClick={() => onShowFocusChange(!showFocus)} style={{ marginBottom: "0.5rem" }}>
             <span className="toggle-switch-label">{t.options.showFocus}</span>
             <div className={`toggle-switch ${showFocus ? "active" : ""}`}>
+              <div className="toggle-switch-slider" />
+            </div>
+          </div>
+
+          {/* 날씨 표시 토글 */}
+          <div className="toggle-switch-container" onClick={() => onShowWeatherPanelChange(!showWeatherPanel)}>
+            <span className="toggle-switch-label">날씨 표시</span>
+            <div className={`toggle-switch ${showWeatherPanel ? "active" : ""}`}>
               <div className="toggle-switch-slider" />
             </div>
           </div>

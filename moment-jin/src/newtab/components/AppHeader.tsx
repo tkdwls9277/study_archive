@@ -1,5 +1,5 @@
 import React from "react";
-import type { WorkRecord } from "../types/index";
+import type { WeatherData, WorkRecord } from "../types/index";
 import { FocusInput } from "./FocusInput";
 import { NextNotification } from "./NextNotification";
 import { WorkCheckButtons } from "./WorkCheckButtons";
@@ -13,6 +13,8 @@ interface AppHeaderProps {
   showWorkPanel: boolean;
   showNotificationPanel: boolean;
   showFocusSection: boolean;
+  showWeatherPanel: boolean;
+  weatherData: WeatherData | null;
   onFocusInputChange: (value: string) => void;
   onFocusKeyDown: React.KeyboardEventHandler<HTMLInputElement>;
   onFocusBlur: () => void;
@@ -48,6 +50,8 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
   showWorkPanel,
   showNotificationPanel,
   showFocusSection,
+  showWeatherPanel,
+  weatherData,
   onFocusInputChange,
   onFocusKeyDown,
   onFocusBlur,
@@ -62,6 +66,12 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
       {/* 시간 */}
       <div className="time-weather-row">
         <div className="app-time">{time}</div>
+        {showWeatherPanel && weatherData && (
+          <div className="header-weather">
+            <span className="header-weather-icon">{weatherData.icon}</span>
+            <span className="header-weather-temp">{Math.round(weatherData.temp)}°</span>
+          </div>
+        )}
       </div>
 
       <div className="app-greeting">{greeting}</div>

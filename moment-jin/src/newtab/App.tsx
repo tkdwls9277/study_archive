@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AppHeader } from "./components/AppHeader";
 import { FavoritesPanel } from "./components/FavoritesPanel";
 import { ModalContainer } from "./components/ModalContainer";
@@ -19,12 +19,16 @@ import { useTodoHandler } from "./hooks/useTodoHandler";
 import { useTranslation } from "./hooks/useTranslation";
 import { useWorkHandler } from "./hooks/useWorkHandler";
 import { UnsplashService } from "./services/unsplashService";
+import type { WeatherData } from "./types";
 import { formatDate } from "./utils/date";
 import { getGreeting, getTimeString } from "./utils/index";
 
 export const App: React.FC = () => {
   const { t } = useTranslation();
   const todoRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
+
+  // ===== 날씨 데이터 상태 =====
+  const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
 
   // ===== 상태 관리 =====
   const state = useAppState();
@@ -62,6 +66,7 @@ export const App: React.FC = () => {
     if (typeof storageData.showHourlyForecast === "boolean")
       state.setShowHourlyForecast(storageData.showHourlyForecast);
     if (typeof storageData.weatherDraggable === "boolean") state.setWeatherDraggable(storageData.weatherDraggable);
+    if (typeof storageData.showWeatherPanel === "boolean") state.setShowWeatherPanel(storageData.showWeatherPanel);
   }, [storageData]);
 
   // ===== Storage 동기화 (다른 탭) =====
@@ -87,6 +92,7 @@ export const App: React.FC = () => {
     setShowWeeklyForecast: state.setShowWeeklyForecast,
     setShowHourlyForecast: state.setShowHourlyForecast,
     setWeatherDraggable: state.setWeatherDraggable,
+    setShowWeatherPanel: state.setShowWeatherPanel,
   });
 
   // ===== 시간 & 인사 업데이트 =====
@@ -168,6 +174,7 @@ export const App: React.FC = () => {
     showWeeklyForecast: state.showWeeklyForecast,
     showHourlyForecast: state.showHourlyForecast,
     weatherDraggable: state.weatherDraggable,
+    showWeatherPanel: state.showWeatherPanel,
     setUserName: state.setUserName,
     setShowFavoritesPanel: state.setShowFavoritesPanel,
     setShowTodosPanel: state.setShowTodosPanel,
@@ -178,6 +185,7 @@ export const App: React.FC = () => {
     setShowWeeklyForecast: state.setShowWeeklyForecast,
     setShowHourlyForecast: state.setShowHourlyForecast,
     setWeatherDraggable: state.setWeatherDraggable,
+    setShowWeatherPanel: state.setShowWeatherPanel,
   });
 
   const panelToggle = usePanelToggle({
@@ -257,6 +265,7 @@ export const App: React.FC = () => {
           weatherDraggable={state.weatherDraggable}
           onToggle={panelToggle.toggleWeatherPanelOpen}
           onSettingsClick={optionsModal.openOptionsModal}
+          onWeatherDataUpdate={setWeatherData}
         />
 
         {/* 중앙 메인 영역 */}
@@ -270,6 +279,8 @@ export const App: React.FC = () => {
             showWorkPanel={state.showWorkPanel}
             showNotificationPanel={state.showNotificationPanel}
             showFocusSection={state.showFocusSection}
+            showWeatherPanel={state.showWeatherPanel}
+            weatherData={weatherData}
             workTranslations={t.work}
             onFocusInputChange={state.setFocusInputValue}
             onFocusKeyDown={focusHandler.handleFocusKeyDown}
@@ -370,6 +381,7 @@ export const App: React.FC = () => {
         showWeeklyForecast={optionsModal.optionsShowWeeklyForecast}
         showHourlyForecast={optionsModal.optionsShowHourlyForecast}
         weatherDraggable={optionsModal.optionsWeatherDraggable}
+        showWeatherPanel={optionsModal.optionsShowWeatherPanel}
         onOptionsClose={optionsModal.closeOptionsModal}
         onUserNameChange={optionsModal.handleUserNameChange}
         onShowFavoritesChange={optionsModal.handleShowFavoritesChange}
@@ -381,6 +393,7 @@ export const App: React.FC = () => {
         onShowWeeklyForecastChange={optionsModal.handleShowWeeklyForecastChange}
         onShowHourlyForecastChange={optionsModal.handleShowHourlyForecastChange}
         onWeatherDraggableChange={optionsModal.handleWeatherDraggableChange}
+        onShowWeatherPanelChange={optionsModal.handleShowWeatherPanelChange}
       />
 
       {/* 설정 버튼 */}

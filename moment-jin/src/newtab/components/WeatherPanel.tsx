@@ -1,4 +1,5 @@
 import React from "react";
+import type { WeatherData } from "../types";
 import { HourlyWeather } from "./HourlyWeather";
 import { Weather } from "./Weather";
 import { WeeklyWeather } from "./WeeklyWeather";
@@ -11,6 +12,7 @@ interface WeatherPanelProps {
   weatherDraggable: boolean;
   onToggle: () => void;
   onSettingsClick: () => void;
+  onWeatherDataUpdate?: (data: WeatherData | null) => void;
 }
 
 /**
@@ -25,6 +27,7 @@ export const WeatherPanel: React.FC<WeatherPanelProps> = ({
   weatherDraggable,
   onToggle,
   onSettingsClick,
+  onWeatherDataUpdate,
 }) => {
   return (
     <div className={`weather-panel panel ${isCollapsed ? "collapsed" : "open"}`}>
@@ -48,6 +51,7 @@ export const WeatherPanel: React.FC<WeatherPanelProps> = ({
               apiKey={weatherApiKey}
               draggable={weatherDraggable}
               onSettingsClick={onSettingsClick}
+              onWeatherDataUpdate={onWeatherDataUpdate}
             />
           </div>
 

@@ -40,6 +40,7 @@ interface ModalContainerProps {
   showWeeklyForecast: boolean;
   showHourlyForecast: boolean;
   weatherDraggable: boolean;
+  showWeatherPanel: boolean;
   onOptionsClose: () => void;
   onUserNameChange: (value: string) => void;
   onShowFavoritesChange: (value: boolean) => void;
@@ -51,6 +52,7 @@ interface ModalContainerProps {
   onShowWeeklyForecastChange: (value: boolean) => void;
   onShowHourlyForecastChange: (value: boolean) => void;
   onWeatherDraggableChange: (value: boolean) => void;
+  onShowWeatherPanelChange: (value: boolean) => void;
 }
 
 /**
@@ -93,6 +95,7 @@ export const ModalContainer: React.FC<ModalContainerProps> = ({
   showWeeklyForecast,
   showHourlyForecast,
   weatherDraggable,
+  showWeatherPanel,
   onOptionsClose,
   onUserNameChange,
   onShowFavoritesChange,
@@ -104,6 +107,7 @@ export const ModalContainer: React.FC<ModalContainerProps> = ({
   onShowWeeklyForecastChange,
   onShowHourlyForecastChange,
   onWeatherDraggableChange,
+  onShowWeatherPanelChange,
 }) => {
   return (
     <>
@@ -145,6 +149,7 @@ export const ModalContainer: React.FC<ModalContainerProps> = ({
         showWeeklyForecast={showWeeklyForecast}
         showHourlyForecast={showHourlyForecast}
         weatherDraggable={weatherDraggable}
+        showWeatherPanel={showWeatherPanel}
         onClose={onOptionsClose}
         onUserNameChange={onUserNameChange}
         onShowFavoritesChange={onShowFavoritesChange}
@@ -156,6 +161,7 @@ export const ModalContainer: React.FC<ModalContainerProps> = ({
         onShowWeeklyForecastChange={onShowWeeklyForecastChange}
         onShowHourlyForecastChange={onShowHourlyForecastChange}
         onWeatherDraggableChange={onWeatherDraggableChange}
+        onShowWeatherPanelChange={onShowWeatherPanelChange}
       />
     </>
   );

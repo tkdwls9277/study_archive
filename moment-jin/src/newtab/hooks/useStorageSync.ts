@@ -24,6 +24,7 @@ interface StorageSyncProps {
   setShowWeeklyForecast: (value: boolean) => void;
   setShowHourlyForecast: (value: boolean) => void;
   setWeatherDraggable: (value: boolean) => void;
+  setShowWeatherPanel: (value: boolean) => void;
 }
 
 /**
@@ -53,6 +54,7 @@ export function useStorageSync(props: StorageSyncProps) {
     setShowWeeklyForecast,
     setShowHourlyForecast,
     setWeatherDraggable,
+    setShowWeatherPanel,
   } = props;
 
   const lastCheckedDateRef = useRef<string>(formatDate(new Date()));
@@ -173,6 +175,12 @@ export function useStorageSync(props: StorageSyncProps) {
         const newValue = changes.weatherDraggable.newValue as boolean | undefined;
         setWeatherDraggable(newValue ?? true);
       }
+
+      // 날씨 패널 표시 여부 변경
+      if (changes.showWeatherPanel !== undefined) {
+        const newValue = changes.showWeatherPanel.newValue as boolean | undefined;
+        setShowWeatherPanel(newValue ?? true);
+      }
     };
 
     // Storage 변경 리스너 등록
@@ -204,6 +212,7 @@ export function useStorageSync(props: StorageSyncProps) {
     setShowTodosPanel,
     setShowWorkPanel,
     setShowNotificationPanel,
+    setShowWeatherPanel,
     setShowFocusSection,
     setCurrentDate,
     setWeatherApiKey,

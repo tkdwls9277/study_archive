@@ -12,6 +12,7 @@ interface UseOptionsModalProps {
   showWeeklyForecast: boolean;
   showHourlyForecast: boolean;
   weatherDraggable: boolean;
+  showWeatherPanel: boolean;
   setUserName: (value: string | null) => void;
   setShowFavoritesPanel: (value: boolean) => void;
   setShowTodosPanel: (value: boolean) => void;
@@ -22,6 +23,7 @@ interface UseOptionsModalProps {
   setShowWeeklyForecast: (value: boolean) => void;
   setShowHourlyForecast: (value: boolean) => void;
   setWeatherDraggable: (value: boolean) => void;
+  setShowWeatherPanel: (value: boolean) => void;
 }
 
 /**
@@ -39,6 +41,7 @@ export function useOptionsModal(props: UseOptionsModalProps) {
     showWeeklyForecast,
     showHourlyForecast,
     weatherDraggable,
+    showWeatherPanel,
     setUserName,
     setShowFavoritesPanel,
     setShowTodosPanel,
@@ -49,6 +52,7 @@ export function useOptionsModal(props: UseOptionsModalProps) {
     setShowWeeklyForecast,
     setShowHourlyForecast,
     setWeatherDraggable,
+    setShowWeatherPanel,
   } = props;
 
   const [isOptionsModalOpen, setIsOptionsModalOpen] = useState(false);
@@ -62,6 +66,7 @@ export function useOptionsModal(props: UseOptionsModalProps) {
   const [optionsShowWeeklyForecast, setOptionsShowWeeklyForecast] = useState(false);
   const [optionsShowHourlyForecast, setOptionsShowHourlyForecast] = useState(false);
   const [optionsWeatherDraggable, setOptionsWeatherDraggable] = useState(true);
+  const [optionsShowWeatherPanel, setOptionsShowWeatherPanel] = useState(true);
 
   const openOptionsModal = () => {
     console.log("[OptionsModal] Opening modal with showWeeklyForecast:", showWeeklyForecast);
@@ -75,6 +80,7 @@ export function useOptionsModal(props: UseOptionsModalProps) {
     setOptionsShowWeeklyForecast(showWeeklyForecast);
     setOptionsShowHourlyForecast(showHourlyForecast);
     setOptionsWeatherDraggable(weatherDraggable);
+    setOptionsShowWeatherPanel(showWeatherPanel);
     setIsOptionsModalOpen(true);
   };
 
@@ -153,6 +159,12 @@ export function useOptionsModal(props: UseOptionsModalProps) {
     });
   };
 
+  const handleShowWeatherPanelChange = (value: boolean) => {
+    setOptionsShowWeatherPanel(value);
+    setShowWeatherPanel(value);
+    StorageService.savePanelVisibility("showWeatherPanel", value);
+  };
+
   return {
     isOptionsModalOpen,
     optionsUserName,
@@ -165,6 +177,7 @@ export function useOptionsModal(props: UseOptionsModalProps) {
     optionsShowWeeklyForecast,
     optionsShowHourlyForecast,
     optionsWeatherDraggable,
+    optionsShowWeatherPanel,
     openOptionsModal,
     closeOptionsModal,
     handleUserNameChange,
@@ -177,5 +190,6 @@ export function useOptionsModal(props: UseOptionsModalProps) {
     handleShowWeeklyForecastChange,
     handleShowHourlyForecastChange,
     handleWeatherDraggableChange,
+    handleShowWeatherPanelChange,
   };
 }

@@ -13,6 +13,7 @@ export function useAppState() {
   const [showWeeklyForecast, setShowWeeklyForecast] = useState(false);
   const [showHourlyForecast, setShowHourlyForecast] = useState(false);
   const [weatherDraggable, setWeatherDraggable] = useState(true);
+  const [showWeatherPanel, setShowWeatherPanel] = useState(true);
 
   // ===== 데이터 =====
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -63,6 +64,8 @@ export function useAppState() {
     setShowHourlyForecast,
     weatherDraggable,
     setWeatherDraggable,
+    showWeatherPanel,
+    setShowWeatherPanel,
 
     // 데이터
     todos,

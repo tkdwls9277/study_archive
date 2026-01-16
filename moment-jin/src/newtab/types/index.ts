@@ -78,4 +78,5 @@ export interface StorageData {
   showWeeklyForecast?: boolean; // 일주일 날씨 예보 표시 여부
   showHourlyForecast?: boolean; // 시간별 날씨 예보 표시 여부
   weatherDraggable?: boolean; // 날씨 위젯 드래그 가능 여부
+  showWeatherPanel?: boolean; // 날씨 표시 여부
 }

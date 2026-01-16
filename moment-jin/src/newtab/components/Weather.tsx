@@ -7,13 +7,14 @@ interface WeatherProps {
   apiKey?: string; // 사용자의 OpenWeather API 키
   onSettingsClick?: () => void; // 설정 버튼 클릭 핸들러
   draggable?: boolean; // 드래그 가능 여부
+  onWeatherDataUpdate?: (data: WeatherData | null) => void; // 날씨 데이터 업데이트 콜백
 }
 
 /**
  * Weather 컴포넌트
  * 사용자 위치 기반 날씨 정보를 표시하는 위젯
  */
-export const Weather: React.FC<WeatherProps> = ({ compact = true, apiKey, onSettingsClick, draggable = true }) => {
+export const Weather: React.FC<WeatherProps> = ({ compact = true, apiKey, onSettingsClick, draggable = true, onWeatherDataUpdate }) => {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -61,16 +62,26 @@ export const Weather: React.FC<WeatherProps> = ({ compact = true, apiKey, onSett
         console.log("[Weather] Weather data loaded:", data);
         setWeather(data);
         WeatherService.cacheWeather(data);
+        
+        // 상위 컴포넌트로 날씨 데이터 전달
+        if (onWeatherDataUpdate) {
+          onWeatherDataUpdate(data);
+        }
 
         setError(null);
       } catch (err) {
         console.error("[Weather] Failed to load weather:", err);
         setError(err instanceof Error ? err.message : "Failed to load weather");
+        
+        // 에러 시 null 전달
+        if (onWeatherDataUpdate) {
+          onWeatherDataUpdate(null);
+        }
       } finally {
         setLoading(false);
       }
     },
-    [apiKey]
+    [apiKey, onWeatherDataUpdate]
   );
 
   /**
