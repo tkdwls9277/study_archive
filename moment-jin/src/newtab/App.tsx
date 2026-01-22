@@ -219,12 +219,12 @@ export const App: React.FC = () => {
         }
       }, 100);
     },
-    [state]
+    [state],
   );
 
   const todayRecord = useMemo(
     () => state.workRecords.find((r) => r.date === formatDate(new Date())),
-    [state.workRecords, state.currentDate] // currentDate가 변경되면 재계산
+    [state.workRecords, state.currentDate], // currentDate가 변경되면 재계산
   );
 
   // ===== 배경 스타일 =====
@@ -365,11 +365,13 @@ export const App: React.FC = () => {
         editingCheckIn={workHandler.editingCheckIn}
         editingCheckOut={workHandler.editingCheckOut}
         editingIsVacation={workHandler.editingIsVacation}
+        editingLeaveType={workHandler.editingLeaveType}
         onTimeEditClose={workHandler.closeTimeEditModal}
         onTimeEditSave={workHandler.handleSaveTimeEdit}
         onCheckInChange={workHandler.setEditingCheckIn}
         onCheckOutChange={workHandler.setEditingCheckOut}
         onIsVacationChange={workHandler.setEditingIsVacation}
+        onLeaveTypeChange={workHandler.setEditingLeaveType}
         isOptionsModalOpen={optionsModal.isOptionsModalOpen}
         optionsUserName={optionsModal.optionsUserName}
         optionsShowFavorites={optionsModal.optionsShowFavorites}

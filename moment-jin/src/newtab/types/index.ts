@@ -16,7 +16,8 @@ export type WorkRecord = {
   date: string; // YYYY-MM-DD
   checkIn?: string; // HH:MM
   checkOut?: string; // HH:MM
-  isVacation?: boolean; // 연차 여부
+  isVacation?: boolean; // 연차 여부 (deprecated, leaveType 사용 권장)
+  leaveType?: "none" | "annual" | "half"; // 'none': 일반 근무, 'annual': 연차, 'half': 반차
 };
 
 export type TodoGroup = {

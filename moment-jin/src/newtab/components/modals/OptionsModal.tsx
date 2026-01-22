@@ -283,7 +283,11 @@ ${settingsSummary.length > 0 ? `\n⚙️ 설정:\n${settingsSummary.map((s) => `
           </div>
 
           {/* 핵심 목표 토글 */}
-          <div className="toggle-switch-container" onClick={() => onShowFocusChange(!showFocus)} style={{ marginBottom: "0.5rem" }}>
+          <div
+            className="toggle-switch-container"
+            onClick={() => onShowFocusChange(!showFocus)}
+            style={{ marginBottom: "0.5rem" }}
+          >
             <span className="toggle-switch-label">{t.options.showFocus}</span>
             <div className={`toggle-switch ${showFocus ? "active" : ""}`}>
               <div className="toggle-switch-slider" />

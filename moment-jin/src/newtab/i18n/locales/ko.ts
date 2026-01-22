@@ -64,6 +64,14 @@ export const ko: Translations = {
     hour: "시간",
     minute: "분",
     noRecord: "기록 없음",
+    leaveTypeNone: "일반 근무",
+    leaveTypeAnnual: "연차",
+    leaveTypeHalf: "반차",
+    annualLeave: "연차",
+    halfDayLeave: "반차",
+    annualLeaveNote: "연차는 8시간으로 계산됩니다.",
+    halfDayLeaveNote: "반차는 점심시간 없이 4시간으로 계산됩니다.",
+    selectLeaveType: "근무 유형 선택",
   },
   main: {
     greeting: {

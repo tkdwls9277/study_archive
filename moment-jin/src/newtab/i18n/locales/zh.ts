@@ -64,6 +64,14 @@ export const zh: Translations = {
     hour: "小时",
     minute: "分钟",
     noRecord: "无记录",
+    leaveTypeNone: "正常工作",
+    leaveTypeAnnual: "年假",
+    leaveTypeHalf: "半天假",
+    annualLeave: "年假",
+    halfDayLeave: "半天假",
+    annualLeaveNote: "年假按8小时计算。",
+    halfDayLeaveNote: "半天假按4小时计算（无午休）。",
+    selectLeaveType: "选择假期类型",
   },
   main: {
     greeting: {

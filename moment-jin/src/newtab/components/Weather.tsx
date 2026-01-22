@@ -14,7 +14,13 @@ interface WeatherProps {
  * Weather 컴포넌트
  * 사용자 위치 기반 날씨 정보를 표시하는 위젯
  */
-export const Weather: React.FC<WeatherProps> = ({ compact = true, apiKey, onSettingsClick, draggable = true, onWeatherDataUpdate }) => {
+export const Weather: React.FC<WeatherProps> = ({
+  compact = true,
+  apiKey,
+  onSettingsClick,
+  draggable = true,
+  onWeatherDataUpdate,
+}) => {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -62,7 +68,7 @@ export const Weather: React.FC<WeatherProps> = ({ compact = true, apiKey, onSett
         console.log("[Weather] Weather data loaded:", data);
         setWeather(data);
         WeatherService.cacheWeather(data);
-        
+
         // 상위 컴포넌트로 날씨 데이터 전달
         if (onWeatherDataUpdate) {
           onWeatherDataUpdate(data);
@@ -72,7 +78,7 @@ export const Weather: React.FC<WeatherProps> = ({ compact = true, apiKey, onSett
       } catch (err) {
         console.error("[Weather] Failed to load weather:", err);
         setError(err instanceof Error ? err.message : "Failed to load weather");
-        
+
         // 에러 시 null 전달
         if (onWeatherDataUpdate) {
           onWeatherDataUpdate(null);

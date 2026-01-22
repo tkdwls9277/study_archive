@@ -65,6 +65,14 @@ export interface Translations {
     hour: string;
     minute: string;
     noRecord: string;
+    leaveTypeNone: string;
+    leaveTypeAnnual: string;
+    leaveTypeHalf: string;
+    annualLeave: string;
+    halfDayLeave: string;
+    annualLeaveNote: string;
+    halfDayLeaveNote: string;
+    selectLeaveType: string;
   };
   main: {
     greeting: {

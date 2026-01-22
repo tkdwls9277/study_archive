@@ -64,7 +64,8 @@ export class WorkService {
     editingDate: string,
     editingCheckIn: string,
     editingCheckOut: string,
-    editingIsVacation: boolean
+    editingIsVacation: boolean,
+    editingLeaveType?: "none" | "annual" | "half",
   ): WorkRecord[] {
     if (!editingDate) return workRecords;
 
@@ -72,9 +73,11 @@ export class WorkService {
 
     const updatedRecord: WorkRecord = {
       date: editingDate,
-      checkIn: editingIsVacation ? undefined : editingCheckIn || undefined,
-      checkOut: editingIsVacation ? undefined : editingCheckOut || undefined,
+      // 일반 근무 또는 반차일 때는 출퇴근 시간 저장, 연차일 때는 저장 안 함
+      checkIn: editingLeaveType === "annual" ? undefined : editingCheckIn || undefined,
+      checkOut: editingLeaveType === "annual" ? undefined : editingCheckOut || undefined,
       isVacation: editingIsVacation || undefined,
+      leaveType: editingLeaveType || "none",
     };
 
     if (existingIndex >= 0) {
@@ -119,10 +122,17 @@ export class WorkService {
     let totalMinutes = 0;
 
     weekRecords.forEach((record) => {
-      if (record.isVacation) {
-        // 연차는 근무시간에 포함하지 않음
-      } else if (record.checkIn && record.checkOut) {
-        totalMinutes += calculateWorkMinutes(record.checkIn, record.checkOut);
+      // 연차: 8시간 (하위 호환성 고려)
+      if (record.leaveType === "annual" || (!record.leaveType && record.isVacation)) {
+        totalMinutes += 8 * 60;
+      }
+      // 반차: 4시간
+      else if (record.leaveType === "half") {
+        totalMinutes += 4 * 60;
+      }
+      // 일반 근무: 출퇴근 시간 기록
+      else if (record.checkIn && record.checkOut) {
+        totalMinutes += calculateWorkMinutes(record.checkIn, record.checkOut, false);
       }
     });
 
@@ -134,15 +144,18 @@ export class WorkService {
    */
   static calculateWeekTarget(weekRecords: WorkRecord[]): number {
     let vacationDays = 0;
+    let halfDays = 0;
 
     weekRecords.forEach((record) => {
-      if (record.isVacation) {
+      if (record.leaveType === "annual" || (!record.leaveType && record.isVacation)) {
         vacationDays++;
+      } else if (record.leaveType === "half") {
+        halfDays++;
       }
     });
 
     const targetMinutes = WORK_HOURS_PER_WEEK * 60;
-    return targetMinutes - vacationDays * WORK_HOURS_PER_DAY * 60;
+    return targetMinutes - vacationDays * WORK_HOURS_PER_DAY * 60 - halfDays * 4 * 60;
   }
 
   /**
@@ -167,9 +180,14 @@ export class WorkService {
       const isBeforeOrToday = recordDate <= today;
 
       if (isBeforeOrToday) {
-        if (record.isVacation) {
-          // 연차는 계산하지 않음
+        if (record.leaveType === "annual" || (!record.leaveType && record.isVacation)) {
+          // 연차: 8시간으로 계산
+          expectedMinutes += WORK_HOURS_PER_DAY * 60;
+        } else if (record.leaveType === "half") {
+          // 반차: 4시간으로 계산
+          expectedMinutes += 4 * 60;
         } else {
+          // 일반 근무
           expectedMinutes += WORK_HOURS_PER_DAY * 60;
         }
       }

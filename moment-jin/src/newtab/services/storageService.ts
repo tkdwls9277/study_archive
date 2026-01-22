@@ -59,7 +59,13 @@ export class StorageService {
    * 패널 표시 설정 저장
    */
   static savePanelVisibility(
-    key: "showFavoritesPanel" | "showTodosPanel" | "showWorkPanel" | "showNotificationPanel" | "showFocusSection" | "showWeatherPanel",
+    key:
+      | "showFavoritesPanel"
+      | "showTodosPanel"
+      | "showWorkPanel"
+      | "showNotificationPanel"
+      | "showFocusSection"
+      | "showWeatherPanel",
     value: boolean
   ): void {
     if (typeof chrome !== "undefined" && chrome.storage) {

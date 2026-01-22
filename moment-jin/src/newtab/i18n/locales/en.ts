@@ -64,6 +64,14 @@ export const en: Translations = {
     hour: "h",
     minute: "m",
     noRecord: "No record",
+    leaveTypeNone: "Normal Work",
+    leaveTypeAnnual: "Annual Leave",
+    leaveTypeHalf: "Half-Day Leave",
+    annualLeave: "Annual Leave",
+    halfDayLeave: "Half-Day",
+    annualLeaveNote: "Annual leave is calculated as 8 hours.",
+    halfDayLeaveNote: "Half-day leave is calculated as 4 hours (no lunch break).",
+    selectLeaveType: "Select Leave Type",
   },
   main: {
     greeting: {

@@ -67,7 +67,7 @@ export const WorkPanel: React.FC<WorkPanelProps> = ({
     return dayNames[locale][dayIndex];
   };
 
-  const calculateWorkMinutes = (checkIn: string, checkOut: string): number => {
+  const calculateWorkMinutes = (checkIn: string, checkOut: string, isHalfDay: boolean = false): number => {
     const [inH, inM] = checkIn.split(":").map(Number);
     const [outH, outM] = checkOut.split(":").map(Number);
 
@@ -76,6 +76,11 @@ export const WorkPanel: React.FC<WorkPanelProps> = ({
 
     let diff = outMinutes - inMinutes;
     if (diff < 0) diff += 24 * 60;
+
+    // 반차인 경우 점심시간 제외하지 않음
+    if (isHalfDay) {
+      return diff;
+    }
 
     // 점심시간 1시간 제외
     const LUNCH_BREAK_MINUTES = 60;
@@ -145,9 +150,12 @@ export const WorkPanel: React.FC<WorkPanelProps> = ({
               const date = new Date(record.date);
               const dayName = getDayName(date.getDay());
               const isToday = record.date === formatDate(new Date());
+              const isHalfDay = record.leaveType === "half";
               const workMinutes =
-                record.checkIn && record.checkOut ? calculateWorkMinutes(record.checkIn, record.checkOut) : 0;
-              const targetMinutes = 8 * 60; // 8시간
+                record.checkIn && record.checkOut
+                  ? calculateWorkMinutes(record.checkIn, record.checkOut, isHalfDay)
+                  : 0;
+              const targetMinutes = isHalfDay ? 4 * 60 : 8 * 60; // 반차: 4시간, 일반: 8시간
               const percentage = workMinutes > 0 ? Math.round((workMinutes / targetMinutes) * 100) : 0;
 
               return (
@@ -162,7 +170,13 @@ export const WorkPanel: React.FC<WorkPanelProps> = ({
                   <div className="work-record-header">
                     <div className="work-record-date">
                       {date.getMonth() + 1}/{date.getDate()} ({dayName})
-                      {record.isVacation && <span className="vacation-badge">🌴 {t.work.vacation}</span>}
+                      {/* 새로운 leaveType 필드 우선, 없으면 isVacation 사용 (하위 호환성) */}
+                      {(record.leaveType === "annual" || (!record.leaveType && record.isVacation)) && (
+                        <span className="vacation-badge">🌴 {t.work.annualLeave}</span>
+                      )}
+                      {record.leaveType === "half" && (
+                        <span className="vacation-badge half-day">🌤️ {t.work.halfDayLeave}</span>
+                      )}
                     </div>
                     <button
                       className="work-edit-btn"
@@ -176,9 +190,11 @@ export const WorkPanel: React.FC<WorkPanelProps> = ({
                     </button>
                   </div>
 
-                  {record.isVacation ? (
-                    <div className="work-record-vacation">{t.work.vacation}</div>
-                  ) : record.checkIn || record.checkOut ? (
+                  {record.leaveType === "annual" || (!record.leaveType && record.isVacation) ? (
+                    <div className="work-record-vacation">{t.work.annualLeave}</div>
+                  ) : record.leaveType === "half" && !(record.checkIn && record.checkOut) ? (
+                    <div className="work-record-vacation half-day">{t.work.halfDayLeave}</div>
+                  ) : record.checkIn || record.checkOut || record.leaveType === "half" ? (
                     <>
                       <div className="work-record-times">
                         <span className="work-record-time">
@@ -203,8 +219,8 @@ export const WorkPanel: React.FC<WorkPanelProps> = ({
                                   percentage >= 100
                                     ? "rgba(34, 197, 94, 0.7)"
                                     : percentage >= 80
-                                    ? "rgba(251, 191, 36, 0.7)"
-                                    : "rgba(239, 68, 68, 0.5)",
+                                      ? "rgba(251, 191, 36, 0.7)"
+                                      : "rgba(239, 68, 68, 0.5)",
                               }}
                             />
                           </div>

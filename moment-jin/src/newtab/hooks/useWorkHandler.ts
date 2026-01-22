@@ -19,6 +19,7 @@ export function useWorkHandler(props: UseWorkHandlerProps) {
   const [editingCheckIn, setEditingCheckIn] = useState("");
   const [editingCheckOut, setEditingCheckOut] = useState("");
   const [editingIsVacation, setEditingIsVacation] = useState(false);
+  const [editingLeaveType, setEditingLeaveType] = useState<"none" | "annual" | "half">("none");
 
   const handleSaveWorkRecords = (next: WorkRecord[]) => {
     setWorkRecords(next);
@@ -42,6 +43,8 @@ export function useWorkHandler(props: UseWorkHandlerProps) {
     setEditingCheckIn(rec?.checkIn || "");
     setEditingCheckOut(rec?.checkOut || "");
     setEditingIsVacation(rec?.isVacation || false);
+    // leaveType 설정 (하위 호환성 고려)
+    setEditingLeaveType(rec?.leaveType || (rec?.isVacation ? "annual" : "none"));
     setIsTimeEditModalOpen(true);
   };
 
@@ -56,6 +59,7 @@ export function useWorkHandler(props: UseWorkHandlerProps) {
     setEditingCheckIn(rec.checkIn);
     setEditingCheckOut(rec.checkOut || "");
     setEditingIsVacation(rec.isVacation || false);
+    setEditingLeaveType(rec?.leaveType || (rec?.isVacation ? "annual" : "none"));
     setIsTimeEditModalOpen(true);
   };
 
@@ -65,14 +69,22 @@ export function useWorkHandler(props: UseWorkHandlerProps) {
     setEditingCheckIn(rec.checkIn || "");
     setEditingCheckOut(rec.checkOut || "");
     setEditingIsVacation(rec.isVacation || false);
+    setEditingLeaveType(rec?.leaveType || (rec?.isVacation ? "annual" : "none"));
     setIsTimeEditModalOpen(true);
   };
 
   const handleSaveTimeEdit = () => {
-    let next = WorkService.saveTimeEdit(workRecords, editingDate, editingCheckIn, editingCheckOut, editingIsVacation);
+    let next = WorkService.saveTimeEdit(
+      workRecords,
+      editingDate,
+      editingCheckIn,
+      editingCheckOut,
+      editingIsVacation,
+      editingLeaveType,
+    );
 
-    // 둘 다 비어있고 휴가도 아니면 해당 날짜 기록 삭제
-    if (!editingCheckIn.trim() && !editingCheckOut.trim() && !editingIsVacation) {
+    // 일반 근무이고 출퇴근 기록이 모두 비어있으면 해당 날짜 기록 삭제
+    if (!editingCheckIn.trim() && !editingCheckOut.trim() && editingLeaveType === "none") {
       next = next.filter((r: WorkRecord) => r.date !== editingDate);
     }
 
@@ -94,6 +106,8 @@ export function useWorkHandler(props: UseWorkHandlerProps) {
     setEditingCheckOut,
     editingIsVacation,
     setEditingIsVacation,
+    editingLeaveType,
+    setEditingLeaveType,
 
     // Handlers
     handleCheckIn,

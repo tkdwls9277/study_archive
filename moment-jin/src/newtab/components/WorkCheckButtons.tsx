@@ -34,14 +34,22 @@ export const WorkCheckButtons: React.FC<WorkCheckButtonsProps> = ({
   onCheckOutEdit,
   translations: t,
 }) => {
-  // 근무시간 계산 (점심시간 1시간 제외)
+  // 근무시간 계산 (점심시간 1시간 제외, 반차는 제외 안함)
   const calculateWorkMinutes = (checkIn: string, checkOut: string): number => {
     const [inHour, inMin] = checkIn.split(":").map(Number);
     const [outHour, outMin] = checkOut.split(":").map(Number);
     const inMinutes = inHour * 60 + inMin;
     const outMinutes = outHour * 60 + outMin;
     const totalMinutes = outMinutes - inMinutes;
-    return Math.max(0, totalMinutes - 60); // 점심시간 1시간 제외
+
+    // 반차인 경우 점심시간 제외하지 않음
+    const isHalfDay = todayRecord?.leaveType === "half";
+    if (isHalfDay) {
+      return Math.max(0, totalMinutes);
+    }
+
+    // 일반 근무는 점심시간 1시간 제외
+    return Math.max(0, totalMinutes - 60);
   };
 
   const formatWorkTime = (minutes: number, hourText: string, minuteText: string): string => {
@@ -92,8 +100,8 @@ export const WorkCheckButtons: React.FC<WorkCheckButtonsProps> = ({
       {todayRecord?.checkIn && todayRecord?.checkOut && (
         <div className="today-work-summary">
           {t.todayWork}:{" "}
-          {formatWorkTime(calculateWorkMinutes(todayRecord.checkIn, todayRecord.checkOut), t.hour, t.minute)} (
-          {t.lunchExcluded})
+          {formatWorkTime(calculateWorkMinutes(todayRecord.checkIn, todayRecord.checkOut), t.hour, t.minute)}
+          {todayRecord.leaveType === "half" ? "" : ` (${t.lunchExcluded})`}
         </div>
       )}
     </div>

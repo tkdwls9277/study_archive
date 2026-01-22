@@ -64,6 +64,14 @@ export const ja: Translations = {
     hour: "時間",
     minute: "分",
     noRecord: "記録なし",
+    leaveTypeNone: "通常勤務",
+    leaveTypeAnnual: "年次休暇",
+    leaveTypeHalf: "半日休暇",
+    annualLeave: "年次休暇",
+    halfDayLeave: "半日休暇",
+    annualLeaveNote: "年次休暇は8時間として計算されます。",
+    halfDayLeaveNote: "半日休暇は昼休みなしで4時間として計算されます。",
+    selectLeaveType: "休暇タイプを選択",
   },
   main: {
     greeting: {
