@@ -122,6 +122,13 @@ export const FavoritesPanel: React.FC<FavoritesPanelProps> = ({
 }) => {
   const { t } = useTranslation();
 
+  // 기본 구글 즐겨찾기
+  const defaultGoogle: Favorite = {
+    id: 'default-google',
+    label: 'Google',
+    url: 'https://www.google.com',
+  };
+
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -170,6 +177,18 @@ export const FavoritesPanel: React.FC<FavoritesPanelProps> = ({
       </div>
       {!isOpen && (
         <ul className="favorites-list-collapsed">
+          {/* 기본 구글 아이콘 */}
+          <li key={defaultGoogle.id} className="favorites-item-collapsed" onClick={() => onOpenFavorite(defaultGoogle)} title={defaultGoogle.label}>
+            <img
+              src={getFaviconUrl(defaultGoogle.url)}
+              alt={defaultGoogle.label}
+              className="favorites-icon-collapsed"
+              onError={(e) => {
+                e.currentTarget.src =
+                  'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><text y="14" font-size="14">🔖</text></svg>';
+              }}
+            />
+          </li>
           {favorites.map((fav) => (
             <li key={fav.id} className="favorites-item-collapsed" onClick={() => onOpenFavorite(fav)} title={fav.label}>
               {fav.icon ? (
@@ -192,8 +211,41 @@ export const FavoritesPanel: React.FC<FavoritesPanelProps> = ({
 
       {isOpen && (
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-          <SortableContext items={favorites.map((f) => f.id)} strategy={verticalListSortingStrategy}>
-            <ul className="favorites-list">
+          <ul className="favorites-list">
+            {/* 기본 구글 아이템 (드래그 불가, 편집/삭제 불가) */}
+            <li className="favorites-item" onClick={() => onOpenFavorite(defaultGoogle)}>
+              <div className="favorites-main">
+                <div
+                  className="favorites-drag-handle"
+                  style={{
+                    cursor: "default",
+                    padding: "0 0.5rem",
+                    display: "flex",
+                    alignItems: "center",
+                    marginRight: "0.25rem",
+                    opacity: 0,
+                    pointerEvents: "none",
+                  }}
+                >
+                  <span style={{ fontSize: "1rem" }}>⋮⋮</span>
+                </div>
+                <div className="favorites-icon-wrapper">
+                  <img
+                    src={getFaviconUrl(defaultGoogle.url)}
+                    alt=""
+                    className="favorites-icon"
+                    onError={(e) => {
+                      e.currentTarget.src =
+                        'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><text y="14" font-size="14">🔖</text></svg>';
+                    }}
+                  />
+                </div>
+                <span className="favorites-link">{defaultGoogle.label}</span>
+              </div>
+            </li>
+            
+            {/* 사용자 추가 즐겨찾기 */}
+            <SortableContext items={favorites.map((f) => f.id)} strategy={verticalListSortingStrategy}>
               {favorites.map((fav) => (
                 <SortableItem
                   key={fav.id}
@@ -204,8 +256,8 @@ export const FavoritesPanel: React.FC<FavoritesPanelProps> = ({
                   t={t}
                 />
               ))}
-            </ul>
-          </SortableContext>
+            </SortableContext>
+          </ul>
         </DndContext>
       )}
     </aside>

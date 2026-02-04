@@ -122,9 +122,9 @@ export class WorkService {
     let totalMinutes = 0;
 
     weekRecords.forEach((record) => {
-      // 연차: 8시간 (하위 호환성 고려)
+      // 연차: 근무시간에 포함하지 않음 (목표시간에서 차감됨)
       if (record.leaveType === "annual" || (!record.leaveType && record.isVacation)) {
-        totalMinutes += 8 * 60;
+        // 연차는 근무시간에 카운트하지 않음
       }
       // 반차: 4시간
       else if (record.leaveType === "half") {
@@ -181,8 +181,8 @@ export class WorkService {
 
       if (isBeforeOrToday) {
         if (record.leaveType === "annual" || (!record.leaveType && record.isVacation)) {
-          // 연차: 8시간으로 계산
-          expectedMinutes += WORK_HOURS_PER_DAY * 60;
+          // 연차: 목표 시간에 포함하지 않음 (이미 차감됨)
+          // expectedMinutes에 더하지 않음
         } else if (record.leaveType === "half") {
           // 반차: 4시간으로 계산
           expectedMinutes += 4 * 60;

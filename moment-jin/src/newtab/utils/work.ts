@@ -21,9 +21,9 @@ export function calculateWorkMinutes(checkIn: string, checkOut: string, isHalfDa
 
 // WorkRecord에서 근무시간 계산 (leaveType 고려)
 export function calculateRecordWorkMinutes(record: WorkRecord): number {
-  // 연차: 8시간 (480분)
+  // 연차: 근무시간에 포함하지 않음 (목표시간에서 차감됨)
   if (record.leaveType === "annual" || (!record.leaveType && record.isVacation)) {
-    return 8 * 60;
+    return 0;
   }
 
   // 반차: 4시간 (240분)
