@@ -285,10 +285,7 @@ export const App: React.FC = () => {
             onFocusInputChange={state.setFocusInputValue}
             onFocusKeyDown={focusHandler.handleFocusKeyDown}
             onFocusBlur={focusHandler.handleFocusBlur}
-            onCheckIn={workHandler.handleCheckIn}
-            onCheckOut={workHandler.handleCheckOut}
-            onCheckInEdit={workHandler.handleCheckInEdit}
-            onCheckOutEdit={workHandler.handleCheckOutEdit}
+            onWorkSave={workHandler.handleQuickSave}
           />
         </main>
 
@@ -397,6 +394,7 @@ export const App: React.FC = () => {
         onWeatherDraggableChange={optionsModal.handleWeatherDraggableChange}
         onShowWeatherPanelChange={optionsModal.handleShowWeatherPanelChange}
       />
+
 
       {/* 설정 버튼 */}
       <button className="settings-btn" onClick={optionsModal.openOptionsModal} aria-label={t.options.settings}>

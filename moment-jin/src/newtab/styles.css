@@ -1012,6 +1012,303 @@ body,
   transform: translateY(-1px);
 }
 
+/* ========= 커스텀 시간 선택기 ========= */
+.tp-wrapper {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.tp-label {
+  font-size: 12px;
+  font-weight: 600;
+  opacity: 0.6;
+  margin-bottom: 6px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* 표시 버튼 */
+.tp-display {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1.5px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  font-family: inherit;
+}
+
+.tp-display:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.tp-display.open {
+  border-color: rgba(99, 102, 241, 0.7);
+  background: rgba(99, 102, 241, 0.08);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+}
+
+.tp-display.empty {
+  border-style: dashed;
+  opacity: 0.55;
+}
+
+/* 오전/오후 뱃지 */
+.tp-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 20px;
+  background: rgba(99, 102, 241, 0.18);
+  color: rgba(129, 140, 248, 1);
+  letter-spacing: 0.3px;
+  flex-shrink: 0;
+}
+
+.tp-badge.pm {
+  background: rgba(244, 114, 182, 0.18);
+  color: rgba(244, 114, 182, 1);
+}
+
+/* 시간 텍스트 */
+.tp-time-text {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  flex: 1;
+  text-align: left;
+  line-height: 1;
+}
+
+.tp-sep {
+  opacity: 0.35;
+  margin: 0 1px;
+  font-weight: 300;
+}
+
+.tp-edit-hint {
+  font-size: 11px;
+  opacity: 0.3;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+/* 패널 */
+.tp-panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: rgba(15, 15, 28, 0.97);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 14px;
+  z-index: 200;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255,255,255,0.04) inset;
+  animation: tp-in 0.14s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes tp-in {
+  from { opacity: 0; transform: translateY(-4px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+
+/* 오전/오후 토글 */
+.tp-ampm-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-bottom: 14px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  padding: 3px;
+}
+
+.tp-ampm-btn {
+  padding: 7px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: inherit;
+  transition: all 0.15s;
+  letter-spacing: 0.5px;
+}
+
+.tp-ampm-btn:hover {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.tp-ampm-btn.active {
+  background: rgba(99, 102, 241, 0.3);
+  color: rgba(165, 180, 252, 1);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* 섹션 레이블 */
+.tp-section-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  opacity: 0.35;
+  margin-bottom: 7px;
+}
+
+/* 시간 그리드 (1~12) */
+.tp-hour-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+  margin-bottom: 14px;
+}
+
+.tp-hour-btn {
+  aspect-ratio: 1;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.65);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  transition: all 0.12s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  min-height: 38px;
+}
+
+.tp-hour-btn:hover {
+  background: rgba(99, 102, 241, 0.15);
+  border-color: rgba(99, 102, 241, 0.3);
+  color: #fff;
+  transform: scale(1.06);
+}
+
+.tp-hour-btn:active {
+  transform: scale(0.95);
+}
+
+.tp-hour-btn.active {
+  background: rgba(99, 102, 241, 0.35);
+  border-color: rgba(99, 102, 241, 0.6);
+  color: rgba(165, 180, 252, 1);
+  font-weight: 800;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
+}
+
+/* 분 선택 */
+.tp-min-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+  margin-bottom: 8px;
+}
+
+.tp-min-btn {
+  padding: 8px 4px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  transition: all 0.12s;
+}
+
+.tp-min-btn:hover {
+  background: rgba(99, 102, 241, 0.15);
+  border-color: rgba(99, 102, 241, 0.3);
+  color: #fff;
+}
+
+.tp-min-btn.active {
+  background: rgba(99, 102, 241, 0.3);
+  border-color: rgba(99, 102, 241, 0.55);
+  color: rgba(165, 180, 252, 1);
+  font-weight: 800;
+}
+
+/* 분 미세 조정 */
+.tp-min-adjust {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.tp-adj-btn {
+  flex: 1;
+  padding: 7px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  transition: all 0.12s;
+}
+
+.tp-adj-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.tp-adj-btn:active {
+  transform: scale(0.95);
+}
+
+.tp-cur-min {
+  flex: 1;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* 현재 시간 버튼 */
+.tp-now-btn {
+  width: 100%;
+  padding: 9px;
+  border-radius: 10px;
+  border: 1px solid rgba(52, 211, 153, 0.25);
+  background: rgba(52, 211, 153, 0.07);
+  color: rgba(52, 211, 153, 0.8);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: inherit;
+  transition: all 0.15s;
+  letter-spacing: 0.3px;
+}
+
+.tp-now-btn:hover {
+  background: rgba(52, 211, 153, 0.15);
+  border-color: rgba(52, 211, 153, 0.45);
+  color: rgba(52, 211, 153, 1);
+}
+
+.tp-now-btn:active {
+  transform: scale(0.98);
+}
+
 .modal-actions {
   display: flex;
   justify-content: flex-end;

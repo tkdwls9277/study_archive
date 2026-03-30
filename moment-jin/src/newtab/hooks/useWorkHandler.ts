@@ -8,12 +8,10 @@ interface UseWorkHandlerProps {
   setWorkRecords: (records: WorkRecord[]) => void;
 }
 
-/**
- * Work 관련 로직을 관리하는 커스텀 훅
- */
 export function useWorkHandler(props: UseWorkHandlerProps) {
   const { workRecords, setWorkRecords } = props;
 
+  // ── 수정 모달 (WorkPanel의 ✎ 버튼용) ──
   const [isTimeEditModalOpen, setIsTimeEditModalOpen] = useState(false);
   const [editingDate, setEditingDate] = useState("");
   const [editingCheckIn, setEditingCheckIn] = useState("");
@@ -26,50 +24,34 @@ export function useWorkHandler(props: UseWorkHandlerProps) {
     WorkService.saveWorkRecords(next);
   };
 
-  const handleCheckIn = () => {
-    const next = WorkService.checkIn(workRecords);
+  // ── 출/퇴근 버튼 인라인 패널 저장 ──
+  const handleQuickSave = (
+    type: "in" | "out",
+    time: string,
+    leaveType: "none" | "annual" | "half",
+  ) => {
+    const today = formatDate(new Date());
+    const rec = workRecords.find((r) => r.date === today);
+    const isAnnual = leaveType === "annual";
+
+    const next = WorkService.saveTimeEdit(
+      workRecords,
+      today,
+      type === "in" ? time : (rec?.checkIn || ""),
+      type === "out" ? time : (rec?.checkOut || ""),
+      isAnnual,
+      type === "in" ? leaveType : (rec?.leaveType || "none"),
+    );
     handleSaveWorkRecords(next);
   };
 
-  const handleCheckOut = () => {
-    const next = WorkService.checkOut(workRecords);
-    handleSaveWorkRecords(next);
-  };
-
-  const handleCheckInEdit = () => {
-    const today = formatDate(new Date());
-    const rec = workRecords.find((r) => r.date === today);
-    setEditingDate(today);
-    setEditingCheckIn(rec?.checkIn || "");
-    setEditingCheckOut(rec?.checkOut || "");
-    setEditingIsVacation(rec?.isVacation || false);
-    // leaveType 설정 (하위 호환성 고려)
-    setEditingLeaveType(rec?.leaveType || (rec?.isVacation ? "annual" : "none"));
-    setIsTimeEditModalOpen(true);
-  };
-
-  const handleCheckOutEdit = () => {
-    const today = formatDate(new Date());
-    const rec = workRecords.find((r) => r.date === today);
-    if (!rec || !rec.checkIn) {
-      alert("출근 기록이 없습니다.");
-      return;
-    }
-    setEditingDate(today);
-    setEditingCheckIn(rec.checkIn);
-    setEditingCheckOut(rec.checkOut || "");
-    setEditingIsVacation(rec.isVacation || false);
-    setEditingLeaveType(rec?.leaveType || (rec?.isVacation ? "annual" : "none"));
-    setIsTimeEditModalOpen(true);
-  };
-
+  // ── 수정 모달 (WorkPanel ✎) ──
   const handleDateEdit = (record: WorkRecord) => {
-    const rec = record;
-    setEditingDate(rec.date);
-    setEditingCheckIn(rec.checkIn || "");
-    setEditingCheckOut(rec.checkOut || "");
-    setEditingIsVacation(rec.isVacation || false);
-    setEditingLeaveType(rec?.leaveType || (rec?.isVacation ? "annual" : "none"));
+    setEditingDate(record.date);
+    setEditingCheckIn(record.checkIn || "");
+    setEditingCheckOut(record.checkOut || "");
+    setEditingIsVacation(record.isVacation || false);
+    setEditingLeaveType(record.leaveType || (record.isVacation ? "annual" : "none"));
     setIsTimeEditModalOpen(true);
   };
 
@@ -82,22 +64,17 @@ export function useWorkHandler(props: UseWorkHandlerProps) {
       editingIsVacation,
       editingLeaveType,
     );
-
-    // 일반 근무이고 출퇴근 기록이 모두 비어있으면 해당 날짜 기록 삭제
     if (!editingCheckIn.trim() && !editingCheckOut.trim() && editingLeaveType === "none") {
       next = next.filter((r: WorkRecord) => r.date !== editingDate);
     }
-
     handleSaveWorkRecords(next);
     setIsTimeEditModalOpen(false);
   };
 
-  const closeTimeEditModal = () => {
-    setIsTimeEditModalOpen(false);
-  };
+  const closeTimeEditModal = () => setIsTimeEditModalOpen(false);
 
   return {
-    // Modal state
+    // 수정 모달
     isTimeEditModalOpen,
     editingDate,
     editingCheckIn,
@@ -108,14 +85,11 @@ export function useWorkHandler(props: UseWorkHandlerProps) {
     setEditingIsVacation,
     editingLeaveType,
     setEditingLeaveType,
-
-    // Handlers
-    handleCheckIn,
-    handleCheckOut,
-    handleCheckInEdit,
-    handleCheckOutEdit,
     handleDateEdit,
     handleSaveTimeEdit,
     closeTimeEditModal,
+
+    // 인라인 패널
+    handleQuickSave,
   };
 }

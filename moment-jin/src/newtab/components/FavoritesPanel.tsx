@@ -124,16 +124,16 @@ export const FavoritesPanel: React.FC<FavoritesPanelProps> = ({
 
   // 기본 구글 즐겨찾기
   const defaultGoogle: Favorite = {
-    id: 'default-google',
-    label: 'Google',
-    url: 'https://www.google.com',
+    id: "default-google",
+    label: "Google",
+    url: "https://www.google.com",
   };
 
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    })
+    }),
   );
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -178,7 +178,12 @@ export const FavoritesPanel: React.FC<FavoritesPanelProps> = ({
       {!isOpen && (
         <ul className="favorites-list-collapsed">
           {/* 기본 구글 아이콘 */}
-          <li key={defaultGoogle.id} className="favorites-item-collapsed" onClick={() => onOpenFavorite(defaultGoogle)} title={defaultGoogle.label}>
+          <li
+            key={defaultGoogle.id}
+            className="favorites-item-collapsed"
+            onClick={() => onOpenFavorite(defaultGoogle)}
+            title={defaultGoogle.label}
+          >
             <img
               src={getFaviconUrl(defaultGoogle.url)}
               alt={defaultGoogle.label}
@@ -243,7 +248,7 @@ export const FavoritesPanel: React.FC<FavoritesPanelProps> = ({
                 <span className="favorites-link">{defaultGoogle.label}</span>
               </div>
             </li>
-            
+
             {/* 사용자 추가 즐겨찾기 */}
             <SortableContext items={favorites.map((f) => f.id)} strategy={verticalListSortingStrategy}>
               {favorites.map((fav) => (

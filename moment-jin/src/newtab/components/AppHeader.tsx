@@ -18,15 +18,8 @@ interface AppHeaderProps {
   onFocusInputChange: (value: string) => void;
   onFocusKeyDown: React.KeyboardEventHandler<HTMLInputElement>;
   onFocusBlur: () => void;
-  onCheckIn: () => void;
-  onCheckOut: () => void;
-  onCheckInEdit: () => void;
-  onCheckOutEdit: () => void;
+  onWorkSave: (type: "in" | "out", time: string, leaveType: "none" | "annual" | "half") => void;
   workTranslations: {
-    clickToEdit: string;
-    rightClickToEdit: string;
-    clickToCheckIn: string;
-    clickToCheckOut: string;
     checkInButton: string;
     checkInButtonRecorded: string;
     checkOutButton: string;
@@ -38,9 +31,6 @@ interface AppHeaderProps {
   };
 }
 
-/**
- * 앱 헤더 영역 (시간, 인사말, 오늘의 목표, 알림, 출퇴근)
- */
 export const AppHeader: React.FC<AppHeaderProps> = ({
   time,
   greeting,
@@ -55,15 +45,11 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
   onFocusInputChange,
   onFocusKeyDown,
   onFocusBlur,
-  onCheckIn,
-  onCheckOut,
-  onCheckInEdit,
-  onCheckOutEdit,
+  onWorkSave,
   workTranslations,
 }) => {
   return (
     <div className="app-top">
-      {/* 시간 */}
       <div className="time-weather-row">
         <div className="app-time">{time}</div>
         {showWeatherPanel && weatherData && (
@@ -76,7 +62,6 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
 
       <div className="app-greeting">{greeting}</div>
 
-      {/* 오늘의 목표 - 표시 설정에 따라 조건부 렌더링 */}
       {showFocusSection && (
         <FocusInput
           focus={focus}
@@ -87,17 +72,12 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
         />
       )}
 
-      {/* 다음 알림 - 알림 패널이 활성화된 경우만 표시 */}
       {showNotificationPanel && <NextNotification />}
 
-      {/* 출퇴근 체크 - 근무 기록 패널이 활성화된 경우만 표시 */}
       {showWorkPanel && (
         <WorkCheckButtons
           todayRecord={todayRecord}
-          onCheckIn={onCheckIn}
-          onCheckOut={onCheckOut}
-          onCheckInEdit={onCheckInEdit}
-          onCheckOutEdit={onCheckOutEdit}
+          onSave={onWorkSave}
           translations={workTranslations}
         />
       )}

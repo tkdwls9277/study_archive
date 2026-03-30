@@ -1,5 +1,6 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import { useTranslation } from "../../hooks/useTranslation";
+import { TimePicker } from "../TimePicker";
 
 interface TimeEditModalProps {
   isOpen: boolean;
@@ -31,17 +32,9 @@ export const TimeEditModal: React.FC<TimeEditModalProps> = ({
   onLeaveTypeChange,
 }) => {
   const { t } = useTranslation();
-  const firstInputRef = useRef<HTMLInputElement>(null);
 
   // leaveType에 따라 현재 상태 결정 (하위 호환성)
   const currentLeaveType = leaveType !== "none" ? leaveType : isVacation ? "annual" : "none";
-
-  // 모달이 열릴 때 첫 번째 입력창에 포커스
-  useEffect(() => {
-    if (isOpen && firstInputRef.current && currentLeaveType === "none") {
-      firstInputRef.current.focus();
-    }
-  }, [isOpen, currentLeaveType]);
 
   // ESC 키로 닫기, Enter 키로 저장
   useEffect(() => {
@@ -75,6 +68,8 @@ export const TimeEditModal: React.FC<TimeEditModalProps> = ({
       onCheckOutChange("");
     }
   };
+
+  const showTimePickers = currentLeaveType === "none" || currentLeaveType === "half";
 
   return (
     <div className="modal-backdrop" onClick={onClose}>
@@ -127,60 +122,26 @@ export const TimeEditModal: React.FC<TimeEditModalProps> = ({
           </div>
         </div>
 
-        {currentLeaveType === "none" && (
+        {showTimePickers && (
           <>
-            <label className="modal-label">
-              {t.work.checkInTime}
-              <input
-                ref={firstInputRef}
-                className="modal-input"
-                type="time"
-                value={checkIn}
-                onChange={(e) => onCheckInChange(e.target.value)}
-                placeholder="HH:MM"
-              />
-            </label>
-            <label className="modal-label">
-              {t.work.checkOutTime}
-              <input
-                className="modal-input"
-                type="time"
-                value={checkOut}
-                onChange={(e) => onCheckOutChange(e.target.value)}
-                placeholder="HH:MM"
-              />
-            </label>
-            <div className="modal-hint">💡 {t.work.lunchExcluded}</div>
+            <TimePicker
+              label={t.work.checkInTime}
+              value={checkIn}
+              onChange={onCheckInChange}
+            />
+            <TimePicker
+              label={t.work.checkOutTime}
+              value={checkOut}
+              onChange={onCheckOutChange}
+            />
+            <div className="modal-hint">
+              💡 {currentLeaveType === "half" ? t.work.halfDayLeaveNote : t.work.lunchExcluded}
+            </div>
           </>
         )}
 
-        {currentLeaveType === "annual" && <div className="modal-hint">💡 {t.work.annualLeaveNote}</div>}
-
-        {currentLeaveType === "half" && (
-          <>
-            <label className="modal-label">
-              {t.work.checkInTime}
-              <input
-                ref={firstInputRef}
-                className="modal-input"
-                type="time"
-                value={checkIn}
-                onChange={(e) => onCheckInChange(e.target.value)}
-                placeholder="HH:MM"
-              />
-            </label>
-            <label className="modal-label">
-              {t.work.checkOutTime}
-              <input
-                className="modal-input"
-                type="time"
-                value={checkOut}
-                onChange={(e) => onCheckOutChange(e.target.value)}
-                placeholder="HH:MM"
-              />
-            </label>
-            <div className="modal-hint">💡 {t.work.halfDayLeaveNote}</div>
-          </>
+        {currentLeaveType === "annual" && (
+          <div className="modal-hint">💡 {t.work.annualLeaveNote}</div>
         )}
 
         <div className="modal-actions">
