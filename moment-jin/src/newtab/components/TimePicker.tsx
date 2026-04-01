@@ -5,6 +5,7 @@ interface TimePickerProps {
   value: string;
   onChange: (value: string) => void;
   label: string;
+  defaultOpen?: boolean;
 }
 
 function getCurrentTime(): string {
@@ -31,17 +32,73 @@ function to12h(h24: number): number {
   return h24;
 }
 
-export const TimePicker: React.FC<TimePickerProps> = ({ value, onChange, label }) => {
-  const [isOpen, setIsOpen] = useState(false);
+/** 직접 입력 가능한 시:분 필드 */
+const DirectInput: React.FC<{ h24: number; m: number; onApply: (h: number, m: number) => void }> = ({ h24, m, onApply }) => {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const open = () => {
+    setDraft(`${String(h24).padStart(2, "0")}:${String(m).padStart(2, "0")}`);
+    setEditing(true);
+    setTimeout(() => inputRef.current?.select(), 0);
+  };
+
+  const commit = () => {
+    const cleaned = draft.replace(/[^0-9:]/g, "");
+    let hh: number, mm: number;
+    if (cleaned.includes(":")) {
+      [hh, mm] = cleaned.split(":").map(Number);
+    } else if (cleaned.length <= 2) {
+      hh = Number(cleaned); mm = 0;
+    } else {
+      hh = Number(cleaned.slice(0, -2)); mm = Number(cleaned.slice(-2));
+    }
+    if (!isNaN(hh) && !isNaN(mm)) {
+      onApply(Math.min(23, Math.max(0, hh)), Math.min(59, Math.max(0, mm)));
+    }
+    setEditing(false);
+  };
+
+  if (editing) {
+    return (
+      <input
+        ref={inputRef}
+        className="tp-direct-input"
+        value={draft}
+        onChange={(e) => setDraft(e.target.value)}
+        onBlur={commit}
+        onKeyDown={(e) => { if (e.key === "Enter") commit(); if (e.key === "Escape") setEditing(false); }}
+        placeholder="HH:MM"
+        maxLength={5}
+        autoFocus
+      />
+    );
+  }
+
+  return (
+    <button type="button" className="tp-direct-display" onClick={open} title="클릭하여 직접 입력">
+      {String(h24).padStart(2, "0")}<span className="tp-direct-sep">:</span>{String(m).padStart(2, "0")}
+    </button>
+  );
+};
+
+export const TimePicker: React.FC<TimePickerProps> = ({ value, onChange, label, defaultOpen = false }) => {
+  const [isOpen, setIsOpen] = useState(defaultOpen);
   const [panelPos, setPanelPos] = useState({ top: 0, left: 0, width: 0 });
   const triggerRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
+
+  // defaultOpen이면 마운트 직후 위치 계산
+  useEffect(() => {
+    if (defaultOpen) calcPosition();
+  }, []);
 
   // 패널 위치 계산
   const calcPosition = () => {
     if (!triggerRef.current) return;
     const rect = triggerRef.current.getBoundingClientRect();
-    const panelHeight = 300; // 예상 패널 높이
+    const panelHeight = 300;
     const spaceBelow = window.innerHeight - rect.bottom;
     const top = spaceBelow >= panelHeight
       ? rect.bottom + 6
@@ -55,7 +112,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({ value, onChange, label }
     setIsOpen((p) => !p);
   };
 
-  // 외부 클릭 닫기
+  // 외부 클릭 닫기 (지연: DirectInput의 onBlur commit이 먼저 실행되도록)
   useEffect(() => {
     if (!isOpen) return;
     const handleOutside = (e: MouseEvent) => {
@@ -63,7 +120,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({ value, onChange, label }
         panelRef.current?.contains(e.target as Node) ||
         triggerRef.current?.contains(e.target as Node)
       ) return;
-      setIsOpen(false);
+      setTimeout(() => setIsOpen(false), 0);
     };
     document.addEventListener("mousedown", handleOutside);
     return () => document.removeEventListener("mousedown", handleOutside);
@@ -110,10 +167,13 @@ export const TimePicker: React.FC<TimePickerProps> = ({ value, onChange, label }
           className="tp-panel"
           style={{ top: panelPos.top, left: panelPos.left, width: panelPos.width }}
         >
-          {/* 오전/오후 */}
-          <div className="tp-ampm-row">
-            <button type="button" className={`tp-ampm-btn${!isPM ? " active" : ""}`} onClick={() => setAmPm(false)}>오전</button>
-            <button type="button" className={`tp-ampm-btn${isPM ? " active" : ""}`} onClick={() => setAmPm(true)}>오후</button>
+          {/* 직접 입력 + 오전/오후 */}
+          <div className="tp-top-row">
+            <DirectInput h24={h24} m={m} onApply={(h, min) => onChange(toTimeString(h, min))} />
+            <div className="tp-ampm-row">
+              <button type="button" className={`tp-ampm-btn${!isPM ? " active" : ""}`} onClick={() => setAmPm(false)}>오전</button>
+              <button type="button" className={`tp-ampm-btn${isPM ? " active" : ""}`} onClick={() => setAmPm(true)}>오후</button>
+            </div>
           </div>
 
           {/* 시/분 2열 */}
@@ -147,6 +207,11 @@ export const TimePicker: React.FC<TimePickerProps> = ({ value, onChange, label }
                     {String(min).padStart(2, "0")}
                   </button>
                 ))}
+              </div>
+              <div className="tp-fine-adjust">
+                <button type="button" className="tp-fine-btn" onClick={() => onChange(toTimeString(h24, (m - 1 + 60) % 60))}>−1</button>
+                <span className="tp-fine-value">{String(m).padStart(2, "0")}분</span>
+                <button type="button" className="tp-fine-btn" onClick={() => onChange(toTimeString(h24, (m + 1) % 60))}>+1</button>
               </div>
             </div>
           </div>

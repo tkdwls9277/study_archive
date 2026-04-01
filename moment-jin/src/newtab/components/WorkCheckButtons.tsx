@@ -1,6 +1,84 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import type { WorkRecord } from "../types/index";
-import { TimePicker } from "./TimePicker";
+
+/** 직접 입력 필드 */
+const DirectInput: React.FC<{ h24: number; m: number; onApply: (h: number, m: number) => void }> = ({ h24, m, onApply }) => {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const open = () => {
+    setDraft(`${String(h24).padStart(2, "0")}:${String(m).padStart(2, "0")}`);
+    setEditing(true);
+    setTimeout(() => inputRef.current?.select(), 0);
+  };
+
+  const commit = () => {
+    const cleaned = draft.replace(/[^0-9:]/g, "");
+    let hh: number, mm: number;
+    if (cleaned.includes(":")) {
+      [hh, mm] = cleaned.split(":").map(Number);
+    } else if (cleaned.length <= 2) {
+      hh = Number(cleaned); mm = 0;
+    } else {
+      hh = Number(cleaned.slice(0, -2)); mm = Number(cleaned.slice(-2));
+    }
+    if (!isNaN(hh) && !isNaN(mm)) {
+      onApply(Math.min(23, Math.max(0, hh)), Math.min(59, Math.max(0, mm)));
+    }
+    setEditing(false);
+  };
+
+  if (editing) {
+    return (
+      <input
+        ref={inputRef}
+        className="tp-direct-input"
+        value={draft}
+        onChange={(e) => setDraft(e.target.value)}
+        onBlur={commit}
+        onKeyDown={(e) => { if (e.key === "Enter") commit(); if (e.key === "Escape") setEditing(false); }}
+        placeholder="HH:MM"
+        maxLength={5}
+        autoFocus
+      />
+    );
+  }
+
+  return (
+    <button type="button" className="tp-direct-display" onClick={open} title="클릭하여 직접 입력">
+      {String(h24).padStart(2, "0")}<span className="tp-direct-sep">:</span>{String(m).padStart(2, "0")}
+    </button>
+  );
+};
+
+/** 근무 유형 선택 (공유 컴포넌트) */
+export const LeaveTypeSelector: React.FC<{
+  value: "none" | "annual" | "half";
+  onChange: (v: "none" | "annual" | "half") => void;
+}> = ({ value, onChange }) => {
+  const types = [
+    { key: "none"   as const, icon: "🏢", label: "일반 근무" },
+    { key: "annual" as const, icon: "🌴", label: "연차" },
+    { key: "half"   as const, icon: "🌤️", label: "반차" },
+  ];
+  return (
+    <div className="lt-selector">
+      {types.map(({ key, icon, label }) => (
+        <button
+          key={key}
+          type="button"
+          className={`lt-btn${value === key ? " active" : ""}`}
+          onClick={() => onChange(key)}
+        >
+          <span className="lt-icon">{icon}</span>
+          <span className="lt-label">{label}</span>
+        </button>
+      ))}
+    </div>
+  );
+};
 
 interface WorkCheckButtonsProps {
   todayRecord: WorkRecord | undefined;
@@ -22,131 +100,210 @@ function getCurrentTime(): string {
   return `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
 }
 
-const LEAVE_TYPES = [
-  { key: "none",   icon: "🏢", label: "일반 근무" },
-  { key: "annual", icon: "🌴", label: "연차" },
-  { key: "half",   icon: "🌤️", label: "반차" },
-] as const;
+function parseTime(value: string): { h24: number; m: number } {
+  const [h, m] = value.split(":").map(Number);
+  return { h24: h, m };
+}
+
+function toTimeString(h24: number, m: number): string {
+  return `${String(h24).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+}
+
+function to12h(h24: number): number {
+  if (h24 === 0) return 12;
+  if (h24 > 12) return h24 - 12;
+  return h24;
+}
 
 export const WorkCheckButtons: React.FC<WorkCheckButtonsProps> = ({
   todayRecord,
   onSave,
   translations: t,
 }) => {
-  const [activeType, setActiveType] = useState<"in" | "out" | null>(null);
-  const [time, setTime] = useState("");
+  const [editType, setEditType] = useState<"in" | "out" | null>(null);
   const [leaveType, setLeaveType] = useState<"none" | "annual" | "half">("none");
+  const [panelPos, setPanelPos] = useState({ top: 0, left: 0, width: 0 });
+  const inBtnRef = useRef<HTMLButtonElement>(null);
+  const outBtnRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
 
-  const openPanel = (type: "in" | "out") => {
-    if (activeType === type) {
-      setActiveType(null);
+  const editValue = editType === "in" ? todayRecord?.checkIn : todayRecord?.checkOut;
+  const { h24, m } = parseTime(editValue || getCurrentTime());
+  const isPM = h24 >= 12;
+  const h12 = to12h(h24);
+
+  const calcPos = (btnRef: React.RefObject<HTMLButtonElement | null>) => {
+    if (!btnRef.current) return;
+    const parent = btnRef.current.closest(".work-check-buttons");
+    const parentRect = parent?.getBoundingClientRect() || btnRef.current.getBoundingClientRect();
+    setPanelPos({ top: parentRect.bottom + 6, left: parentRect.left, width: parentRect.width });
+  };
+
+  useEffect(() => {
+    if (!editType) return;
+    const handle = (e: MouseEvent) => {
+      if (
+        panelRef.current?.contains(e.target as Node) ||
+        inBtnRef.current?.contains(e.target as Node) ||
+        outBtnRef.current?.contains(e.target as Node)
+      ) return;
+      setTimeout(() => setEditType(null), 0);
+    };
+    document.addEventListener("mousedown", handle);
+    return () => document.removeEventListener("mousedown", handle);
+  }, [editType]);
+
+  const handleClick = (type: "in" | "out") => {
+    const existing = type === "in" ? todayRecord?.checkIn : todayRecord?.checkOut;
+    const curLt = todayRecord?.leaveType || "none";
+    const isLeave = curLt === "annual" || curLt === "half";
+
+    if (!existing && !isLeave) {
+      // 기록 없고 일반 근무 → 즉시 저장
+      onSave(type, getCurrentTime(), curLt);
       return;
     }
-    const existingTime =
-      type === "in" ? todayRecord?.checkIn : todayRecord?.checkOut;
-    setTime(existingTime || getCurrentTime());
-    setLeaveType(todayRecord?.leaveType || "none");
-    setActiveType(type);
+
+    // 그 외 → 패널 토글
+    if (editType === type) {
+      setEditType(null);
+    } else {
+      setLeaveType(curLt);
+      calcPos(type === "in" ? inBtnRef : outBtnRef);
+      setEditType(type);
+    }
   };
 
-  const handleSave = () => {
-    if (!activeType) return;
-    onSave(activeType, leaveType === "annual" ? "" : time, leaveType);
-    setActiveType(null);
+  const curLeaveType = () => leaveType;
+
+  const pickHour = (hour: number) => {
+    let h = hour;
+    if (isPM && hour !== 12) h = hour + 12;
+    if (!isPM && hour === 12) h = 0;
+    onSave(editType!, toTimeString(h, m), curLeaveType());
   };
 
-  const handleCancel = () => setActiveType(null);
+  const pickMinute = (min: number) => {
+    onSave(editType!, toTimeString(h24, min), curLeaveType());
+  };
 
-  // 근무 시간 계산
-  const calculateWorkMinutes = (checkIn: string, checkOut: string): number => {
-    const [ih, im] = checkIn.split(":").map(Number);
-    const [oh, om] = checkOut.split(":").map(Number);
+  const pickAmPm = (pm: boolean) => {
+    let h = h24;
+    if (pm && h24 < 12) h = h24 + 12;
+    else if (!pm && h24 >= 12) h = h24 - 12;
+    onSave(editType!, toTimeString(h, m), curLeaveType());
+  };
+
+  const pickNow = () => {
+    onSave(editType!, getCurrentTime(), curLeaveType());
+    setEditType(null);
+  };
+
+  const handleLeaveTypeChange = (lt: "none" | "annual" | "half") => {
+    setLeaveType(lt);
+    if (lt === "annual") {
+      onSave(editType!, "", lt);
+    } else {
+      onSave(editType!, editValue || getCurrentTime(), lt);
+    }
+  };
+
+  const calcWorkMin = (ci: string, co: string): number => {
+    const [ih, im] = ci.split(":").map(Number);
+    const [oh, om] = co.split(":").map(Number);
     const total = (oh * 60 + om) - (ih * 60 + im);
     return Math.max(0, todayRecord?.leaveType === "half" ? total : total - 60);
   };
 
-  const formatWorkTime = (minutes: number): string => {
-    const h = Math.floor(minutes / 60);
-    const m = minutes % 60;
-    if (h > 0 && m > 0) return `${h}${t.hour} ${m}${t.minute}`;
+  const fmtTime = (mins: number): string => {
+    const h = Math.floor(mins / 60);
+    const mm = mins % 60;
+    if (h > 0 && mm > 0) return `${h}${t.hour} ${mm}${t.minute}`;
     if (h > 0) return `${h}${t.hour}`;
-    return `${m}${t.minute}`;
+    return `${mm}${t.minute}`;
   };
+
+  const hideTimePicker = editType === "in" && (leaveType === "annual" || leaveType === "half");
 
   return (
     <div className="work-check-container">
-      {/* 출/퇴근 버튼 */}
       <div className="work-check-buttons">
         <button
-          className={`work-btn check-in${todayRecord?.checkIn ? " recorded" : ""}${activeType === "in" ? " active-panel" : ""}`}
-          onClick={() => openPanel("in")}
+          ref={inBtnRef}
+          className={`work-btn check-in${todayRecord?.checkIn ? " recorded" : ""}${editType === "in" ? " active-panel" : ""}`}
+          onClick={() => handleClick("in")}
         >
           {todayRecord?.checkIn ? t.checkInButtonRecorded : t.checkInButton}
-          {todayRecord?.checkIn && (
-            <span className="work-time-badge">{todayRecord.checkIn}</span>
-          )}
+          {todayRecord?.checkIn && <span className="work-time-badge">{todayRecord.checkIn}</span>}
         </button>
         <button
-          className={`work-btn check-out${todayRecord?.checkOut ? " recorded" : ""}${activeType === "out" ? " active-panel" : ""}`}
-          onClick={() => openPanel("out")}
+          ref={outBtnRef}
+          className={`work-btn check-out${todayRecord?.checkOut ? " recorded" : ""}${editType === "out" ? " active-panel" : ""}`}
+          onClick={() => handleClick("out")}
         >
           {todayRecord?.checkOut ? t.checkOutButtonRecorded : t.checkOutButton}
-          {todayRecord?.checkOut && (
-            <span className="work-time-badge">{todayRecord.checkOut}</span>
-          )}
+          {todayRecord?.checkOut && <span className="work-time-badge">{todayRecord.checkOut}</span>}
         </button>
       </div>
 
-      {/* 인라인 패널 */}
-      {activeType && (
-        <div className="check-panel">
-          {/* 출근일 때만 근무 유형 표시 */}
-          {activeType === "in" && (
-            <div className="check-panel-leave">
-              {LEAVE_TYPES.map(({ key, icon, label }) => (
-                <button
-                  key={key}
-                  type="button"
-                  className={`check-panel-leave-btn${leaveType === key ? " active" : ""}`}
-                  onClick={() => setLeaveType(key)}
-                >
-                  <span className="cp-leave-icon">{icon}</span>
-                  <span className="cp-leave-label">{label}</span>
-                </button>
-              ))}
+      {editType && createPortal(
+        <div ref={panelRef} className="tp-panel" style={{ top: panelPos.top, left: panelPos.left, width: panelPos.width }}>
+          {/* 출근일 때 근무 유형 선택 */}
+          {editType === "in" && (
+            <LeaveTypeSelector value={leaveType} onChange={handleLeaveTypeChange} />
+          )}
+
+          {/* 연차가 아닌 경우 타임피커 */}
+          {!hideTimePicker && (
+            <>
+              <div className="tp-top-row">
+                <DirectInput h24={h24} m={m} onApply={(hh, mm) => onSave(editType!, toTimeString(hh, mm), curLeaveType())} />
+                <div className="tp-ampm-row">
+                  <button type="button" className={`tp-ampm-btn${!isPM ? " active" : ""}`} onClick={() => pickAmPm(false)}>오전</button>
+                  <button type="button" className={`tp-ampm-btn${isPM ? " active" : ""}`} onClick={() => pickAmPm(true)}>오후</button>
+                </div>
+              </div>
+              <div className="tp-columns">
+                <div className="tp-col">
+                  <div className="tp-section-label">시</div>
+                  <div className="tp-hour-grid">
+                    {[1,2,3,4,5,6,7,8,9,10,11,12].map((h) => (
+                      <button key={h} type="button" className={`tp-cell${h12 === h ? " active" : ""}`} onClick={() => pickHour(h)}>{h}</button>
+                    ))}
+                  </div>
+                </div>
+                <div className="tp-divider" />
+                <div className="tp-col">
+                  <div className="tp-section-label">분</div>
+                  <div className="tp-min-grid">
+                    {[0,5,10,15,20,25,30,35,40,45,50,55].map((min) => (
+                      <button key={min} type="button" className={`tp-cell${m === min ? " active" : ""}`} onClick={() => pickMinute(min)}>{String(min).padStart(2, "0")}</button>
+                    ))}
+                  </div>
+                  <div className="tp-fine-adjust">
+                    <button type="button" className="tp-fine-btn" onClick={() => pickMinute((m - 1 + 60) % 60)}>−1</button>
+                    <span className="tp-fine-value">{String(m).padStart(2, "0")}분</span>
+                    <button type="button" className="tp-fine-btn" onClick={() => pickMinute((m + 1) % 60)}>+1</button>
+                  </div>
+                </div>
+              </div>
+              <button type="button" className="tp-now-btn" onClick={pickNow}>현재 시간으로 설정</button>
+            </>
+          )}
+
+          {/* 연차/반차 안내 */}
+          {hideTimePicker && (
+            <div className="tp-annual-note">
+              💡 {leaveType === "annual" ? "연차는 8시간으로 계산됩니다." : "반차는 4시간으로 계산됩니다."}
             </div>
           )}
-
-          {/* 연차 외엔 시간 입력 */}
-          {leaveType !== "annual" && (
-            <TimePicker
-              label={activeType === "in" ? "출근 시간" : "퇴근 시간"}
-              value={time}
-              onChange={setTime}
-            />
-          )}
-
-          {leaveType === "annual" && (
-            <div className="check-panel-note">💡 연차는 8시간으로 계산됩니다.</div>
-          )}
-
-          {/* 확인/취소 */}
-          <div className="check-panel-actions">
-            <button type="button" className="check-panel-cancel" onClick={handleCancel}>
-              취소
-            </button>
-            <button type="button" className="check-panel-save" onClick={handleSave}>
-              {activeType === "in" ? "출근 기록" : "퇴근 기록"}
-            </button>
-          </div>
-        </div>
+        </div>,
+        document.body
       )}
 
-      {/* 오늘 근무 요약 */}
-      {!activeType && todayRecord?.checkIn && todayRecord?.checkOut && (
+      {todayRecord?.checkIn && todayRecord?.checkOut && (
         <div className="today-work-summary">
-          {t.todayWork}:{" "}
-          {formatWorkTime(calculateWorkMinutes(todayRecord.checkIn, todayRecord.checkOut))}
+          {t.todayWork}: {fmtTime(calcWorkMin(todayRecord.checkIn, todayRecord.checkOut))}
           {todayRecord.leaveType !== "half" && ` (${t.lunchExcluded})`}
         </div>
       )}

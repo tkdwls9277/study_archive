@@ -3157,6 +3157,164 @@ textarea.modal-input {
   box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
 }
 
+/* ========= 근무 유형 선택 (공유) ========= */
+.lt-selector {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.lt-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 6px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+
+.lt-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.lt-btn.active {
+  background: rgba(99, 102, 241, 0.2);
+  border-color: rgba(99, 102, 241, 0.55);
+  color: rgba(165, 180, 252, 1);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.12);
+}
+
+.lt-icon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.lt-label {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* 연차 안내 (타임피커 패널 안) */
+.tp-annual-note {
+  font-size: 13px;
+  opacity: 0.6;
+  padding: 16px;
+  background: rgba(59, 130, 246, 0.08);
+  border-radius: 10px;
+  text-align: center;
+  line-height: 1.5;
+  margin-top: 4px;
+}
+
+/* 상단: 직접 입력 + 오전오후 */
+.tp-top-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.tp-top-row .tp-ampm-row {
+  margin-bottom: 0;
+  flex-shrink: 0;
+}
+
+.tp-direct-display {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  font-size: 24px;
+  font-weight: 800;
+  font-family: inherit;
+  letter-spacing: 2px;
+  text-align: center;
+  cursor: text;
+  transition: all 0.15s;
+}
+
+.tp-direct-display:hover {
+  border-color: rgba(99, 102, 241, 0.5);
+  background: rgba(99, 102, 241, 0.08);
+}
+
+.tp-direct-sep {
+  opacity: 0.35;
+  font-weight: 300;
+}
+
+.tp-direct-input {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(99, 102, 241, 0.7);
+  background: rgba(99, 102, 241, 0.1);
+  color: #fff;
+  font-size: 24px;
+  font-weight: 800;
+  font-family: inherit;
+  letter-spacing: 2px;
+  text-align: center;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+.tp-direct-input::placeholder {
+  color: rgba(255, 255, 255, 0.25);
+  font-weight: 400;
+}
+
+/* 분 미세 조정 */
+.tp-fine-adjust {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.tp-fine-btn {
+  flex: 1;
+  padding: 6px;
+  border-radius: 7px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: inherit;
+  transition: all 0.12s;
+}
+
+.tp-fine-btn:hover {
+  background: rgba(99, 102, 241, 0.15);
+  border-color: rgba(99, 102, 241, 0.3);
+  color: #fff;
+}
+
+.tp-fine-btn:active {
+  transform: scale(0.93);
+}
+
+.tp-fine-value {
+  font-size: 13px;
+  font-weight: 800;
+  color: rgba(165, 180, 252, 1);
+  min-width: 36px;
+  text-align: center;
+}
+
 /* 현재 시간 버튼 */
 .tp-now-btn {
   width: 100%;
@@ -3184,18 +3342,22 @@ textarea.modal-input {
 
 /* ========= 출퇴근 인라인 패널 ========= */
 .check-panel {
-  margin-top: 10px;
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 300;
   padding: 14px;
-  background: rgba(14, 14, 26, 0.92);
+  background: rgba(14, 14, 26, 0.97);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
   animation: check-panel-in 0.16s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @keyframes check-panel-in {
-  from { opacity: 0; transform: translateY(-6px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(-4px) scale(0.99); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 /* 근무 유형 */
