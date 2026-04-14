@@ -135,8 +135,13 @@ export const WorkCheckButtons: React.FC<WorkCheckButtonsProps> = ({
   const calcPos = (btnRef: React.RefObject<HTMLButtonElement | null>) => {
     if (!btnRef.current) return;
     const parent = btnRef.current.closest(".work-check-buttons");
-    const parentRect = parent?.getBoundingClientRect() || btnRef.current.getBoundingClientRect();
-    setPanelPos({ top: parentRect.bottom + 6, left: parentRect.left, width: parentRect.width });
+    const rect = parent?.getBoundingClientRect() || btnRef.current.getBoundingClientRect();
+    const panelHeight = 380;
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const top = spaceBelow >= panelHeight
+      ? rect.bottom + 6
+      : rect.top - panelHeight - 6;
+    setPanelPos({ top: Math.max(6, top), left: rect.left, width: rect.width });
   };
 
   useEffect(() => {

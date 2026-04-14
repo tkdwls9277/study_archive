@@ -94,16 +94,16 @@ export const TimePicker: React.FC<TimePickerProps> = ({ value, onChange, label, 
     if (defaultOpen) calcPosition();
   }, []);
 
-  // 패널 위치 계산
+  // 패널 위치 계산 — 아래 공간 부족 시 위로
   const calcPosition = () => {
     if (!triggerRef.current) return;
     const rect = triggerRef.current.getBoundingClientRect();
-    const panelHeight = 300;
+    const panelHeight = 380;
     const spaceBelow = window.innerHeight - rect.bottom;
     const top = spaceBelow >= panelHeight
       ? rect.bottom + 6
       : rect.top - panelHeight - 6;
-    setPanelPos({ top, left: rect.left, width: rect.width });
+    setPanelPos({ top: Math.max(6, top), left: rect.left, width: rect.width });
   };
 
   const handleOpen = () => {
