@@ -3157,6 +3157,52 @@ textarea.modal-input {
   box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
 }
 
+/* ========= 근무 유형 토글 (메인 화면) ========= */
+.work-leave-toggle {
+  display: flex;
+  gap: 4px;
+  margin-top: 6px;
+  padding: 3px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+}
+
+.wlt-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 5px 4px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.35);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.13s;
+}
+
+.wlt-btn:hover {
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.wlt-btn.active {
+  background: rgba(99, 102, 241, 0.2);
+  color: rgba(165, 180, 252, 1);
+}
+
+.wlt-icon {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.wlt-label {
+  font-size: 11px;
+  font-weight: 700;
+}
+
 /* ========= 근무 유형 선택 (공유) ========= */
 .lt-selector {
   display: flex;
@@ -3273,6 +3319,34 @@ textarea.modal-input {
 .tp-direct-input::placeholder {
   color: rgba(255, 255, 255, 0.25);
   font-weight: 400;
+}
+
+/* 반차 점심 제외 토글 */
+.tp-lunch-toggle {
+  width: 100%;
+  padding: 8px;
+  border-radius: 9px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  transition: all 0.13s;
+  margin-bottom: 6px;
+  text-align: center;
+}
+
+.tp-lunch-toggle:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.tp-lunch-toggle.active {
+  background: rgba(251, 191, 36, 0.15);
+  border-color: rgba(251, 191, 36, 0.4);
+  color: rgba(251, 191, 36, 1);
 }
 
 /* 분 미세 조정 */

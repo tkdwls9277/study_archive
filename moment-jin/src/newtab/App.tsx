@@ -369,6 +369,8 @@ export const App: React.FC = () => {
         onCheckOutChange={workHandler.setEditingCheckOut}
         onIsVacationChange={workHandler.setEditingIsVacation}
         onLeaveTypeChange={workHandler.setEditingLeaveType}
+        editingExcludeLunch={workHandler.editingExcludeLunch}
+        onExcludeLunchChange={workHandler.setEditingExcludeLunch}
         isOptionsModalOpen={optionsModal.isOptionsModalOpen}
         optionsUserName={optionsModal.optionsUserName}
         optionsShowFavorites={optionsModal.optionsShowFavorites}

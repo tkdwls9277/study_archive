@@ -10,12 +10,14 @@ interface TimeEditModalProps {
   checkOut: string;
   isVacation: boolean;
   leaveType?: "none" | "annual" | "half";
+  excludeLunch?: boolean;
   onClose: () => void;
   onSave: () => void;
   onCheckInChange: (checkIn: string) => void;
   onCheckOutChange: (checkOut: string) => void;
   onIsVacationChange: (isVacation: boolean) => void;
   onLeaveTypeChange?: (leaveType: "none" | "annual" | "half") => void;
+  onExcludeLunchChange?: (v: boolean) => void;
 }
 
 export const TimeEditModal: React.FC<TimeEditModalProps> = ({
@@ -31,6 +33,8 @@ export const TimeEditModal: React.FC<TimeEditModalProps> = ({
   onCheckOutChange,
   onIsVacationChange,
   onLeaveTypeChange,
+  excludeLunch = false,
+  onExcludeLunchChange,
 }) => {
   const { t } = useTranslation();
 
@@ -75,8 +79,19 @@ export const TimeEditModal: React.FC<TimeEditModalProps> = ({
           <>
             <TimePicker label={t.work.checkInTime} value={checkIn} onChange={onCheckInChange} />
             <TimePicker label={t.work.checkOutTime} value={checkOut} onChange={onCheckOutChange} />
+            {currentLeaveType === "half" && (
+              <button
+                type="button"
+                className={`tp-lunch-toggle${excludeLunch ? " active" : ""}`}
+                onClick={() => onExcludeLunchChange?.(!excludeLunch)}
+              >
+                🍽️ 점심시간 1시간 제외 {excludeLunch ? "✓" : ""}
+              </button>
+            )}
             <div className="modal-hint">
-              💡 {currentLeaveType === "half" ? t.work.halfDayLeaveNote : t.work.lunchExcluded}
+              💡 {currentLeaveType === "half"
+                ? (excludeLunch ? "반차 (점심 1시간 제외)" : t.work.halfDayLeaveNote)
+                : t.work.lunchExcluded}
             </div>
           </>
         )}

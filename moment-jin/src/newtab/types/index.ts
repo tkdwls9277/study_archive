@@ -18,6 +18,7 @@ export type WorkRecord = {
   checkOut?: string; // HH:MM
   isVacation?: boolean; // 연차 여부 (deprecated, leaveType 사용 권장)
   leaveType?: "none" | "annual" | "half"; // 'none': 일반 근무, 'annual': 연차, 'half': 반차
+  excludeLunch?: boolean; // 반차 시 점심시간 1시간 제외 여부
 };
 
 export type TodoGroup = {

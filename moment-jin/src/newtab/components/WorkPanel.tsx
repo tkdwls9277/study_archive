@@ -192,9 +192,7 @@ export const WorkPanel: React.FC<WorkPanelProps> = ({
 
                   {record.leaveType === "annual" || (!record.leaveType && record.isVacation) ? (
                     <div className="work-record-vacation">{t.work.annualLeave}</div>
-                  ) : record.leaveType === "half" && !(record.checkIn && record.checkOut) ? (
-                    <div className="work-record-vacation half-day">{t.work.halfDayLeave}</div>
-                  ) : record.checkIn || record.checkOut || record.leaveType === "half" ? (
+                  ) : record.checkIn || record.checkOut ? (
                     <>
                       <div className="work-record-times">
                         <span className="work-record-time">

@@ -18,6 +18,7 @@ export function useWorkHandler(props: UseWorkHandlerProps) {
   const [editingCheckOut, setEditingCheckOut] = useState("");
   const [editingIsVacation, setEditingIsVacation] = useState(false);
   const [editingLeaveType, setEditingLeaveType] = useState<"none" | "annual" | "half">("none");
+  const [editingExcludeLunch, setEditingExcludeLunch] = useState(false);
 
   const handleSaveWorkRecords = (next: WorkRecord[]) => {
     setWorkRecords(next);
@@ -29,6 +30,7 @@ export function useWorkHandler(props: UseWorkHandlerProps) {
     type: "in" | "out",
     time: string,
     leaveType: "none" | "annual" | "half",
+    excludeLunch?: boolean,
   ) => {
     const today = formatDate(new Date());
     const rec = workRecords.find((r) => r.date === today);
@@ -41,6 +43,7 @@ export function useWorkHandler(props: UseWorkHandlerProps) {
       type === "out" ? time : (rec?.checkOut || ""),
       isAnnual,
       type === "in" ? leaveType : (rec?.leaveType || "none"),
+      excludeLunch,
     );
     handleSaveWorkRecords(next);
   };
@@ -52,6 +55,7 @@ export function useWorkHandler(props: UseWorkHandlerProps) {
     setEditingCheckOut(record.checkOut || "");
     setEditingIsVacation(record.isVacation || false);
     setEditingLeaveType(record.leaveType || (record.isVacation ? "annual" : "none"));
+    setEditingExcludeLunch(record.excludeLunch || false);
     setIsTimeEditModalOpen(true);
   };
 
@@ -63,6 +67,7 @@ export function useWorkHandler(props: UseWorkHandlerProps) {
       editingCheckOut,
       editingIsVacation,
       editingLeaveType,
+      editingExcludeLunch,
     );
     if (!editingCheckIn.trim() && !editingCheckOut.trim() && editingLeaveType === "none") {
       next = next.filter((r: WorkRecord) => r.date !== editingDate);
@@ -85,6 +90,8 @@ export function useWorkHandler(props: UseWorkHandlerProps) {
     setEditingIsVacation,
     editingLeaveType,
     setEditingLeaveType,
+    editingExcludeLunch,
+    setEditingExcludeLunch,
     handleDateEdit,
     handleSaveTimeEdit,
     closeTimeEditModal,

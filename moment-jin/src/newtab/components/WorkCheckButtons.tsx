@@ -82,7 +82,7 @@ export const LeaveTypeSelector: React.FC<{
 
 interface WorkCheckButtonsProps {
   todayRecord: WorkRecord | undefined;
-  onSave: (type: "in" | "out", time: string, leaveType: "none" | "annual" | "half") => void;
+  onSave: (type: "in" | "out", time: string, leaveType: "none" | "annual" | "half", excludeLunch?: boolean) => void;
   translations: {
     checkInButton: string;
     checkInButtonRecorded: string;
@@ -122,6 +122,7 @@ export const WorkCheckButtons: React.FC<WorkCheckButtonsProps> = ({
 }) => {
   const [editType, setEditType] = useState<"in" | "out" | null>(null);
   const [leaveType, setLeaveType] = useState<"none" | "annual" | "half">("none");
+  const [excludeLunch, setExcludeLunch] = useState(false);
   const [panelPos, setPanelPos] = useState({ top: 0, left: 0, width: 0 });
   const inBtnRef = useRef<HTMLButtonElement>(null);
   const outBtnRef = useRef<HTMLButtonElement>(null);
@@ -161,63 +162,72 @@ export const WorkCheckButtons: React.FC<WorkCheckButtonsProps> = ({
   const handleClick = (type: "in" | "out") => {
     const existing = type === "in" ? todayRecord?.checkIn : todayRecord?.checkOut;
     const curLt = todayRecord?.leaveType || "none";
-    const isLeave = curLt === "annual" || curLt === "half";
 
-    if (!existing && !isLeave) {
-      // 기록 없고 일반 근무 → 즉시 저장
-      onSave(type, getCurrentTime(), curLt);
+    if (!existing && curLt !== "annual") {
+      onSave(type, getCurrentTime(), curLt, todayRecord?.excludeLunch);
       return;
     }
 
-    // 그 외 → 패널 토글
     if (editType === type) {
       setEditType(null);
     } else {
       setLeaveType(curLt);
+      setExcludeLunch(todayRecord?.excludeLunch || false);
       calcPos(type === "in" ? inBtnRef : outBtnRef);
       setEditType(type);
     }
   };
 
-  const curLeaveType = () => leaveType;
+  const save = (time: string, lt?: "none" | "annual" | "half", el?: boolean) => {
+    onSave(editType!, time, lt ?? leaveType, el ?? excludeLunch);
+  };
 
   const pickHour = (hour: number) => {
     let h = hour;
     if (isPM && hour !== 12) h = hour + 12;
     if (!isPM && hour === 12) h = 0;
-    onSave(editType!, toTimeString(h, m), curLeaveType());
+    save(toTimeString(h, m));
   };
 
   const pickMinute = (min: number) => {
-    onSave(editType!, toTimeString(h24, min), curLeaveType());
+    save(toTimeString(h24, min));
   };
 
   const pickAmPm = (pm: boolean) => {
     let h = h24;
     if (pm && h24 < 12) h = h24 + 12;
     else if (!pm && h24 >= 12) h = h24 - 12;
-    onSave(editType!, toTimeString(h, m), curLeaveType());
+    save(toTimeString(h, m));
   };
 
   const pickNow = () => {
-    onSave(editType!, getCurrentTime(), curLeaveType());
+    save(getCurrentTime());
     setEditType(null);
   };
 
   const handleLeaveTypeChange = (lt: "none" | "annual" | "half") => {
     setLeaveType(lt);
+    if (lt !== "half") setExcludeLunch(false);
     if (lt === "annual") {
-      onSave(editType!, "", lt);
+      onSave(editType!, "", lt, false);
     } else {
-      onSave(editType!, editValue || getCurrentTime(), lt);
+      onSave(editType!, editValue || getCurrentTime(), lt, lt === "half" ? excludeLunch : false);
     }
+  };
+
+  const handleExcludeLunchToggle = () => {
+    const next = !excludeLunch;
+    setExcludeLunch(next);
+    save(editValue || getCurrentTime(), undefined, next);
   };
 
   const calcWorkMin = (ci: string, co: string): number => {
     const [ih, im] = ci.split(":").map(Number);
     const [oh, om] = co.split(":").map(Number);
     const total = (oh * 60 + om) - (ih * 60 + im);
-    return Math.max(0, todayRecord?.leaveType === "half" ? total : total - 60);
+    const isHalf = todayRecord?.leaveType === "half";
+    const skipLunch = isHalf && !todayRecord?.excludeLunch;
+    return Math.max(0, skipLunch ? total : total - 60);
   };
 
   const fmtTime = (mins: number): string => {
@@ -228,7 +238,7 @@ export const WorkCheckButtons: React.FC<WorkCheckButtonsProps> = ({
     return `${mm}${t.minute}`;
   };
 
-  const hideTimePicker = editType === "in" && (leaveType === "annual" || leaveType === "half");
+  const hideTimePicker = editType === "in" && leaveType === "annual";
 
   return (
     <div className="work-check-container">
@@ -251,6 +261,28 @@ export const WorkCheckButtons: React.FC<WorkCheckButtonsProps> = ({
         </button>
       </div>
 
+      {/* 근무 유형 토글 — 항상 표시 */}
+      <div className="work-leave-toggle">
+        {([
+          { key: "none"   as const, icon: "🏢", label: "일반" },
+          { key: "annual" as const, icon: "🌴", label: "연차" },
+          { key: "half"   as const, icon: "🌤️", label: "반차" },
+        ]).map(({ key, icon, label }) => (
+          <button
+            key={key}
+            type="button"
+            className={`wlt-btn${(todayRecord?.leaveType || "none") === key ? " active" : ""}`}
+            onClick={() => {
+              const curTime = todayRecord?.checkIn || getCurrentTime();
+              onSave("in", key === "annual" ? "" : curTime, key, key === "half" ? todayRecord?.excludeLunch : undefined);
+            }}
+          >
+            <span className="wlt-icon">{icon}</span>
+            <span className="wlt-label">{label}</span>
+          </button>
+        ))}
+      </div>
+
       {editType && createPortal(
         <div ref={panelRef} className="tp-panel" style={{ top: panelPos.top, left: panelPos.left, width: panelPos.width }}>
           {/* 출근일 때 근무 유형 선택 */}
@@ -262,7 +294,7 @@ export const WorkCheckButtons: React.FC<WorkCheckButtonsProps> = ({
           {!hideTimePicker && (
             <>
               <div className="tp-top-row">
-                <DirectInput h24={h24} m={m} onApply={(hh, mm) => onSave(editType!, toTimeString(hh, mm), curLeaveType())} />
+                <DirectInput h24={h24} m={m} onApply={(hh, mm) => save(toTimeString(hh, mm))} />
                 <div className="tp-ampm-row">
                   <button type="button" className={`tp-ampm-btn${!isPM ? " active" : ""}`} onClick={() => pickAmPm(false)}>오전</button>
                   <button type="button" className={`tp-ampm-btn${isPM ? " active" : ""}`} onClick={() => pickAmPm(true)}>오후</button>
@@ -292,15 +324,19 @@ export const WorkCheckButtons: React.FC<WorkCheckButtonsProps> = ({
                   </div>
                 </div>
               </div>
+              {/* 반차 점심 제외 토글 */}
+              {leaveType === "half" && (
+                <button type="button" className={`tp-lunch-toggle${excludeLunch ? " active" : ""}`} onClick={handleExcludeLunchToggle}>
+                  🍽️ 점심시간 1시간 제외 {excludeLunch ? "✓" : ""}
+                </button>
+              )}
               <button type="button" className="tp-now-btn" onClick={pickNow}>현재 시간으로 설정</button>
             </>
           )}
 
-          {/* 연차/반차 안내 */}
+          {/* 연차 안내 */}
           {hideTimePicker && (
-            <div className="tp-annual-note">
-              💡 {leaveType === "annual" ? "연차는 8시간으로 계산됩니다." : "반차는 4시간으로 계산됩니다."}
-            </div>
+            <div className="tp-annual-note">💡 연차는 8시간으로 계산됩니다.</div>
           )}
         </div>,
         document.body

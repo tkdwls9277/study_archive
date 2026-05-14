@@ -21,19 +21,16 @@ export function calculateWorkMinutes(checkIn: string, checkOut: string, isHalfDa
 
 // WorkRecord에서 근무시간 계산 (leaveType 고려)
 export function calculateRecordWorkMinutes(record: WorkRecord): number {
-  // 연차: 근무시간에 포함하지 않음 (목표시간에서 차감됨)
+  // 연차: 8시간으로 계산
   if (record.leaveType === "annual" || (!record.leaveType && record.isVacation)) {
-    return 0;
+    return 8 * 60;
   }
 
-  // 반차: 4시간 (240분)
-  if (record.leaveType === "half") {
-    return 4 * 60;
-  }
-
-  // 일반 근무: 출퇴근 시간 기록이 있는 경우 계산
+  // 반차/일반: 출퇴근 시간 기반
   if (record.checkIn && record.checkOut) {
-    return calculateWorkMinutes(record.checkIn, record.checkOut, false);
+    const isHalf = record.leaveType === "half";
+    const skipLunch = isHalf && !record.excludeLunch;
+    return calculateWorkMinutes(record.checkIn, record.checkOut, skipLunch);
   }
 
   return 0;

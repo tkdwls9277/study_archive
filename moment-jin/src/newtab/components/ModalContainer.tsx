@@ -23,12 +23,14 @@ interface ModalContainerProps {
   editingCheckOut: string;
   editingIsVacation: boolean;
   editingLeaveType?: "none" | "annual" | "half";
+  editingExcludeLunch?: boolean;
   onTimeEditClose: () => void;
   onTimeEditSave: () => void;
   onCheckInChange: (value: string) => void;
   onCheckOutChange: (value: string) => void;
   onIsVacationChange: (value: boolean) => void;
   onLeaveTypeChange?: (value: "none" | "annual" | "half") => void;
+  onExcludeLunchChange?: (value: boolean) => void;
 
   // Options Modal
   isOptionsModalOpen: boolean;
@@ -80,12 +82,14 @@ export const ModalContainer: React.FC<ModalContainerProps> = ({
   editingCheckOut,
   editingIsVacation,
   editingLeaveType,
+  editingExcludeLunch,
   onTimeEditClose,
   onTimeEditSave,
   onCheckInChange,
   onCheckOutChange,
   onIsVacationChange,
   onLeaveTypeChange,
+  onExcludeLunchChange,
 
   // Options Modal
   isOptionsModalOpen,
@@ -141,6 +145,8 @@ export const ModalContainer: React.FC<ModalContainerProps> = ({
         onCheckOutChange={onCheckOutChange}
         onIsVacationChange={onIsVacationChange}
         onLeaveTypeChange={onLeaveTypeChange}
+        excludeLunch={editingExcludeLunch}
+        onExcludeLunchChange={onExcludeLunchChange}
       />
 
       <OptionsModal
